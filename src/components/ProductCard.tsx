@@ -6,13 +6,20 @@ interface Props {
   onSelect: (p: Product) => void;
 }
 
+// Preço "de" fixo da campanha de lançamento
+const ORIGINAL_PRICE = 89.9;
+
 export const ProductCard = ({ product, onSelect }: Props) => {
+  const price = Number(product.price);
+  const showPromo = price < ORIGINAL_PRICE;
+  const discount = showPromo ? Math.round((1 - price / ORIGINAL_PRICE) * 100) : 0;
+
   return (
     <div
-      className="group cursor-pointer animate-fade-up"
+      className="group cursor-pointer animate-fade-up bg-card rounded-sm overflow-hidden shadow-card hover:shadow-elegant transition-luxe"
       onClick={() => onSelect(product)}
     >
-      <div className="relative aspect-[3/4] overflow-hidden bg-muted rounded-sm">
+      <div className="relative aspect-[3/4] overflow-hidden bg-muted">
         {product.image_url ? (
           <img
             src={product.image_url}
@@ -25,23 +32,40 @@ export const ProductCard = ({ product, onSelect }: Props) => {
             Sem imagem
           </div>
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-secondary/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-luxe" />
+
+        {showPromo && (
+          <div className="absolute top-3 left-3 bg-primary-deep text-primary-foreground text-[11px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-sm shadow-soft">
+            {discount}% OFF
+          </div>
+        )}
+
         <Button
           variant="luxe"
           size="sm"
-          className="absolute bottom-4 left-4 right-4 opacity-0 group-hover:opacity-100 transition-luxe translate-y-2 group-hover:translate-y-0"
+          className="absolute bottom-3 left-3 right-3 opacity-0 group-hover:opacity-100 transition-luxe translate-y-2 group-hover:translate-y-0"
         >
-          Ver peça
+          Comprar agora
         </Button>
       </div>
-      <div className="pt-4 space-y-1">
+
+      <div className="p-4 space-y-1">
         {product.category && (
           <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
             {product.category}
           </span>
         )}
         <h3 className="font-display text-lg text-secondary leading-tight">{product.name}</h3>
-        <p className="text-primary-deep font-medium">{formatBRL(Number(product.price))}</p>
+        <div className="flex items-baseline gap-2 pt-1">
+          {showPromo && (
+            <span className="text-xs text-muted-foreground line-through">
+              {formatBRL(ORIGINAL_PRICE)}
+            </span>
+          )}
+          <span className="text-primary-deep font-bold text-lg">{formatBRL(price)}</span>
+        </div>
+        <p className="text-[11px] text-muted-foreground pt-1">
+          ou pague no Pix com aprovação na hora
+        </p>
       </div>
     </div>
   );
