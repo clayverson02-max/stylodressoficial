@@ -82,15 +82,19 @@ const Checkout = () => {
     setSubmitting(true);
     const { data, error } = await supabase
       .from("orders")
-      .insert({
-        ...parsed.data,
-        customer_email: parsed.data.customer_email || null,
-        customer_address: parsed.data.customer_address || null,
-        customer_city: parsed.data.customer_city || null,
-        notes: parsed.data.notes || null,
-        items: items as unknown as never,
-        total: totalPrice,
-      })
+    const payload = {
+      customer_name: parsed.data.customer_name,
+      customer_phone: parsed.data.customer_phone,
+      customer_email: parsed.data.customer_email || null,
+      customer_address: parsed.data.customer_address || null,
+      customer_city: parsed.data.customer_city || null,
+      notes: parsed.data.notes || null,
+      items: items as unknown as never,
+      total: totalPrice,
+    };
+    const { data, error } = await supabase
+      .from("orders")
+      .insert(payload as never)
       .select("order_number")
       .single();
     setSubmitting(false);
