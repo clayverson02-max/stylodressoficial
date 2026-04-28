@@ -31,7 +31,7 @@ export const ProductGrid = () => {
           Peças que fazem você <span className="font-semibold text-primary-deep">brilhar</span>
         </h2>
         <p className="text-muted-foreground mt-4 text-sm md:text-base">
-          Toque na peça para escolher cor, tamanho e adicionar ao carrinho. É rapidinho, do jeitinho que você merece. 💛
+          Toque na peça, escolha a cor e o tamanho que combinam com você. Rápido, fácil e do jeitinho que você merece. 💛
         </p>
       </div>
 

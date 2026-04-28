@@ -1,4 +1,4 @@
-import { Product, formatBRL } from "@/lib/store";
+import { Product, formatBRL, getVariants } from "@/lib/store";
 import { Button } from "@/components/ui/button";
 
 interface Props {
@@ -6,13 +6,12 @@ interface Props {
   onSelect: (p: Product) => void;
 }
 
-// Preço "de" fixo da campanha de lançamento
-const ORIGINAL_PRICE = 89.9;
-
 export const ProductCard = ({ product, onSelect }: Props) => {
   const price = Number(product.price);
-  const showPromo = price < ORIGINAL_PRICE;
-  const discount = showPromo ? Math.round((1 - price / ORIGINAL_PRICE) * 100) : 0;
+  const original = product.original_price ? Number(product.original_price) : null;
+  const showPromo = original !== null && original > price;
+  const discount = showPromo ? Math.round((1 - price / (original as number)) * 100) : 0;
+  const variants = getVariants(product);
 
   return (
     <div
@@ -44,26 +43,43 @@ export const ProductCard = ({ product, onSelect }: Props) => {
           size="sm"
           className="absolute bottom-3 left-3 right-3 opacity-0 group-hover:opacity-100 transition-luxe translate-y-2 group-hover:translate-y-0"
         >
-          Comprar agora
+          Ver detalhes
         </Button>
       </div>
 
-      <div className="p-4 space-y-1">
+      <div className="p-4 space-y-2">
         {product.category && (
           <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
             {product.category}
           </span>
         )}
         <h3 className="font-display text-lg text-secondary leading-tight">{product.name}</h3>
+
+        {variants.length > 0 && (
+          <div className="flex items-center gap-1.5 pt-0.5">
+            {variants.slice(0, 5).map((v) => (
+              <span
+                key={v.color}
+                title={v.color}
+                className="h-3.5 w-3.5 rounded-full border border-border/60"
+                style={{ backgroundColor: v.hex }}
+              />
+            ))}
+            <span className="text-[11px] text-muted-foreground ml-1">
+              {variants.length} {variants.length === 1 ? "cor" : "cores"}
+            </span>
+          </div>
+        )}
+
         <div className="flex items-baseline gap-2 pt-1">
           {showPromo && (
             <span className="text-xs text-muted-foreground line-through">
-              {formatBRL(ORIGINAL_PRICE)}
+              {formatBRL(original as number)}
             </span>
           )}
           <span className="text-primary-deep font-bold text-lg">{formatBRL(price)}</span>
         </div>
-        <p className="text-[11px] text-muted-foreground pt-1">
+        <p className="text-[11px] text-muted-foreground">
           ou pague no Pix com aprovação na hora
         </p>
       </div>
