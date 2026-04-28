@@ -74,9 +74,11 @@ export type Database = {
           id: string
           image_url: string | null
           name: string
+          original_price: number | null
           price: number
           sizes: Json
           updated_at: string
+          variants: Json
         }
         Insert: {
           active?: boolean
@@ -86,9 +88,11 @@ export type Database = {
           id?: string
           image_url?: string | null
           name: string
+          original_price?: number | null
           price: number
           sizes?: Json
           updated_at?: string
+          variants?: Json
         }
         Update: {
           active?: boolean
@@ -98,9 +102,11 @@ export type Database = {
           id?: string
           image_url?: string | null
           name?: string
+          original_price?: number | null
           price?: number
           sizes?: Json
           updated_at?: string
+          variants?: Json
         }
         Relationships: []
       }
