@@ -80,8 +80,6 @@ const Checkout = () => {
       return;
     }
     setSubmitting(true);
-    const { data, error } = await supabase
-      .from("orders")
     const payload = {
       customer_name: parsed.data.customer_name,
       customer_phone: parsed.data.customer_phone,
