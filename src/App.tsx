@@ -26,7 +26,7 @@ const App = () => (
           </Routes>
           <CartDrawer />
         </CartProvider>
-      </Routes>
+      </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
 );
