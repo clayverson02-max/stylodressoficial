@@ -24,20 +24,19 @@ export const ProductGrid = () => {
   }, []);
 
   return (
-    <section id="colecao" className="container py-20">
-      <div className="text-center max-w-2xl mx-auto mb-14">
+    <section id="colecao" className="container py-14 md:py-20">
+      <div className="text-center max-w-2xl mx-auto mb-10">
         <span className="text-script text-2xl text-primary-deep">nossa coleção</span>
-        <h2 className="font-display text-4xl md:text-5xl font-light text-secondary mt-2">
-          Peças pensadas para <span className="font-semibold">você brilhar</span>
+        <h2 className="font-display text-3xl md:text-5xl font-light text-secondary mt-2">
+          Peças que fazem você <span className="font-semibold text-primary-deep">brilhar</span>
         </h2>
-        <p className="text-muted-foreground mt-4">
-          Cada modelo é escolhido para valorizar a sua essência. Toque na peça para ver detalhes,
-          escolher tamanho e adicionar ao carrinho.
+        <p className="text-muted-foreground mt-4 text-sm md:text-base">
+          Toque na peça para escolher cor, tamanho e adicionar ao carrinho. É rapidinho, do jeitinho que você merece. 💛
         </p>
       </div>
 
       {loading ? (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
           {Array.from({ length: 8 }).map((_, i) => (
             <div key={i} className="space-y-3">
               <Skeleton className="aspect-[3/4] w-full" />
@@ -53,7 +52,7 @@ export const ProductGrid = () => {
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-12">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
           {products.map((p) => (
             <ProductCard key={p.id} product={p} onSelect={setSelected} />
           ))}
