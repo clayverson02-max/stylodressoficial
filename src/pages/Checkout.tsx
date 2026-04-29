@@ -33,6 +33,7 @@ const Checkout = () => {
     customer_email: "",
     customer_address: "",
     customer_city: "",
+    customer_cep: "",
     notes: "",
   });
   const [submitting, setSubmitting] = useState(false);
