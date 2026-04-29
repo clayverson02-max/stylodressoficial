@@ -21,11 +21,15 @@
     --popover: 0 0% 100%;
     --popover-foreground: 220 45% 18%;
 
-    /* Brand — Rosé Gold */
-    --primary: 14 42% 68%;
-    --primary-foreground: 30 33% 98%;
-    --primary-glow: 18 55% 78%;
-    --primary-deep: 12 35% 55%;
+    /* Brand — Rosé Gold (vivo) */
+    --primary: 348 78% 55%;
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 14 90% 62%;
+    --primary-deep: 348 82% 42%;
+
+    /* WhatsApp */
+    --whatsapp: 142 70% 45%;
+    --whatsapp-foreground: 0 0% 100%;
 
     /* Brand — Navy (do logo) */
     --secondary: 220 50% 22%;
@@ -42,14 +46,14 @@
 
     --border: 30 20% 88%;
     --input: 30 20% 90%;
-    --ring: 14 42% 68%;
+    --ring: 348 78% 55%;
 
     --radius: 0.25rem;
 
     /* Gradients */
-    --gradient-rose: linear-gradient(135deg, hsl(14 42% 68%), hsl(18 55% 78%));
+    --gradient-rose: linear-gradient(135deg, hsl(348 82% 50%), hsl(14 90% 60%));
     --gradient-rose-soft: linear-gradient(180deg, hsl(30 33% 97%), hsl(14 35% 92%));
-    --gradient-luxe: linear-gradient(135deg, hsl(14 42% 68% / 0.95), hsl(12 35% 55% / 0.9));
+    --gradient-luxe: linear-gradient(135deg, hsl(348 82% 50% / 0.98), hsl(348 82% 38% / 0.95));
     --gradient-overlay: linear-gradient(180deg, hsl(220 45% 18% / 0) 0%, hsl(220 45% 18% / 0.7) 100%);
 
     /* Shadows */

@@ -80,7 +80,7 @@ export const ProductCard = ({ product, onSelect }: Props) => {
           <span className="text-primary-deep font-bold text-lg">{formatBRL(price)}</span>
         </div>
         <p className="text-[11px] text-muted-foreground">
-          ou pague no Pix com aprovação na hora
+          em até 4x sem juros no cartão
         </p>
       </div>
     </div>

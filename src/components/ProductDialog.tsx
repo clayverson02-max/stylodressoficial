@@ -52,10 +52,10 @@ export const ProductDialog = ({ product, onClose }: Props) => {
 
   return (
     <Dialog open={!!product} onOpenChange={(o) => !o && onClose()}>
-      <DialogContent className="max-w-3xl p-0 gap-0 max-h-[95vh] overflow-y-auto md:overflow-hidden">
+      <DialogContent className="max-w-3xl p-0 gap-0 w-[95vw] sm:w-full max-h-[92vh] sm:max-h-[90vh] overflow-y-auto overscroll-contain">
         <DialogTitle className="sr-only">{product.name}</DialogTitle>
         <div className="grid md:grid-cols-2">
-          <div className="aspect-square bg-muted md:aspect-auto md:h-full">
+          <div className="aspect-square bg-muted md:aspect-auto md:h-full md:sticky md:top-0 md:max-h-[90vh]">
             {displayImage ? (
               <img src={displayImage} alt={product.name} className="w-full h-full object-cover" />
             ) : (
@@ -65,7 +65,7 @@ export const ProductDialog = ({ product, onClose }: Props) => {
             )}
           </div>
 
-          <div className="p-6 md:p-8 space-y-5 md:overflow-y-auto md:max-h-[95vh]">
+          <div className="p-5 sm:p-6 md:p-8 space-y-5 pb-8">
             {product.category && (
               <span className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
                 {product.category}
@@ -177,7 +177,7 @@ export const ProductDialog = ({ product, onClose }: Props) => {
               {!size ? "Selecione um tamanho" : `Adicionar ${formatBRL(qty * Number(product.price))}`}
             </Button>
             <p className="text-[11px] text-center text-muted-foreground">
-              Pagamento via Pix • Pedido confirmado por aqui
+              Pedido confirmado direto por aqui • Envio para todo o Brasil
             </p>
           </div>
         </div>

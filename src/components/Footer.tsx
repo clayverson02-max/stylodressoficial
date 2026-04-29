@@ -33,7 +33,7 @@ export const Footer = () => {
             <ul className="space-y-2 text-sm opacity-80">
               <li>Pedido mínimo: 2 peças</li>
               <li>Envio para todo o Brasil</li>
-              <li>Pagamento via Pix</li>
+              <li>Frete calculado no checkout</li>
             </ul>
           </div>
         </div>
