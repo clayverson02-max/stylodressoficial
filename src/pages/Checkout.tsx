@@ -18,6 +18,7 @@ const schema = z.object({
   customer_email: z.string().trim().email("E-mail inválido").max(255).optional().or(z.literal("")),
   customer_address: z.string().trim().max(300).optional().or(z.literal("")),
   customer_city: z.string().trim().max(120).optional().or(z.literal("")),
+  customer_cep: z.string().trim().max(15).optional().or(z.literal("")),
   notes: z.string().trim().max(500).optional().or(z.literal("")),
 });
 
