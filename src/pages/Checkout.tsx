@@ -113,40 +113,66 @@ const Checkout = () => {
   };
 
   if (orderNumber !== null) {
+    const orderCode = String(orderNumber).padStart(4, "0");
+    const itemsText = items
+      .map((i) => `• ${i.name} | Tam ${i.size} | ${i.quantity}x | ${formatBRL(i.price * i.quantity)}`)
+      .join("%0A");
+    const waMessage =
+      `*Pedido Stylo Dress #${orderCode}*%0A%0A` +
+      `*Cliente:* ${form.customer_name}%0A` +
+      `*Telefone:* ${form.customer_phone}%0A` +
+      (form.customer_address ? `*Endereço:* ${form.customer_address}%0A` : "") +
+      (form.customer_city ? `*Cidade:* ${form.customer_city}%0A` : "") +
+      `%0A*Itens:*%0A${itemsText}%0A%0A` +
+      `*Total:* ${formatBRL(totalPrice)}%0A` +
+      `*Pagamento:* Pix (chave ${PIX_KEY})%0A%0A` +
+      `Segue o comprovante do Pix para confirmação. Obrigada!`;
+    const waUrl = `https://wa.me/5585997341095?text=${waMessage}`;
+
     return (
       <>
         <Header />
-        <div className="container py-16 max-w-2xl mx-auto">
-          <div className="bg-card border border-border rounded-sm p-10 text-center space-y-6 shadow-soft">
+        <div className="container py-12 md:py-16 max-w-2xl mx-auto px-4">
+          <div className="bg-card border border-border rounded-sm p-6 md:p-10 text-center space-y-6 shadow-soft">
             <div className="inline-flex items-center justify-center h-16 w-16 rounded-full bg-primary/15">
               <Check className="h-8 w-8 text-primary-deep" />
             </div>
             <div>
               <span className="text-script text-2xl text-primary-deep">obrigada!</span>
-              <h1 className="font-display text-4xl text-secondary mt-1">
-                Pedido #{String(orderNumber).padStart(4, "0")} confirmado
+              <h1 className="font-display text-3xl md:text-4xl text-secondary mt-1">
+                Pedido #{orderCode} confirmado
               </h1>
               <p className="text-muted-foreground mt-3">
                 Falta só o pagamento via Pix para garantir suas peças.
               </p>
             </div>
 
-            <div className="bg-accent/40 border border-primary/20 rounded-sm p-6 text-left space-y-3">
+            <div className="bg-accent/40 border border-primary/20 rounded-sm p-5 md:p-6 text-left space-y-3">
               <p className="text-xs uppercase tracking-widest text-secondary font-semibold">
                 Pague com Pix (chave celular)
               </p>
               <div className="flex items-center gap-2 bg-background border border-border rounded-sm p-3">
-                <span className="font-mono text-lg text-secondary flex-1">{PIX_KEY}</span>
+                <span className="font-mono text-base md:text-lg text-secondary flex-1 break-all">{PIX_KEY}</span>
                 <Button size="sm" variant="luxe" onClick={copyPix}>
                   {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
                   {copied ? "Copiado" : "Copiar"}
                 </Button>
               </div>
               <p className="text-sm text-muted-foreground">
-                Após pagar, envie o comprovante para o WhatsApp <strong>(85) 99734-1095</strong>{" "}
-                informando o número do pedido. Vamos confirmar e preparar tudo com carinho. 💛
+                Após pagar, clique no botão abaixo para enviar o comprovante e os detalhes do pedido pelo WhatsApp. Vamos confirmar e preparar tudo com carinho. 💛
               </p>
             </div>
+
+            <a
+              href={waUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block"
+            >
+              <Button variant="luxe" size="lg" className="w-full bg-[#25D366] hover:bg-[#1ebe57] text-white">
+                Enviar pedido completo no WhatsApp
+              </Button>
+            </a>
 
             <Button variant="navy" size="lg" onClick={() => navigate("/")} className="w-full">
               Voltar para a loja
