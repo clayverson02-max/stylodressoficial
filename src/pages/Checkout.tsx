@@ -18,6 +18,7 @@ const schema = z.object({
   customer_email: z.string().trim().email("E-mail inválido").max(255).optional().or(z.literal("")),
   customer_address: z.string().trim().max(300).optional().or(z.literal("")),
   customer_city: z.string().trim().max(120).optional().or(z.literal("")),
+  customer_cep: z.string().trim().max(15).optional().or(z.literal("")),
   notes: z.string().trim().max(500).optional().or(z.literal("")),
 });
 
@@ -32,6 +33,7 @@ const Checkout = () => {
     customer_email: "",
     customer_address: "",
     customer_city: "",
+    customer_cep: "",
     notes: "",
   });
   const [submitting, setSubmitting] = useState(false);
@@ -80,13 +82,16 @@ const Checkout = () => {
       return;
     }
     setSubmitting(true);
+    const cepLine = parsed.data.customer_cep ? `CEP: ${parsed.data.customer_cep}` : "";
+    const noteLine = parsed.data.notes || "";
+    const combinedNotes = [cepLine, noteLine].filter(Boolean).join(" | ") || null;
     const payload = {
       customer_name: parsed.data.customer_name,
       customer_phone: parsed.data.customer_phone,
       customer_email: parsed.data.customer_email || null,
       customer_address: parsed.data.customer_address || null,
       customer_city: parsed.data.customer_city || null,
-      notes: parsed.data.notes || null,
+      notes: combinedNotes,
       items: items as unknown as never,
       total: totalPrice,
     };
@@ -113,40 +118,66 @@ const Checkout = () => {
   };
 
   if (orderNumber !== null) {
+    const orderCode = String(orderNumber).padStart(4, "0");
+    const itemsText = items
+      .map((i) => `• ${i.name} | Tam ${i.size} | ${i.quantity}x | ${formatBRL(i.price * i.quantity)}`)
+      .join("%0A");
+    const waMessage =
+      `*Pedido Stylo Dress #${orderCode}*%0A%0A` +
+      `*Cliente:* ${form.customer_name}%0A` +
+      `*Telefone:* ${form.customer_phone}%0A` +
+      (form.customer_address ? `*Endereço:* ${form.customer_address}%0A` : "") +
+      (form.customer_city ? `*Cidade:* ${form.customer_city}%0A` : "") +
+      `%0A*Itens:*%0A${itemsText}%0A%0A` +
+      `*Total:* ${formatBRL(totalPrice)}%0A` +
+      `*Pagamento:* Pix (chave ${PIX_KEY})%0A%0A` +
+      `Segue o comprovante do Pix para confirmação. Obrigada!`;
+    const waUrl = `https://wa.me/5585997341095?text=${waMessage}`;
+
     return (
       <>
         <Header />
-        <div className="container py-16 max-w-2xl mx-auto">
-          <div className="bg-card border border-border rounded-sm p-10 text-center space-y-6 shadow-soft">
+        <div className="container py-12 md:py-16 max-w-2xl mx-auto px-4">
+          <div className="bg-card border border-border rounded-sm p-6 md:p-10 text-center space-y-6 shadow-soft">
             <div className="inline-flex items-center justify-center h-16 w-16 rounded-full bg-primary/15">
               <Check className="h-8 w-8 text-primary-deep" />
             </div>
             <div>
               <span className="text-script text-2xl text-primary-deep">obrigada!</span>
-              <h1 className="font-display text-4xl text-secondary mt-1">
-                Pedido #{String(orderNumber).padStart(4, "0")} confirmado
+              <h1 className="font-display text-3xl md:text-4xl text-secondary mt-1">
+                Pedido #{orderCode} confirmado
               </h1>
               <p className="text-muted-foreground mt-3">
                 Falta só o pagamento via Pix para garantir suas peças.
               </p>
             </div>
 
-            <div className="bg-accent/40 border border-primary/20 rounded-sm p-6 text-left space-y-3">
+            <div className="bg-accent/40 border border-primary/20 rounded-sm p-5 md:p-6 text-left space-y-3">
               <p className="text-xs uppercase tracking-widest text-secondary font-semibold">
                 Pague com Pix (chave celular)
               </p>
               <div className="flex items-center gap-2 bg-background border border-border rounded-sm p-3">
-                <span className="font-mono text-lg text-secondary flex-1">{PIX_KEY}</span>
+                <span className="font-mono text-base md:text-lg text-secondary flex-1 break-all">{PIX_KEY}</span>
                 <Button size="sm" variant="luxe" onClick={copyPix}>
                   {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
                   {copied ? "Copiado" : "Copiar"}
                 </Button>
               </div>
               <p className="text-sm text-muted-foreground">
-                Após pagar, envie o comprovante para o WhatsApp <strong>(85) 99734-1095</strong>{" "}
-                informando o número do pedido. Vamos confirmar e preparar tudo com carinho. 💛
+                Após pagar, clique no botão abaixo para enviar o comprovante e os detalhes do pedido pelo WhatsApp. Vamos confirmar e preparar tudo com carinho. 💛
               </p>
             </div>
+
+            <a
+              href={waUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block"
+            >
+              <Button variant="luxe" size="lg" className="w-full bg-[#25D366] hover:bg-[#1ebe57] text-white">
+                Enviar pedido completo no WhatsApp
+              </Button>
+            </a>
 
             <Button variant="navy" size="lg" onClick={() => navigate("/")} className="w-full">
               Voltar para a loja
@@ -195,17 +226,30 @@ const Checkout = () => {
 
             <div className="bg-card p-6 border border-border rounded-sm space-y-4">
               <h2 className="font-display text-xl text-secondary">Endereço para entrega</h2>
-              <div>
-                <Label htmlFor="addr">Endereço completo</Label>
-                <Input id="addr" maxLength={300} placeholder="Rua, número, bairro, CEP" value={form.customer_address} onChange={handleChange("customer_address")} />
+              <div className="grid sm:grid-cols-[160px_1fr] gap-4">
+                <div>
+                  <Label htmlFor="cep">CEP</Label>
+                  <Input id="cep" maxLength={15} placeholder="00000-000" value={form.customer_cep} onChange={handleChange("customer_cep")} />
+                </div>
+                <div>
+                  <Label htmlFor="city">Cidade / Estado</Label>
+                  <Input id="city" maxLength={120} value={form.customer_city} onChange={handleChange("customer_city")} />
+                </div>
               </div>
               <div>
-                <Label htmlFor="city">Cidade / Estado</Label>
-                <Input id="city" maxLength={120} value={form.customer_city} onChange={handleChange("customer_city")} />
+                <Label htmlFor="addr">Endereço completo</Label>
+                <Input id="addr" maxLength={300} placeholder="Rua, número, bairro, complemento" value={form.customer_address} onChange={handleChange("customer_address")} />
               </div>
               <div>
                 <Label htmlFor="notes">Observações</Label>
                 <Textarea id="notes" maxLength={500} placeholder="Alguma preferência ou recado?" value={form.notes} onChange={handleChange("notes")} />
+              </div>
+
+              <div className="bg-accent/40 border border-primary/30 rounded-sm p-4 text-sm text-secondary leading-relaxed">
+                <p className="font-semibold mb-1">📦 Sobre o frete</p>
+                <p className="text-foreground/80">
+                  O valor do frete <strong>não está incluído</strong> no total. Para pedidos fora de Fortaleza, nossa equipe entra em contato pelo WhatsApp logo após a confirmação para repassar o valor exato do envio (Sedex ou PAC) com base no seu CEP. Em Fortaleza, combinamos a entrega ou retirada na hora.
+                </p>
               </div>
             </div>
 

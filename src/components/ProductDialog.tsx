@@ -52,10 +52,10 @@ export const ProductDialog = ({ product, onClose }: Props) => {
 
   return (
     <Dialog open={!!product} onOpenChange={(o) => !o && onClose()}>
-      <DialogContent className="max-w-3xl p-0 overflow-hidden gap-0">
+      <DialogContent className="max-w-3xl p-0 gap-0 max-h-[95vh] overflow-y-auto md:overflow-hidden">
         <DialogTitle className="sr-only">{product.name}</DialogTitle>
         <div className="grid md:grid-cols-2">
-          <div className="aspect-square bg-muted">
+          <div className="aspect-square bg-muted md:aspect-auto md:h-full">
             {displayImage ? (
               <img src={displayImage} alt={product.name} className="w-full h-full object-cover" />
             ) : (
@@ -65,7 +65,7 @@ export const ProductDialog = ({ product, onClose }: Props) => {
             )}
           </div>
 
-          <div className="p-8 space-y-5 overflow-y-auto max-h-[80vh]">
+          <div className="p-6 md:p-8 space-y-5 md:overflow-y-auto md:max-h-[95vh]">
             {product.category && (
               <span className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
                 {product.category}

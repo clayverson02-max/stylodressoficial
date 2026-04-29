@@ -23,8 +23,8 @@ export const Footer = () => {
             <h4 className="text-xs uppercase tracking-[0.25em] font-semibold mb-4">Atendimento</h4>
             <ul className="space-y-2 text-sm opacity-80">
               <li>WhatsApp: (85) 99734-1095</li>
-              <li>Pix: 85997341095</li>
               <li>Seg a Sáb • 9h às 18h</li>
+              <li>Fortaleza, Ceará</li>
             </ul>
           </div>
 
