@@ -3,6 +3,7 @@ import { Hero } from "@/components/Hero";
 import { ProductGrid } from "@/components/ProductGrid";
 import { About } from "@/components/About";
 import { Footer } from "@/components/Footer";
+import { WhatsAppFloat } from "@/components/WhatsAppFloat";
 
 const Index = () => {
   return (
@@ -14,6 +15,7 @@ const Index = () => {
         <About />
       </main>
       <Footer />
+      <WhatsAppFloat />
     </div>
   );
 };
