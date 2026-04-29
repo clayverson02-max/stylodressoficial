@@ -226,17 +226,30 @@ const Checkout = () => {
 
             <div className="bg-card p-6 border border-border rounded-sm space-y-4">
               <h2 className="font-display text-xl text-secondary">Endereço para entrega</h2>
-              <div>
-                <Label htmlFor="addr">Endereço completo</Label>
-                <Input id="addr" maxLength={300} placeholder="Rua, número, bairro, CEP" value={form.customer_address} onChange={handleChange("customer_address")} />
+              <div className="grid sm:grid-cols-[160px_1fr] gap-4">
+                <div>
+                  <Label htmlFor="cep">CEP</Label>
+                  <Input id="cep" maxLength={15} placeholder="00000-000" value={form.customer_cep} onChange={handleChange("customer_cep")} />
+                </div>
+                <div>
+                  <Label htmlFor="city">Cidade / Estado</Label>
+                  <Input id="city" maxLength={120} value={form.customer_city} onChange={handleChange("customer_city")} />
+                </div>
               </div>
               <div>
-                <Label htmlFor="city">Cidade / Estado</Label>
-                <Input id="city" maxLength={120} value={form.customer_city} onChange={handleChange("customer_city")} />
+                <Label htmlFor="addr">Endereço completo</Label>
+                <Input id="addr" maxLength={300} placeholder="Rua, número, bairro, complemento" value={form.customer_address} onChange={handleChange("customer_address")} />
               </div>
               <div>
                 <Label htmlFor="notes">Observações</Label>
                 <Textarea id="notes" maxLength={500} placeholder="Alguma preferência ou recado?" value={form.notes} onChange={handleChange("notes")} />
+              </div>
+
+              <div className="bg-accent/40 border border-primary/30 rounded-sm p-4 text-sm text-secondary leading-relaxed">
+                <p className="font-semibold mb-1">📦 Sobre o frete</p>
+                <p className="text-foreground/80">
+                  O valor do frete <strong>não está incluído</strong> no total. Para pedidos fora de Fortaleza, nossa equipe entra em contato pelo WhatsApp logo após a confirmação para repassar o valor exato do envio (Sedex ou PAC) com base no seu CEP. Em Fortaleza, combinamos a entrega ou retirada na hora.
+                </p>
               </div>
             </div>
 
