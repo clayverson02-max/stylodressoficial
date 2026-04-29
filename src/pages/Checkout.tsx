@@ -82,13 +82,16 @@ const Checkout = () => {
       return;
     }
     setSubmitting(true);
+    const cepLine = parsed.data.customer_cep ? `CEP: ${parsed.data.customer_cep}` : "";
+    const noteLine = parsed.data.notes || "";
+    const combinedNotes = [cepLine, noteLine].filter(Boolean).join(" | ") || null;
     const payload = {
       customer_name: parsed.data.customer_name,
       customer_phone: parsed.data.customer_phone,
       customer_email: parsed.data.customer_email || null,
       customer_address: parsed.data.customer_address || null,
       customer_city: parsed.data.customer_city || null,
-      notes: parsed.data.notes || null,
+      notes: combinedNotes,
       items: items as unknown as never,
       total: totalPrice,
     };
