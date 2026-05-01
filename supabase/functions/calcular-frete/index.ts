@@ -50,9 +50,13 @@ Deno.serve(async (req) => {
     // Cada peça aprox 350g, 20x25x4cm. Multiplicamos pela quantidade.
     const peso = +(0.35 * qtd).toFixed(2);
     const altura = Math.min(20, 4 * qtd);
+    const formatCep = (c: string) => {
+      const d = c.replace(/\D/g, "");
+      return `${d.slice(0, 5)}-${d.slice(5, 8)}`;
+    };
     const payload = {
-      from: { postal_code: CEP_ORIGEM.replace(/\D/g, "") },
-      to: { postal_code: cepDestino },
+      from: { postal_code: formatCep(CEP_ORIGEM) },
+      to: { postal_code: formatCep(cepDestino) },
       package: {
         height: altura,
         width: 20,
