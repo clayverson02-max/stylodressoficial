@@ -197,80 +197,96 @@ const Checkout = () => {
       (form.customer_cep ? `*CEP:* ${form.customer_cep}%0A` : "") +
       `%0A*Itens:*%0A${itemsText}%0A%0A` +
       freteText +
-      `*Total:* ${formatBRL(totalComFrete)}%0A` +
-      `*Pagamento:* Pix (chave ${PIX_KEY}) ou Cartão (Mercado Pago)%0A%0A` +
-      `Segue o comprovante para confirmação. Obrigada!`;
+      `*Total:* ${formatBRL(totalComFrete)}%0A%0A` +
+      `Segue o comprovante de pagamento. Obrigada!`;
     const waUrl = `https://wa.me/5585997341095?text=${waMessage}`;
 
     return (
       <>
         <Header />
-        <div className="container py-12 md:py-16 max-w-2xl mx-auto px-4">
-          <div className="bg-card border border-border rounded-sm p-6 md:p-10 text-center space-y-6 shadow-soft">
-            <div className="inline-flex items-center justify-center h-16 w-16 rounded-full bg-primary/15">
-              <Check className="h-8 w-8 text-primary-deep" />
-            </div>
-            <div>
-              <span className="text-script text-2xl text-primary-deep">obrigada!</span>
-              <h1 className="font-display text-3xl md:text-4xl text-secondary mt-1">
-                Pedido #{orderCode} confirmado
+        <div className="container py-10 md:py-16 max-w-2xl mx-auto px-4">
+          <div className="bg-card border border-border rounded-sm p-5 md:p-10 space-y-6 shadow-soft">
+            <div className="text-center space-y-3">
+              <div className="inline-flex items-center justify-center h-16 w-16 rounded-full bg-primary/15 mx-auto">
+                <Check className="h-8 w-8 text-primary-deep" />
+              </div>
+              <span className="text-script text-2xl text-primary-deep block">obrigada!</span>
+              <h1 className="font-display text-2xl md:text-4xl text-secondary leading-tight">
+                Pedido #{orderCode} reservado
               </h1>
-              <p className="text-muted-foreground mt-3">
-                Escolha como prefere pagar: Pix ou cartão pelo Mercado Pago.
+              <p className="text-muted-foreground text-sm md:text-base px-2">
+                Falta apenas <strong>1 passo</strong>: escolha como prefere pagar abaixo. Após o pagamento, seu pedido entra na fila de envio.
               </p>
+              <div className="inline-flex items-center gap-2 bg-secondary/10 border border-secondary/20 rounded-full px-4 py-2 text-sm">
+                <span className="text-muted-foreground">Total a pagar:</span>
+                <strong className="text-primary-deep text-lg">{formatBRL(totalComFrete)}</strong>
+              </div>
             </div>
 
-            <div className="bg-accent/40 border border-primary/20 rounded-sm p-5 md:p-6 text-left space-y-3">
-              <p className="text-xs uppercase tracking-widest text-secondary font-semibold">
-                Opção 1 — Pague com Pix (chave celular)
+            {/* Opção 1: Pix */}
+            <div className="bg-accent/40 border-2 border-primary/30 rounded-sm p-5 space-y-3">
+              <div className="flex items-center justify-between flex-wrap gap-2">
+                <p className="text-sm uppercase tracking-widest text-secondary font-bold">
+                  💳 Opção 1 — Pix (mais rápido)
+                </p>
+                <span className="text-[10px] bg-primary-deep text-primary-foreground px-2 py-0.5 rounded-full uppercase tracking-wider font-bold">
+                  Recomendado
+                </span>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                <strong>Passo a passo:</strong> 1) Copie a chave abaixo. 2) Abra o app do seu banco. 3) Pague {formatBRL(totalComFrete)} via Pix. 4) Envie o comprovante pelo WhatsApp para confirmarmos o envio.
               </p>
               <div className="flex items-center gap-2 bg-background border border-border rounded-sm p-3">
-                <span className="font-mono text-base md:text-lg text-secondary flex-1 break-all">{PIX_KEY}</span>
-                <Button size="sm" variant="luxe" onClick={copyPix}>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Chave Pix (celular)</p>
+                  <span className="font-mono text-base md:text-lg text-secondary break-all">{PIX_KEY}</span>
+                </div>
+                <Button size="sm" variant="luxe" onClick={copyPix} className="flex-shrink-0">
                   {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-                  {copied ? "Copiado" : "Copiar"}
+                  <span className="ml-1">{copied ? "Copiado" : "Copiar"}</span>
                 </Button>
               </div>
-              <p className="text-sm text-muted-foreground">
-                Após pagar, clique no botão abaixo para enviar o comprovante e os detalhes do pedido pelo WhatsApp.
-              </p>
             </div>
 
+            {/* Opção 2: Cartão */}
             {cardLinks.length > 0 && (
-              <div className="bg-card border border-border rounded-sm p-5 md:p-6 text-left space-y-3">
-                <p className="text-xs uppercase tracking-widest text-secondary font-semibold">
-                  Opção 2 — Pague com cartão (Mercado Pago)
+              <div className="bg-card border-2 border-secondary/20 rounded-sm p-5 space-y-3">
+                <p className="text-sm uppercase tracking-widest text-secondary font-bold">
+                  💳 Opção 2 — Cartão de crédito ou débito
                 </p>
-                <p className="text-sm text-muted-foreground">
-                  Clique no link do produto correspondente para pagar com cartão de crédito ou débito de forma segura pelo Mercado Pago. Depois envie o comprovante pelo WhatsApp.
+                <p className="text-xs text-muted-foreground">
+                  Pagamento processado com segurança pelo <strong>Mercado Pago</strong>. Clique no produto correspondente para abrir a página de pagamento. Aceita parcelamento e todas as bandeiras.
                 </p>
                 <div className="space-y-2">
                   {cardLinks.map(([link, name]) => (
                     <a key={link} href={link} target="_blank" rel="noopener noreferrer" className="block">
-                      <Button variant="navy" className="w-full justify-between">
+                      <Button variant="navy" className="w-full justify-between h-12">
                         <span className="truncate">{name}</span>
-                        <span className="text-xs opacity-80">Pagar com cartão →</span>
+                        <span className="text-xs opacity-90 flex-shrink-0">Pagar com cartão →</span>
                       </Button>
                     </a>
                   ))}
                 </div>
+                <p className="text-[11px] text-muted-foreground italic">
+                  Após pagar, envie o comprovante pelo WhatsApp para confirmarmos o envio.
+                </p>
               </div>
             )}
 
-            <a
-              href={waUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block"
-            >
-              <Button variant="luxe" size="lg" className="w-full bg-[#25D366] hover:bg-[#1ebe57] text-white">
-                Enviar pedido completo no WhatsApp
+            {/* Enviar comprovante */}
+            <div className="border-t border-border pt-5 space-y-3">
+              <p className="text-sm text-center text-secondary font-medium">
+                ✅ Já pagou? Envie o comprovante para confirmarmos:
+              </p>
+              <a href={waUrl} target="_blank" rel="noopener noreferrer" className="block">
+                <Button variant="luxe" size="lg" className="w-full bg-[#25D366] hover:bg-[#1ebe57] text-white">
+                  Enviar comprovante no WhatsApp
+                </Button>
+              </a>
+              <Button variant="navy" size="lg" onClick={() => navigate("/")} className="w-full">
+                Voltar para a loja
               </Button>
-            </a>
-
-            <Button variant="navy" size="lg" onClick={() => navigate("/")} className="w-full">
-              Voltar para a loja
-            </Button>
+            </div>
           </div>
         </div>
       </>
@@ -289,9 +305,12 @@ const Checkout = () => {
         </button>
 
         <h1 className="font-display text-4xl md:text-5xl text-secondary mb-2">Finalizar pedido</h1>
-        <p className="text-muted-foreground mb-10">
-          Preencha seus dados, calcule o frete e escolha pagar com Pix ou cartão (Mercado Pago).
+        <p className="text-muted-foreground mb-4">
+          Em 3 passos simples: <strong>1)</strong> Confirme seus dados • <strong>2)</strong> Calcule o frete • <strong>3)</strong> Escolha pagar com Pix ou cartão.
         </p>
+        <div className="bg-accent/40 border border-primary/20 rounded-sm p-3 mb-8 text-xs md:text-sm text-secondary">
+          ✨ <strong>Pode mesclar cores e modelos!</strong> O atacado vale a partir de {MIN_ORDER_QUANTITY} peças no total — combine como quiser.
+        </div>
 
         <div className="grid lg:grid-cols-[1fr_420px] gap-10">
           <form onSubmit={handleSubmit} className="space-y-5">
