@@ -172,6 +172,16 @@ const Checkout = () => {
 
   if (orderNumber !== null) {
     const orderCode = String(orderNumber).padStart(4, "0");
+    const cardLinks = Array.from(
+      new Map(
+        items
+          .filter((i) => i.mercado_pago_link)
+          .map((i) => {
+            const baseName = i.name.split(" — ")[0];
+            return [i.mercado_pago_link as string, baseName];
+          }),
+      ).entries(),
+    );
     const itemsText = items
       .map((i) => `• ${i.name} | Tam ${i.size} | ${i.quantity}x | ${formatBRL(i.price * i.quantity)}`)
       .join("%0A");
@@ -188,8 +198,8 @@ const Checkout = () => {
       `%0A*Itens:*%0A${itemsText}%0A%0A` +
       freteText +
       `*Total:* ${formatBRL(totalComFrete)}%0A` +
-      `*Pagamento:* Pix (chave ${PIX_KEY})%0A%0A` +
-      `Segue o comprovante do Pix para confirmação. Obrigada!`;
+      `*Pagamento:* Pix (chave ${PIX_KEY}) ou Cartão (Mercado Pago)%0A%0A` +
+      `Segue o comprovante para confirmação. Obrigada!`;
     const waUrl = `https://wa.me/5585997341095?text=${waMessage}`;
 
     return (
@@ -206,13 +216,13 @@ const Checkout = () => {
                 Pedido #{orderCode} confirmado
               </h1>
               <p className="text-muted-foreground mt-3">
-                Falta só o pagamento via Pix para garantir suas peças.
+                Escolha como prefere pagar: Pix ou cartão pelo Mercado Pago.
               </p>
             </div>
 
             <div className="bg-accent/40 border border-primary/20 rounded-sm p-5 md:p-6 text-left space-y-3">
               <p className="text-xs uppercase tracking-widest text-secondary font-semibold">
-                Pague com Pix (chave celular)
+                Opção 1 — Pague com Pix (chave celular)
               </p>
               <div className="flex items-center gap-2 bg-background border border-border rounded-sm p-3">
                 <span className="font-mono text-base md:text-lg text-secondary flex-1 break-all">{PIX_KEY}</span>
@@ -222,9 +232,30 @@ const Checkout = () => {
                 </Button>
               </div>
               <p className="text-sm text-muted-foreground">
-                Após pagar, clique no botão abaixo para enviar o comprovante e os detalhes do pedido pelo WhatsApp. Vamos confirmar e preparar tudo com carinho. 💛
+                Após pagar, clique no botão abaixo para enviar o comprovante e os detalhes do pedido pelo WhatsApp.
               </p>
             </div>
+
+            {cardLinks.length > 0 && (
+              <div className="bg-card border border-border rounded-sm p-5 md:p-6 text-left space-y-3">
+                <p className="text-xs uppercase tracking-widest text-secondary font-semibold">
+                  Opção 2 — Pague com cartão (Mercado Pago)
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  Clique no link do produto correspondente para pagar com cartão de crédito ou débito de forma segura pelo Mercado Pago. Depois envie o comprovante pelo WhatsApp.
+                </p>
+                <div className="space-y-2">
+                  {cardLinks.map(([link, name]) => (
+                    <a key={link} href={link} target="_blank" rel="noopener noreferrer" className="block">
+                      <Button variant="navy" className="w-full justify-between">
+                        <span className="truncate">{name}</span>
+                        <span className="text-xs opacity-80">Pagar com cartão →</span>
+                      </Button>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
 
             <a
               href={waUrl}
@@ -259,7 +290,7 @@ const Checkout = () => {
 
         <h1 className="font-display text-4xl md:text-5xl text-secondary mb-2">Finalizar pedido</h1>
         <p className="text-muted-foreground mb-10">
-          Preencha seus dados, calcule o frete e pague com Pix. É rápido e seguro.
+          Preencha seus dados, calcule o frete e escolha pagar com Pix ou cartão (Mercado Pago).
         </p>
 
         <div className="grid lg:grid-cols-[1fr_420px] gap-10">
@@ -344,7 +375,7 @@ const Checkout = () => {
             </div>
 
             <Button type="submit" variant="luxe" size="lg" className="w-full" disabled={submitting}>
-              {submitting ? "Enviando..." : "Confirmar pedido e pagar com Pix"}
+              {submitting ? "Enviando..." : "Confirmar pedido e escolher pagamento"}
             </Button>
           </form>
 

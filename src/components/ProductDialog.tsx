@@ -46,6 +46,7 @@ export const ProductDialog = ({ product, onClose }: Props) => {
       size,
       quantity: qty,
       image_url: displayImage,
+      mercado_pago_link: (product as unknown as { mercado_pago_link?: string | null }).mercado_pago_link ?? null,
     });
     onClose();
   };

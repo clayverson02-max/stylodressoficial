@@ -23,7 +23,7 @@ export const About = () => {
           <h3 className="font-display text-3xl text-secondary">Por que comprar no atacado?</h3>
           <ul className="space-y-4 text-sm">
             {[
-              "A partir de 2 peças você já compra no atacado",
+              "A partir de 3 peças você já compra no atacado",
               "Marca própria fabricada em Fortaleza com tecido de qualidade",
               "Curadoria que conversa com o gosto da brasileira",
               "Reposição constante de novos modelos",

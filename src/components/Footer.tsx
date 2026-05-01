@@ -31,7 +31,7 @@ export const Footer = () => {
           <div>
             <h4 className="text-xs uppercase tracking-[0.25em] font-semibold mb-4">Atacado</h4>
             <ul className="space-y-2 text-sm opacity-80">
-              <li>Pedido mínimo: 2 peças</li>
+              <li>Pedido mínimo: 3 peças</li>
               <li>Envio para todo o Brasil</li>
               <li>Frete calculado no checkout</li>
             </ul>
