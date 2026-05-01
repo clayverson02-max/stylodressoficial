@@ -259,7 +259,7 @@ const Checkout = () => {
 
         <h1 className="font-display text-4xl md:text-5xl text-secondary mb-2">Finalizar pedido</h1>
         <p className="text-muted-foreground mb-10">
-          Preencha seus dados, calcule o frete e pague com Pix. É rápido e seguro.
+          Preencha seus dados, calcule o frete e escolha pagar com Pix ou cartão (Mercado Pago).
         </p>
 
         <div className="grid lg:grid-cols-[1fr_420px] gap-10">
@@ -344,7 +344,7 @@ const Checkout = () => {
             </div>
 
             <Button type="submit" variant="luxe" size="lg" className="w-full" disabled={submitting}>
-              {submitting ? "Enviando..." : "Confirmar pedido e pagar com Pix"}
+              {submitting ? "Enviando..." : "Confirmar pedido e escolher pagamento"}
             </Button>
           </form>
 
