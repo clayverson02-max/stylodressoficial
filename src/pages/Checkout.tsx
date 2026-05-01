@@ -198,8 +198,8 @@ const Checkout = () => {
       `%0A*Itens:*%0A${itemsText}%0A%0A` +
       freteText +
       `*Total:* ${formatBRL(totalComFrete)}%0A` +
-      `*Pagamento:* Pix (chave ${PIX_KEY})%0A%0A` +
-      `Segue o comprovante do Pix para confirmação. Obrigada!`;
+      `*Pagamento:* Pix (chave ${PIX_KEY}) ou Cartão (Mercado Pago)%0A%0A` +
+      `Segue o comprovante para confirmação. Obrigada!`;
     const waUrl = `https://wa.me/5585997341095?text=${waMessage}`;
 
     return (
