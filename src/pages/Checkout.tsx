@@ -305,9 +305,12 @@ const Checkout = () => {
         </button>
 
         <h1 className="font-display text-4xl md:text-5xl text-secondary mb-2">Finalizar pedido</h1>
-        <p className="text-muted-foreground mb-10">
-          Preencha seus dados, calcule o frete e escolha pagar com Pix ou cartão (Mercado Pago).
+        <p className="text-muted-foreground mb-4">
+          Em 3 passos simples: <strong>1)</strong> Confirme seus dados • <strong>2)</strong> Calcule o frete • <strong>3)</strong> Escolha pagar com Pix ou cartão.
         </p>
+        <div className="bg-accent/40 border border-primary/20 rounded-sm p-3 mb-8 text-xs md:text-sm text-secondary">
+          ✨ <strong>Pode mesclar cores e modelos!</strong> O atacado vale a partir de {MIN_ORDER_QUANTITY} peças no total — combine como quiser.
+        </div>
 
         <div className="grid lg:grid-cols-[1fr_420px] gap-10">
           <form onSubmit={handleSubmit} className="space-y-5">
