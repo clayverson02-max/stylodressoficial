@@ -58,10 +58,10 @@ export const ProductDialog = ({ product, onClose }: Props) => {
         <div className="grid md:grid-cols-2">
           <div className="aspect-square bg-muted md:aspect-auto md:h-full md:sticky md:top-0 md:max-h-[90vh]">
             {displayImage ? (
-              <img src={displayImage} alt={product.name} className="w-full h-full object-cover" />
+              <img src={displayImage} alt={`${product.name}${variant ? ` ${variant.color}` : ""}`} className="w-full h-full object-cover" loading="lazy" />
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-                Sem imagem
+              <div className="w-full h-full flex items-center justify-center text-muted-foreground text-sm">
+                Carregando imagem...
               </div>
             )}
           </div>
@@ -120,6 +120,9 @@ export const ProductDialog = ({ product, onClose }: Props) => {
                     />
                   ))}
                 </div>
+                <p className="text-[11px] text-muted-foreground leading-relaxed bg-accent/40 border border-primary/20 rounded-sm px-3 py-2">
+                  💡 <strong>Dica:</strong> você pode <strong>mesclar cores diferentes</strong> no mesmo pedido! Adicione esta cor, escolha outra cor e some até completar as <strong>{MIN_ORDER_QUANTITY} peças mínimas</strong> do atacado.
+                </p>
               </div>
             )}
 
