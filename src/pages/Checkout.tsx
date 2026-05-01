@@ -216,7 +216,7 @@ const Checkout = () => {
                 Pedido #{orderCode} confirmado
               </h1>
               <p className="text-muted-foreground mt-3">
-                Falta só o pagamento via Pix para garantir suas peças.
+                Escolha como prefere pagar: Pix ou cartão pelo Mercado Pago.
               </p>
             </div>
 
