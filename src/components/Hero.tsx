@@ -16,7 +16,7 @@ export const Hero = () => {
       <div className="bg-secondary text-secondary-foreground py-3 overflow-hidden">
         <div className="container flex flex-wrap items-center justify-center gap-x-8 gap-y-2 text-xs sm:text-sm uppercase tracking-[0.2em]">
           <span className="text-primary-glow font-semibold">✦ Marca própria de Fortaleza</span>
-          <span>Atacado a partir de 2 peças</span>
+          <span>Atacado a partir de 3 peças</span>
           <span className="text-primary-glow font-semibold">✦ Envio para todo o Brasil</span>
         </div>
       </div>
