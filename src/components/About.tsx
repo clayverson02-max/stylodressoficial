@@ -14,8 +14,8 @@ export const About = () => {
             selecionado, modelagem que valoriza o corpo e acabamento de qualidade.
           </p>
           <p className="text-muted-foreground leading-relaxed">
-            Atendemos consumidoras finais e revendedoras com preço de atacado a partir de duas
-            peças. Pagamento via Pix com confirmação rápida e envio para todo o Brasil.
+            Atendemos consumidoras finais e revendedoras com preço de atacado a partir de 3
+            peças. Frete e pagamento (Pix ou cartão) combinados direto no WhatsApp com nossa consultora.
           </p>
         </div>
 
@@ -27,7 +27,7 @@ export const About = () => {
               "Marca própria fabricada em Fortaleza com tecido de qualidade",
               "Curadoria que conversa com o gosto da brasileira",
               "Reposição constante de novos modelos",
-              "Pagamento via Pix com confirmação rápida",
+              "Atendimento personalizado por WhatsApp do início ao fim",
               "Envio com cuidado para todo o Brasil",
             ].map((t) => (
               <li key={t} className="flex gap-3">

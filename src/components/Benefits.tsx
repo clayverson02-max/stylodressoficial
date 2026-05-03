@@ -1,10 +1,10 @@
-import { Truck, Shield, Sparkles, CreditCard } from "lucide-react";
+import { Truck, Shield, Sparkles, MessageCircle } from "lucide-react";
 
 const benefits = [
   { icon: Sparkles, title: "Peças exclusivas", desc: "Designs únicos para mulheres reais" },
   { icon: Truck, title: "Envio rápido", desc: "Para todo o Brasil com segurança" },
-  { icon: CreditCard, title: "Pagamento via Pix", desc: "Aprovação instantânea" },
-  { icon: Shield, title: "Compra segura", desc: "Seus dados protegidos do início ao fim" },
+  { icon: MessageCircle, title: "Atendimento humano", desc: "Consultora no WhatsApp para te ajudar" },
+  { icon: Shield, title: "Compra segura", desc: "Suporte do início ao fim do pedido" },
 ];
 
 export const Benefits = () => {

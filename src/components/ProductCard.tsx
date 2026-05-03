@@ -80,7 +80,7 @@ export const ProductCard = ({ product, onSelect }: Props) => {
           <span className="text-primary-deep font-bold text-lg">{formatBRL(price)}</span>
         </div>
         <p className="text-[11px] text-muted-foreground">
-          em até 4x sem juros no cartão
+          atacado a partir de 3 peças
         </p>
       </div>
     </div>

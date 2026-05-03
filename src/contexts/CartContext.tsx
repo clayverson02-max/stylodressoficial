@@ -8,7 +8,6 @@ export interface CartItem {
   size: string;
   quantity: number;
   image_url: string | null;
-  mercado_pago_link?: string | null;
 }
 
 interface CartContextValue {

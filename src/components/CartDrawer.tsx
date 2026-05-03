@@ -113,10 +113,10 @@ export const CartDrawer = () => {
                 onClick={handleCheckout}
                 disabled={!canCheckout}
               >
-                Finalizar pedido
+                Finalizar no WhatsApp
               </Button>
               <p className="text-[11px] text-center text-muted-foreground">
-                Pagamento via Pix • Confirmação imediata
+                Frete e pagamento combinados direto com nossa consultora 💬
               </p>
             </div>
           </SheetFooter>
