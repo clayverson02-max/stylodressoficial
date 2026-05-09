@@ -85,7 +85,7 @@ const Checkout = () => {
   const handleChange = (k: keyof FormState) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setForm({ ...form, [k]: e.target.value });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const parsed = schema.safeParse(form);
     if (!parsed.success) {
@@ -116,6 +116,53 @@ const Checkout = () => {
     ]
       .filter(Boolean)
       .join("\n");
+
+    // === TikTok Lead tracking (Pixel + CAPI deduplicados pelo event_id) ===
+    const event_id =
+      (typeof crypto !== "undefined" && "randomUUID" in crypto
+        ? crypto.randomUUID()
+        : `${Date.now()}-${Math.random()}`);
+
+    const contents = items.map((i) => ({
+      content_id: String(i.productId),
+      content_name: i.name,
+      quantity: i.quantity,
+      price: i.price,
+    }));
+
+    try {
+      window.ttq?.track(
+        "Lead",
+        {
+          value: totalPrice,
+          currency: "BRL",
+          contents,
+          content_type: "product",
+        },
+        { event_id },
+      );
+    } catch (_) {
+      // pixel falhou, segue para CAPI
+    }
+
+    // CAPI (server-side) — não bloqueia o redirecionamento se demorar
+    supabase.functions
+      .invoke("tiktok-capi", {
+        body: {
+          event: "Lead",
+          event_id,
+          url: window.location.href,
+          ttclid: getCookie("ttclid"),
+          ttp: getCookie("_ttp"),
+          phone: parsed.data.customer_phone,
+          name: parsed.data.customer_name,
+          city: parsed.data.customer_city,
+          value: totalPrice,
+          currency: "BRL",
+          contents,
+        },
+      })
+      .catch(() => undefined);
 
     const url = `https://wa.me/${WHATS_NUMBER}?text=${encodeURIComponent(message)}`;
     clear();
