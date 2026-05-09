@@ -1,1 +1,4 @@
 project_id = "ulfcqidjjbelymfgtnkb"
+
+[functions.tiktok-capi]
+verify_jwt = false
