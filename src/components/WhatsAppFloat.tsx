@@ -1,6 +1,6 @@
 import { MessageCircle } from "lucide-react";
 
-const WHATS_URL = "https://wa.me/5585997341095?text=" + encodeURIComponent(
+const WHATS_URL = "https://wa.me/5585992985379?text=" + encodeURIComponent(
   "Olá Stylo Dress! Vim pelo site e quero tirar uma dúvida 💖"
 );
 

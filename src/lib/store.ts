@@ -18,7 +18,7 @@ export interface ProductVariant {
 export const formatBRL = (value: number) =>
   value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
-export const PIX_KEY = "85997341095";
+export const PIX_KEY = "85992985379";
 export const MIN_ORDER_QUANTITY = 3;
 export const ADMIN_PASSWORD_KEY = "stylo-admin-auth";
 
