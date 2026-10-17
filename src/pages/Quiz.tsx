@@ -170,6 +170,13 @@ const Quiz = () => {
       <main className="mx-auto max-w-xl px-5 pb-16 pt-20 sm:max-w-2xl sm:px-8">
         {step === 1 && (
           <div className="space-y-7">
+            <div className="animate-fade-up flex items-center gap-3 rounded-2xl border border-border bg-card/90 px-4 py-3 shadow-card">
+              <img src={logoImg} alt="Logo Preparación Completa para el Parto Natural" className="h-12 w-12 rounded-full object-cover" width={256} height={256} />
+              <div>
+                <p className="text-xs font-extrabold uppercase tracking-[0.12em] text-primary">Método completo</p>
+                <p className="font-display text-base font-extrabold leading-tight text-foreground">Preparación Completa para el Parto Natural</p>
+              </div>
+            </div>
             <div className="animate-fade-up overflow-hidden rounded-3xl shadow-elegant">
               <img src={heroImg} alt="Mujer embarazada tranquila y segura" className="h-72 w-full object-cover sm:h-96" width={1024} height={1280} />
             </div>
