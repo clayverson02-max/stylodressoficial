@@ -1,89 +1,63 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Dancing+Script:wght@600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Stylo Dress — Design System
-   Paleta: rosé gold, navy profundo, cream
-   Tipografia: Cormorant (display), Inter (body), Dancing Script (script accents)
+/* Quiz Funnel — Design System
+   Paleta: rosa profundo, blush suave, creme, carvão
+   Tipografia: Sora (display), Inter (body)
 */
 
 @layer base {
   :root {
     /* Surfaces */
-    --background: 30 33% 97%;
-    --foreground: 220 45% 18%;
+    --background: 28 40% 97%;
+    --foreground: 350 20% 14%;
 
     --card: 0 0% 100%;
-    --card-foreground: 220 45% 18%;
+    --card-foreground: 350 20% 14%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 220 45% 18%;
+    --popover-foreground: 350 20% 14%;
 
-    /* Brand — Rosé Gold (vivo) */
-    --primary: 348 78% 55%;
+    /* Brand — Rosa profundo */
+    --primary: 343 72% 46%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 14 90% 62%;
-    --primary-deep: 348 82% 42%;
+    --primary-glow: 350 85% 62%;
+    --primary-deep: 343 78% 34%;
 
-    /* WhatsApp */
-    --whatsapp: 142 70% 45%;
-    --whatsapp-foreground: 0 0% 100%;
-
-    /* Brand — Navy (do logo) */
-    --secondary: 220 50% 22%;
-    --secondary-foreground: 30 33% 97%;
+    /* Blush suave */
+    --secondary: 350 45% 92%;
+    --secondary-foreground: 350 30% 22%;
 
     --muted: 30 25% 93%;
-    --muted-foreground: 220 15% 45%;
+    --muted-foreground: 350 10% 42%;
 
-    --accent: 14 35% 92%;
-    --accent-foreground: 220 45% 18%;
+    --accent: 343 60% 95%;
+    --accent-foreground: 343 72% 40%;
 
     --destructive: 0 65% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 30 20% 88%;
-    --input: 30 20% 90%;
-    --ring: 348 78% 55%;
+    --border: 350 20% 88%;
+    --input: 350 20% 88%;
+    --ring: 343 72% 46%;
 
-    --radius: 0.25rem;
+    --radius: 1rem;
 
     /* Gradients */
-    --gradient-rose: linear-gradient(135deg, hsl(348 82% 50%), hsl(14 90% 60%));
-    --gradient-rose-soft: linear-gradient(180deg, hsl(30 33% 97%), hsl(14 35% 92%));
-    --gradient-luxe: linear-gradient(135deg, hsl(348 82% 50% / 0.98), hsl(348 82% 38% / 0.95));
-    --gradient-overlay: linear-gradient(180deg, hsl(220 45% 18% / 0) 0%, hsl(220 45% 18% / 0.7) 100%);
+    --gradient-rose: linear-gradient(135deg, hsl(343 72% 46%), hsl(350 85% 62%));
+    --gradient-soft: linear-gradient(180deg, hsl(28 40% 97%), hsl(350 45% 94%));
+    --gradient-dark: linear-gradient(160deg, hsl(350 25% 14%), hsl(343 45% 24%));
 
     /* Shadows */
-    --shadow-soft: 0 4px 20px -8px hsl(14 35% 55% / 0.18);
-    --shadow-elegant: 0 20px 50px -20px hsl(14 35% 55% / 0.35);
-    --shadow-card: 0 2px 12px -4px hsl(220 30% 30% / 0.08);
+    --shadow-soft: 0 8px 30px -10px hsl(343 72% 46% / 0.18);
+    --shadow-elegant: 0 20px 50px -20px hsl(343 72% 46% / 0.35);
+    --shadow-card: 0 2px 12px -4px hsl(350 30% 30% / 0.08);
 
     /* Transitions */
     --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-luxe: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  .dark {
-    --background: 220 35% 10%;
-    --foreground: 30 33% 95%;
-    --card: 220 30% 14%;
-    --card-foreground: 30 33% 95%;
-    --popover: 220 30% 14%;
-    --popover-foreground: 30 33% 95%;
-    --primary: 14 50% 70%;
-    --primary-foreground: 220 45% 12%;
-    --secondary: 30 33% 95%;
-    --secondary-foreground: 220 45% 12%;
-    --muted: 220 25% 18%;
-    --muted-foreground: 30 15% 70%;
-    --accent: 220 25% 20%;
-    --accent-foreground: 30 33% 95%;
-    --border: 220 20% 22%;
-    --input: 220 20% 22%;
-    --ring: 14 50% 70%;
   }
 }
 
@@ -94,7 +68,6 @@
 
   body {
     @apply bg-background text-foreground font-body antialiased;
-    font-feature-settings: "ss01", "cv11";
   }
 
   h1, h2, h3, h4 {
@@ -103,16 +76,16 @@
 }
 
 @layer utilities {
-  .text-script {
-    font-family: 'Dancing Script', cursive;
-  }
-
   .gradient-rose {
     background: var(--gradient-rose);
   }
 
-  .gradient-rose-soft {
-    background: var(--gradient-rose-soft);
+  .gradient-soft {
+    background: var(--gradient-soft);
+  }
+
+  .gradient-dark {
+    background: var(--gradient-dark);
   }
 
   .shadow-elegant {
@@ -123,21 +96,25 @@
     box-shadow: var(--shadow-soft);
   }
 
-  .transition-luxe {
-    transition: var(--transition-luxe);
+  .transition-smooth {
+    transition: var(--transition-smooth);
   }
 
   .animate-fade-up {
-    animation: fade-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation: fade-up 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
   }
 
   .animate-fade-in {
-    animation: fade-in 1s ease-out both;
+    animation: fade-in 0.6s ease-out both;
+  }
+
+  .animate-scale-in {
+    animation: scale-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
   }
 }
 
 @keyframes fade-up {
-  from { opacity: 0; transform: translateY(24px); }
+  from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
@@ -145,6 +122,12 @@
   from { opacity: 0; }
   to { opacity: 1; }
 }
-#lovable-badge{
-   display:none !important;
+
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+#lovable-badge {
+  display: none !important;
 }
