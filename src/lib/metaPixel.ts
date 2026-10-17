@@ -37,7 +37,7 @@ export const trackCustom = (
   customData?: Record<string, unknown>,
 ) => {
   const id = eventId();
-  window.fbq?.("trackCustom", eventName, customData ?? {});
+  window.fbq?.("trackCustom", eventName, customData ?? {}, { eventID: id });
   void sendToServer(eventName, id, customData);
 };
 
@@ -46,7 +46,7 @@ export const trackStandard = (
   customData?: Record<string, unknown>,
 ) => {
   const id = eventId();
-  window.fbq?.("track", eventName, customData ?? {});
+  window.fbq?.("track", eventName, customData ?? {}, { eventID: id });
   void sendToServer(eventName, id, customData);
 };
 
