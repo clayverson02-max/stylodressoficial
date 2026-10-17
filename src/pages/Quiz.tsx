@@ -15,7 +15,7 @@ type Answers = {
 };
 
 const TOTAL_STEPS = 7;
-const CHECKOUT_URL = import.meta.env.VITE_CHECKOUT_URL || "";
+const CHECKOUT_URL = import.meta.env.VITE_CHECKOUT_URL || "https://pay.hotmart.com/D108067220C?checkoutMode=10";
 
 const weekOptions = [
   "Entre 20 y 28 semanas",
