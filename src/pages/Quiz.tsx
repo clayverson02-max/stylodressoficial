@@ -119,7 +119,7 @@ const Quiz = () => {
     window.setTimeout(() => {
       setMicroMessage(null);
       goNext();
-    }, 3000);
+    }, Math.max(8000, Math.min(20000, feedback.trim().split(/\s+/).length * 350 + 1500)));
   };
 
   const personalizedLine = useMemo(() => {
