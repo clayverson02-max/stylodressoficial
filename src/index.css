@@ -1,133 +1,79 @@
-@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Quiz Funnel — Design System
-   Paleta: rosa profundo, blush suave, creme, carvão
-   Tipografia: Sora (display), Inter (body)
-*/
-
 @layer base {
   :root {
-    /* Surfaces */
     --background: 28 40% 97%;
-    --foreground: 350 20% 14%;
-
+    --foreground: 350 30% 10%;
     --card: 0 0% 100%;
-    --card-foreground: 350 20% 14%;
-
+    --card-foreground: 350 30% 10%;
     --popover: 0 0% 100%;
-    --popover-foreground: 350 20% 14%;
-
-    /* Brand — Rosa profundo */
-    --primary: 343 72% 46%;
+    --popover-foreground: 350 30% 10%;
+    --primary: 343 76% 42%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 350 85% 62%;
-    --primary-deep: 343 78% 34%;
-
-    /* Blush suave */
-    --secondary: 350 45% 92%;
-    --secondary-foreground: 350 30% 22%;
-
-    --muted: 30 25% 93%;
-    --muted-foreground: 350 10% 42%;
-
-    --accent: 343 60% 95%;
-    --accent-foreground: 343 72% 40%;
-
-    --destructive: 0 65% 50%;
+    --primary-glow: 350 85% 58%;
+    --primary-deep: 343 78% 30%;
+    --secondary: 350 45% 91%;
+    --secondary-foreground: 350 30% 18%;
+    --muted: 30 25% 92%;
+    --muted-foreground: 350 18% 32%;
+    --accent: 343 60% 94%;
+    --accent-foreground: 343 76% 34%;
+    --destructive: 0 65% 45%;
     --destructive-foreground: 0 0% 100%;
-
-    --border: 350 20% 88%;
-    --input: 350 20% 88%;
-    --ring: 343 72% 46%;
-
+    --border: 350 25% 82%;
+    --input: 350 25% 82%;
+    --ring: 343 76% 42%;
     --radius: 1rem;
-
-    /* Gradients */
-    --gradient-rose: linear-gradient(135deg, hsl(343 72% 46%), hsl(350 85% 62%));
-    --gradient-soft: linear-gradient(180deg, hsl(28 40% 97%), hsl(350 45% 94%));
-    --gradient-dark: linear-gradient(160deg, hsl(350 25% 14%), hsl(343 45% 24%));
-
-    /* Shadows */
-    --shadow-soft: 0 8px 30px -10px hsl(343 72% 46% / 0.18);
-    --shadow-elegant: 0 20px 50px -20px hsl(343 72% 46% / 0.35);
-    --shadow-card: 0 2px 12px -4px hsl(350 30% 30% / 0.08);
-
-    /* Transitions */
-    --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    --gradient-rose: linear-gradient(135deg, hsl(343 76% 42%), hsl(350 85% 58%));
+    --gradient-soft: linear-gradient(180deg, hsl(28 40% 97%), hsl(350 45% 93%));
+    --gradient-dark: linear-gradient(160deg, hsl(350 25% 13%), hsl(343 45% 22%));
+    --shadow-soft: 0 8px 30px -10px hsl(343 72% 46% / 0.22);
+    --shadow-elegant: 0 20px 50px -20px hsl(343 72% 46% / 0.38);
+    --shadow-card: 0 2px 12px -4px hsl(350 30% 30% / 0.12);
+    --transition-smooth: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   }
 }
 
 @layer base {
-  * {
-    @apply border-border;
-  }
-
-  body {
-    @apply bg-background text-foreground font-body antialiased;
-  }
-
-  h1, h2, h3, h4 {
-    @apply font-display tracking-tight;
-  }
+  * { @apply border-border; }
+  html { font-size: 16px; }
+  body { @apply bg-background text-foreground font-body antialiased; }
+  button, a { -webkit-tap-highlight-color: transparent; }
+  h1, h2, h3, h4 { @apply font-display tracking-tight; }
 }
 
 @layer utilities {
-  .gradient-rose {
-    background: var(--gradient-rose);
-  }
-
-  .gradient-soft {
-    background: var(--gradient-soft);
-  }
-
-  .gradient-dark {
-    background: var(--gradient-dark);
-  }
-
-  .shadow-elegant {
-    box-shadow: var(--shadow-elegant);
-  }
-
-  .shadow-soft {
-    box-shadow: var(--shadow-soft);
-  }
-
-  .transition-smooth {
-    transition: var(--transition-smooth);
-  }
-
-  .animate-fade-up {
-    animation: fade-up 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
-  }
-
-  .animate-fade-in {
-    animation: fade-in 0.6s ease-out both;
-  }
-
-  .animate-scale-in {
-    animation: scale-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
-  }
+  .gradient-rose { background: var(--gradient-rose); }
+  .gradient-soft { background: var(--gradient-soft); }
+  .gradient-dark { background: var(--gradient-dark); }
+  .shadow-elegant { box-shadow: var(--shadow-elegant); }
+  .shadow-soft { box-shadow: var(--shadow-soft); }
+  .transition-smooth { transition: var(--transition-smooth); }
+  .animate-fade-up { animation: fade-up 0.55s cubic-bezier(0.16, 1, 0.3, 1) both; }
+  .animate-fade-in { animation: fade-in 0.6s ease-out both; }
+  .animate-scale-in { animation: scale-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) both; }
 }
 
 @keyframes fade-up {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
 }
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes scale-in { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
 
-@keyframes fade-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes scale-in {
-  from { opacity: 0; transform: scale(0.96); }
-  to { opacity: 1; transform: scale(1); }
-}
-
+a[href*="lovable.dev"],
+iframe[src*="lovable.dev"],
+div[style*="Edit with Lovable"],
+.lovable-badge,
 #lovable-badge {
   display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  position: absolute !important;
+  z-index: -9999 !important;
 }
