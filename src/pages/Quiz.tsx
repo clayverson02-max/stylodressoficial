@@ -5,6 +5,7 @@ import heroImg from "@/assets/quiz-hero.jpg";
 import truthImg from "@/assets/quiz-truth.jpg";
 import resultImg from "@/assets/quiz-result.jpg";
 import coverImg from "@/assets/parto-natural.jpg";
+import logoImg from "@/assets/offer-logo.png";
 import { trackCustom, trackInitiateCheckout } from "@/lib/metaPixel";
 
 type Answers = {
