@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { ArrowRight, Check, Clock3, Heart, ShieldCheck, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import heroImg from "@/assets/quiz-hero.jpg";
@@ -321,7 +321,7 @@ const Question = ({
   </div>
 );
 
-const Benefit = ({ children }: { children: React.ReactNode }) => (
+const Benefit = ({ children }: { children: ReactNode }) => (
   <li className="flex gap-3 text-base font-semibold leading-relaxed text-foreground sm:text-lg">
     <span className="mt-1 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full gradient-rose">
       <Check className="h-4 w-4 text-primary-foreground" />
