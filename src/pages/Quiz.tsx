@@ -187,6 +187,7 @@ function formatVideoTime(seconds: number) {
 function MiniVsl() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [started, setStarted] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
   const [buffering, setBuffering] = useState(false);
   const [failed, setFailed] = useState(false);
   const [ended, setEnded] = useState(false);
@@ -207,10 +208,18 @@ function MiniVsl() {
     }
   };
 
+  const togglePlayback = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    if (video.paused) void playVideo();
+    else video.pause();
+  };
+
   const retryVideo = () => {
     setFailed(false);
     setBuffering(false);
     setStarted(false);
+    setIsPlaying(false);
     setEnded(false);
     setCurrentTime(0);
     videoRef.current?.load();
@@ -224,18 +233,27 @@ function MiniVsl() {
           ref={videoRef}
           src="/mini-vsl-parto-natural.mp4"
           playsInline
-          controls={started}
+          disablePictureInPicture
+          tabIndex={started ? 0 : -1}
+          role="button"
+          onClick={togglePlayback}
+          onKeyDown={(event) => {
+            if (event.key === " " || event.key === "Enter") {
+              event.preventDefault();
+              togglePlayback();
+            }
+          }}
           preload="metadata"
-          aria-label="Video de presentación de Preparación Completa para el Parto Natural"
+          aria-label={isPlaying ? "Pausar presentación" : "Reproducir presentación"}
           onLoadedMetadata={(event) => setDuration(event.currentTarget.duration)}
           onDurationChange={(event) => setDuration(event.currentTarget.duration)}
           onTimeUpdate={(event) => setCurrentTime(event.currentTarget.currentTime)}
-          onPlay={() => { setStarted(true); setEnded(false); }}
+          onPlay={() => { setStarted(true); setIsPlaying(true); setEnded(false); }}
           onPlaying={() => { setBuffering(false); setFailed(false); }}
           onWaiting={() => setBuffering(true)}
           onCanPlay={() => setBuffering(false)}
-          onPause={() => setBuffering(false)}
-          onEnded={() => { setEnded(true); setBuffering(false); }}
+          onPause={() => { setIsPlaying(false); setBuffering(false); }}
+          onEnded={() => { setEnded(true); setIsPlaying(false); setBuffering(false); }}
           onError={() => { setFailed(true); setBuffering(false); }}
         >
           Tu navegador no admite este video.
@@ -245,11 +263,15 @@ function MiniVsl() {
             <span className="birth-vsl-play-icon"><Play size={34} fill="currentColor" aria-hidden="true" /></span>
             <strong>TOCA PARA VER EL VIDEO</strong>
             <span>Conoce lo que vas a recibir</span>
-            <small>Activa el sonido para escuchar</small>
+          </button>
+        )}
+        {started && !isPlaying && !ended && !failed && (
+          <button className="birth-vsl-play" type="button" onClick={playVideo} aria-label="Reanudar presentación">
+            <span className="birth-vsl-play-icon"><Play size={34} fill="currentColor" aria-hidden="true" /></span>
           </button>
         )}
         {started && buffering && !failed && (
-          <div className="birth-vsl-buffering" role="status"><LoaderCircle size={32} aria-hidden="true" /><span>Cargando video…</span></div>
+          <div className="birth-vsl-buffering" role="status" aria-label="Cargando video"><LoaderCircle size={32} aria-hidden="true" /></div>
         )}
         {failed && (
           <div className="birth-vsl-error" role="alert">
@@ -262,7 +284,6 @@ function MiniVsl() {
       <div className="birth-vsl-progress" role="progressbar" aria-label="Progreso real del video" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(progress)} aria-valuetext={`${formatVideoTime(currentTime)} de ${formatVideoTime(duration)}`}>
         <div style={{ width: `${progress}%` }} />
       </div>
-      <div className="birth-vsl-footer"><span>{ended ? "Presentación completada" : "Tu preparación comienza aquí"}</span><span>{formatVideoTime(currentTime)} / {formatVideoTime(duration)}</span></div>
       {ended && <p className="birth-vsl-completed">Ya conoces la plataforma. Descubre abajo todo lo que incluye tu acceso.</p>}
     </div>
   );
