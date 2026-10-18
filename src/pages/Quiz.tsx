@@ -47,7 +47,7 @@ export default function Quiz() {
 
   const openCheckout = (event: MouseEvent<HTMLAnchorElement>) => {
     // Tracking must never prevent the checkout from opening.
-    try { trackInitiateCheckout(5.5); } catch { /* Continue navigation. */ }
+    try { trackInitiateCheckout(4); } catch { /* Continue navigation. */ }
     if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
     const destination = new URL(event.currentTarget.href);
     const params = new URLSearchParams(window.location.search);
@@ -161,7 +161,7 @@ export default function Quiz() {
                 {["+250 ejercicios de preparación", "+100 recetas caseras", "Masajes y técnicas de relajación", "Organizado según tu semana de gestación"].map((item) => <li key={item}><Check size={20} aria-hidden="true" />{item}</li>)}
               </ul>
               <p className="birth-offer-value">Llévate toda tu biblioteca de preparación. Ten a mano los contenidos de tu etapa y vuelve a consultarlos sin buscar entre mensajes, publicaciones o consejos sueltos.</p>
-              <div className="birth-price"><span>La plataforma completa por un solo pago de</span><strong><small>US$</small> 5,50</strong></div>
+              <div className="birth-price"><span>La plataforma completa por un solo pago de</span><strong><small>US$</small> 4,00</strong></div>
               <a href={checkoutUrl} onClick={openCheckout} className="birth-cta birth-checkout"><span>Quiero preparar mi cuerpo ahora</span><ArrowRight size={24} aria-hidden="true" /></a>
               <p className="birth-micro">Acceso inmediato · 100% online · Desde tu celular</p>
               <div className="birth-payment"><ShieldCheck size={19} aria-hidden="true" /> Pago procesado por Hotmart</div>
