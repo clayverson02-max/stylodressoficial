@@ -50,7 +50,7 @@ export default function Quiz() {
     // Tracking must never prevent the checkout from opening.
     try { trackInitiateCheckout(5.5); } catch { /* Continue navigation. */ }
     if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-    const destination = new URL(checkoutUrl);
+    const destination = new URL(event.currentTarget.href);
     const params = new URLSearchParams(window.location.search);
     ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term", "sck", "xcod"].forEach((key) => {
       const value = params.get(key);
