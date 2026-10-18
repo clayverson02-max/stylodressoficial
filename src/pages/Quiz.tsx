@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState, type MouseEvent } from "react";
-import { ArrowRight, Check, Heart, ShieldCheck, Smartphone, Play, BookOpen, Flower2, Clock3 } from "lucide-react";
-import heroImg from "@/assets/quiz-hero.jpg";
+import { ArrowRight, Check, Heart, ShieldCheck, Smartphone, Play, BookOpen, Flower2, Clock3, LoaderCircle } from "lucide-react";
 import truthImg from "@/assets/quiz-truth.jpg";
 import coverImg from "@/assets/parto-natural.jpg";
 import { trackInitiateCheckout } from "@/lib/metaPixel";
@@ -69,20 +68,14 @@ export default function Quiz() {
       </div>
 
       <main id="contenido">
-        <section className="birth-hero birth-wrap">
-          <div className="birth-hero-copy">
-            <p className="birth-eyebrow"><span /> PREPARACIÓN COMPLETA PARA EL PARTO NATURAL</p>
-            <h1>¡NO SUFRAS PARA TENER A <span>TU BEBÉ!</span></h1>
-            <p className="birth-lead">Más de 250 ejercicios + 100 recetas + relajación pélvica. Todo organizado en una sola plataforma para vivir tu preparación con más confianza.</p>
-            <p>Imagina dejar de buscar respuestas en cada video que aparece en tu celular. Abres tu plataforma, encuentras tu etapa y dedicas un momento a ti y a tu bebé. Tu preparación puede empezar así de simple.</p>
+        <section className="birth-vsl-hero birth-wrap">
+          <p className="birth-eyebrow">PREPARACIÓN COMPLETA PARA EL PARTO NATURAL</p>
+          <h1>¡NO DEJES TU PREPARACIÓN PARA <span>EL DÍA DEL PARTO!</span></h1>
+          <MiniVsl />
+          <div className="birth-vsl-intro">
+            <p className="birth-lead">Más de 250 ejercicios + 100 recetas + relajación pélvica. Una sola plataforma para dejar de buscar consejos sueltos y empezar a prepararte con más confianza.</p>
+            <p>Tu bebé se acerca. Dedícate un momento hoy: descubre qué incluye la plataforma y cómo hacer espacio para tu preparación, desde casa y a tu ritmo.</p>
             <p className="birth-micro">Acceso inmediato · 100% online · Solo 15–20 minutos al día</p>
-          </div>
-          <div className="birth-hero-visual">
-            <div className="birth-image-frame">
-              <img src={heroImg} alt="Mujer embarazada en un ambiente tranquilo en casa" width={1024} height={1280} fetchPriority="high" />
-            </div>
-            <div className="birth-photo-note"><Heart aria-hidden="true" /><div><strong>Más información. Más confianza.</strong><span>Una preparación que empieza contigo.</span></div></div>
-            <span className="birth-visual-label">TU CUERPO. TU PREPARACIÓN.</span>
           </div>
         </section>
 
@@ -180,6 +173,97 @@ export default function Quiz() {
         <p>Preparación Completa para el Parto Natural</p>
         <p>Contenido educativo. Consulta con tu profesional de salud antes de iniciar ejercicios durante el embarazo. No sustituye la atención prenatal.</p>
       </footer>
+    </div>
+  );
+}
+
+
+function formatVideoTime(seconds: number) {
+  if (!Number.isFinite(seconds) || seconds < 0) return "0:00";
+  const whole = Math.floor(seconds);
+  return `${Math.floor(whole / 60)}:${String(whole % 60).padStart(2, "0")}`;
+}
+
+function MiniVsl() {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [started, setStarted] = useState(false);
+  const [buffering, setBuffering] = useState(false);
+  const [failed, setFailed] = useState(false);
+  const [ended, setEnded] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const progress = duration > 0 ? Math.min(100, (currentTime / duration) * 100) : 0;
+
+  const playVideo = async () => {
+    const video = videoRef.current;
+    if (!video) return;
+    setFailed(false);
+    try {
+      await video.play();
+      setStarted(true);
+    } catch {
+      setFailed(true);
+      setBuffering(false);
+    }
+  };
+
+  const retryVideo = () => {
+    setFailed(false);
+    setBuffering(false);
+    setStarted(false);
+    setEnded(false);
+    setCurrentTime(0);
+    videoRef.current?.load();
+  };
+
+  return (
+    <div className="birth-vsl" aria-label="Presentación de la plataforma">
+      <div className="birth-vsl-heading"><Play size={16} aria-hidden="true" /><span>MIRA CÓMO FUNCIONA LA PLATAFORMA</span></div>
+      <div className="birth-vsl-player">
+        <video
+          ref={videoRef}
+          src="/mini-vsl-parto-natural.mp4"
+          playsInline
+          controls={started}
+          preload="metadata"
+          aria-label="Video de presentación de Preparación Completa para el Parto Natural"
+          onLoadedMetadata={(event) => setDuration(event.currentTarget.duration)}
+          onDurationChange={(event) => setDuration(event.currentTarget.duration)}
+          onTimeUpdate={(event) => setCurrentTime(event.currentTarget.currentTime)}
+          onPlay={() => { setStarted(true); setEnded(false); }}
+          onPlaying={() => { setBuffering(false); setFailed(false); }}
+          onWaiting={() => setBuffering(true)}
+          onCanPlay={() => setBuffering(false)}
+          onPause={() => setBuffering(false)}
+          onEnded={() => { setEnded(true); setBuffering(false); }}
+          onError={() => { setFailed(true); setBuffering(false); }}
+        >
+          Tu navegador no admite este video.
+        </video>
+        {!started && !failed && (
+          <button className="birth-vsl-play" type="button" onClick={playVideo} aria-label="Reproducir presentación con sonido">
+            <span className="birth-vsl-play-icon"><Play size={34} fill="currentColor" aria-hidden="true" /></span>
+            <strong>TOCA PARA VER EL VIDEO</strong>
+            <span>Conoce lo que vas a recibir</span>
+            <small>Activa el sonido para escuchar</small>
+          </button>
+        )}
+        {started && buffering && !failed && (
+          <div className="birth-vsl-buffering" role="status"><LoaderCircle size={32} aria-hidden="true" /><span>Cargando video…</span></div>
+        )}
+        {failed && (
+          <div className="birth-vsl-error" role="alert">
+            <p>No se pudo reproducir el video. Comprueba tu conexión y vuelve a intentarlo.</p>
+            <button type="button" onClick={retryVideo}>Volver a cargar</button>
+            <a href="/mini-vsl-parto-natural.mp4" target="_blank" rel="noopener noreferrer">Abrir el video</a>
+          </div>
+        )}
+      </div>
+      <div className="birth-vsl-progress" role="progressbar" aria-label="Progreso real del video" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(progress)} aria-valuetext={`${formatVideoTime(currentTime)} de ${formatVideoTime(duration)}`}>
+        <div style={{ width: `${progress}%` }} />
+      </div>
+      <div className="birth-vsl-footer"><span>{ended ? "Presentación completada" : "Tu preparación comienza aquí"}</span><span>{formatVideoTime(currentTime)} / {formatVideoTime(duration)}</span></div>
+      {ended && <p className="birth-vsl-completed">Ya conoces la plataforma. Descubre abajo todo lo que incluye tu acceso.</p>}
     </div>
   );
 }
