@@ -1,4 +1,4 @@
-import { useEffect, useRef, type MouseEvent } from "react";
+import { useEffect, useRef, useState, type MouseEvent } from "react";
 import { ArrowRight, Check, Heart, ShieldCheck, Smartphone, Play, BookOpen, Flower2, Clock3 } from "lucide-react";
 import heroImg from "@/assets/quiz-hero.jpg";
 import truthImg from "@/assets/quiz-truth.jpg";
@@ -8,11 +8,11 @@ import { trackInitiateCheckout } from "@/lib/metaPixel";
 const checkoutUrl = import.meta.env.VITE_CHECKOUT_URL || "https://pay.hotmart.com/D108067220C?checkoutMode=10";
 
 const benefits = [
-  { number: "250+", icon: Play, title: "Ejercicios de preparación", text: "Una biblioteca de ejercicios para conocer tu cuerpo y acompañar tu preparación física durante el embarazo." },
-  { number: "100+", icon: BookOpen, title: "Recetas para tu día a día", text: "Ideas caseras de alimentación, organizadas en un solo lugar para que no tengas que buscar por todas partes." },
-  { number: "03", icon: Flower2, title: "Relajación y bienestar", text: "Masajes y técnicas de relajación pélvica para incorporar a tu preparación." },
-  { number: "04", icon: Heart, title: "Según tu etapa", text: "Contenido organizado según tu semana de gestación, fácil de encontrar y de seguir." },
-  { number: "15–20", icon: Smartphone, title: "Minutos al día, desde casa", text: "Accede desde tu celular y organiza tu rutina a tu ritmo, sin desplazamientos." },
+  { number: "250+", icon: Play, title: "Ejercicios para tu preparación", text: "Deja de preguntarte por dónde empezar. Encuentra una biblioteca completa de ejercicios de preparación para el embarazo, reunidos para que puedas organizar tu rutina con más claridad." },
+  { number: "100+", icon: BookOpen, title: "Recetas caseras, a tu alcance", text: "Más ideas para cuidar tu alimentación sin pasar horas buscando. Un recetario que puedes consultar desde tu celular y adaptar a tus necesidades con tu profesional de salud." },
+  { number: "Calma", icon: Flower2, title: "Relajación y conexión con tu cuerpo", text: "Aprende técnicas de relajación pélvica y conoce los masajes incluidos. Haz espacio para bajar el ritmo y dedicarte un momento durante esta etapa." },
+  { number: "Tu etapa", icon: Heart, title: "Todo organizado por semana", text: "Encuentra el contenido de tu etapa sin perderte entre consejos sueltos. Consulta tu semana de gestación y prepara tu propia rutina, a tu ritmo." },
+  { number: "15–20", icon: Smartphone, title: "Minutos para ti, desde casa", text: "Un espacio en tu día para prepararte, sin desplazamientos. Abre la plataforma desde tu celular y retoma el contenido cuando lo necesites." },
 ];
 
 const testimonials = [
@@ -73,9 +73,8 @@ export default function Quiz() {
           <div className="birth-hero-copy">
             <p className="birth-eyebrow"><span /> PREPARACIÓN COMPLETA PARA EL PARTO NATURAL</p>
             <h1>¡NO SUFRAS PARA TENER A <span>TU BEBÉ!</span></h1>
-            <p className="birth-lead">El miedo al parto no tiene por qué acompañarte hasta el último día. Empieza a conocer tu cuerpo y a prepararte con más confianza.</p>
-            <p>Este es el momento de construir tu preparación, paso a paso. Desde casa, con todo el contenido organizado en una sola plataforma.</p>
-            <OfferLink>Quiero preparar mi cuerpo ahora</OfferLink>
+            <p className="birth-lead">Más de 250 ejercicios + 100 recetas + relajación pélvica. Todo organizado en una sola plataforma para vivir tu preparación con más confianza.</p>
+            <p>Imagina dejar de buscar respuestas en cada video que aparece en tu celular. Abres tu plataforma, encuentras tu etapa y dedicas un momento a ti y a tu bebé. Tu preparación puede empezar así de simple.</p>
             <p className="birth-micro">Acceso inmediato · 100% online · Solo 15–20 minutos al día</p>
           </div>
           <div className="birth-hero-visual">
@@ -94,7 +93,8 @@ export default function Quiz() {
               <p className="birth-eyebrow">CONOCE TU CUERPO ANTES DEL GRAN DÍA</p>
               <h2>La verdad que nadie <span>te cuenta…</span></h2>
               <p>Es normal sentir miedo cuando no sabes qué esperar. Buscar consejos sueltos en internet puede dejarte con más preguntas que respuestas.</p>
-              <p>La preparación puede ayudarte a conocer tu cuerpo, practicar la relajación y llegar con más herramientas al momento del parto.</p>
+              <p>Lo que deseas es llegar a ese día con más claridad: conocer tu cuerpo, haber practicado la relajación y saber que te dedicaste tiempo antes del nacimiento de tu bebé.</p>
+              <p>Por eso reunimos ejercicios, recetas y técnicas de relajación en una plataforma fácil de consultar. Para que pases de guardar consejos a organizar tu preparación.</p>
               <div className="birth-highlight">Tu preparación empieza hoy. Paso a paso, con más confianza.</div>
               <p className="birth-context">Cada embarazo y cada parto son diferentes. La dilatación depende de varios factores; ningún ejercicio o alimento garantiza abrir el cuello del útero ni un parto sin dolor.</p>
             </div>
@@ -105,7 +105,7 @@ export default function Quiz() {
           <div className="birth-section-heading">
             <p className="birth-eyebrow">UNA PLATAFORMA. TODO ORGANIZADO.</p>
             <h2>Lo que vas a recibir hoy para llegar al parto <span>preparada:</span></h2>
-            <p>Deja de acumular información suelta. Encuentra tu preparación en un solo lugar.</p>
+            <p>Una biblioteca completa para dejar de improvisar. Estos son los contenidos que tendrás a mano desde el primer día:</p>
           </div>
           <div className="birth-benefit-grid">
             {benefits.map(({ number, icon: Icon, title, text }, index) => (
@@ -116,33 +116,36 @@ export default function Quiz() {
               </article>
             ))}
           </div>
-          <div className="birth-center"><OfferLink>Quiero acceder a la plataforma ahora</OfferLink></div>
+          <div className="birth-delivery-summary">
+            <div><span>UNA SOLA PLATAFORMA</span><h3>Menos tiempo buscando.<br />Más tiempo preparándote.</h3></div>
+            <p>Ejercicios, recetas y relajación en un mismo espacio. Contenido ordenado por semana para que encuentres lo que buscas y vuelvas a consultarlo cuando quieras.</p>
+          </div>
+          <div className="birth-center"><OfferLink>Quiero ver mi acceso completo</OfferLink><p className="birth-micro">Conoce todo lo incluido en el paquete antes de decidir.</p></div>
         </section>
 
-        <section className="birth-testimonials">
+        <section className="birth-method">
           <div className="birth-wrap birth-reveal">
             <div className="birth-section-heading">
-              <p className="birth-eyebrow">CADA EXPERIENCIA ES ÚNICA</p>
-              <h2>Lo que dicen las mamás que ya <span>prepararon su cuerpo</span></h2>
+              <p className="birth-eyebrow">ASÍ SE VE TU PREPARACIÓN DESDE CASA</p>
+              <h2>Abres tu celular.<br /><span>Empiezas a dedicarte tiempo.</span></h2>
+              <p>No necesitas resolverlo todo hoy. Solo dar un primer paso y construir una rutina que puedas sostener.</p>
             </div>
-            <div className="birth-testimonial-grid">
-              {testimonials.map((item) => (
-                <figure className="birth-testimonial" key={item.name}>
-                  <span className="birth-quote-mark" aria-hidden="true">“</span>
-                  <blockquote>{item.quote}</blockquote>
-                  <figcaption><span className="birth-avatar" aria-hidden="true">{item.initials}</span><span><strong>{item.name}</strong><span>{item.country}</span></span></figcaption>
-                </figure>
-              ))}
+            <div className="birth-method-grid">
+              <article><span>01</span><h3>Entras a tu plataforma</h3><p>Después de tu compra, accedes al contenido reunido en un solo lugar. Tu preparación deja de depender de lo que encuentres por casualidad.</p></article>
+              <article><span>02</span><h3>Encuentras tu etapa</h3><p>Consulta los contenidos organizados por semana de gestación. Elige tu rutina con la orientación de tu profesional de salud.</p></article>
+              <article><span>03</span><h3>Haces espacio para ti</h3><p>Dedica 15–20 minutos a conocer tu cuerpo, practicar y cuidarte. En casa, desde tu celular, a tu ritmo.</p></article>
             </div>
-            <p className="birth-testimonial-note">Testimonios proporcionados por la marca. Son experiencias individuales y no garantizan resultados. Avatares con iniciales; no son fotografías de las participantes.</p>
+            <p className="birth-method-close">El día de conocer a tu bebé se acerca. Que tu preparación también forme parte de la espera.</p>
           </div>
         </section>
+
+        <FeedbackCarousel />
 
         <section className="birth-momentum">
           <div className="birth-wrap birth-reveal">
             <p className="birth-eyebrow">HAZ ESPACIO PARA TU PREPARACIÓN</p>
             <h2>Cada semana que pasa sin preparación es una semana menos de ventaja.</h2>
-            <p>No necesitas tener todas las respuestas para empezar. Necesitas un lugar donde encontrarlas, a tu ritmo.</p>
+            <p>Piensa en todo lo que ya estás preparando para recibir a tu bebé. Tú también mereces un espacio en esa lista. Hoy puedes empezar a dedicarte tiempo, con todo el contenido a mano.</p>
             <div className="birth-momentum-details"><span><Smartphone size={20} aria-hidden="true" /> Desde tu celular</span><span><Clock3 size={20} aria-hidden="true" /> Una rutina corta al día</span><span><Play size={20} aria-hidden="true" /> Contenido organizado</span></div>
           </div>
         </section>
@@ -151,7 +154,7 @@ export default function Quiz() {
           <div className="birth-section-heading">
             <p className="birth-eyebrow">TU SIGUIENTE PASO EMPIEZA AQUÍ</p>
             <h2 id="offer-title">Todavía estás a tiempo de vivir tu preparación <span>con más confianza</span></h2>
-            <p>No dejes que el miedo sea tu única compañía. Empieza hoy con información, práctica y una rutina organizada desde tu celular.</p>
+            <p>Más de 250 ejercicios, más de 100 recetas y técnicas de relajación. Una sola plataforma para transformar tus ganas de prepararte en una rutina que puedas empezar hoy.</p>
           </div>
           <div className="birth-offer">
             <div className="birth-offer-art">
@@ -159,12 +162,13 @@ export default function Quiz() {
               <span className="birth-offer-caption"><Heart size={18} aria-hidden="true" /> Un espacio para prepararte y cuidarte</span>
             </div>
             <div className="birth-offer-copy">
-              <span className="birth-offer-label">ACCESO COMPLETO</span>
+              <span className="birth-offer-label">TODO EL CONTENIDO EN UN SOLO ACCESO</span>
               <h3>Preparación Completa para el Parto Natural</h3>
               <ul>
                 {["+250 ejercicios de preparación", "+100 recetas caseras", "Masajes y técnicas de relajación", "Organizado según tu semana de gestación"].map((item) => <li key={item}><Check size={20} aria-hidden="true" />{item}</li>)}
               </ul>
-              <div className="birth-price"><span>Un solo pago de</span><strong><small>US$</small> 5,50</strong></div>
+              <p className="birth-offer-value">Llévate toda tu biblioteca de preparación. Ten a mano los contenidos de tu etapa y vuelve a consultarlos sin buscar entre mensajes, publicaciones o consejos sueltos.</p>
+              <div className="birth-price"><span>La plataforma completa por un solo pago de</span><strong><small>US$</small> 5,50</strong></div>
               <a href={checkoutUrl} onClick={openCheckout} className="birth-cta birth-checkout"><span>Quiero preparar mi cuerpo ahora</span><ArrowRight size={24} aria-hidden="true" /></a>
               <p className="birth-micro">Acceso inmediato · 100% online · Desde tu celular</p>
               <div className="birth-payment"><ShieldCheck size={19} aria-hidden="true" /> Pago procesado por Hotmart</div>
@@ -177,5 +181,43 @@ export default function Quiz() {
         <p>Contenido educativo. Consulta con tu profesional de salud antes de iniciar ejercicios durante el embarazo. No sustituye la atención prenatal.</p>
       </footer>
     </div>
+  );
+}
+
+function FeedbackCarousel() {
+  const [paused, setPaused] = useState(false);
+  return (
+    <section className={`birth-testimonials birth-feedback ${paused ? "birth-feedback-paused" : ""}`} aria-labelledby="feedback-title">
+      <div className="birth-wrap">
+        <div className="birth-section-heading">
+          <p className="birth-eyebrow">HISTORIAS DE UNA ETAPA INOLVIDABLE</p>
+          <h2 id="feedback-title">Lo que dicen las mamás que ya <span>prepararon su cuerpo</span></h2>
+          <p>Cada mujer vive una experiencia diferente. Estos son los relatos compartidos por la marca.</p>
+        </div>
+        <div className="birth-feedback-gallery" aria-label="Galería de maternidad compartida por la marca">
+          {[1, 2, 3].map((number) => <div key={number}><img src={`/feedback-mama-${number}.png`} alt={`Fotografía de maternidad compartida por la marca ${number}`} width={480} height={600} loading="lazy" decoding="async" /></div>)}
+        </div>
+        <div className="birth-feedback-toolbar">
+          <p>Historias que acompañan tu preparación</p>
+          <button type="button" onClick={() => setPaused((value) => !value)} aria-pressed={paused} aria-label={paused ? "Reanudar testimonios automáticos" : "Pausar testimonios automáticos"}>{paused ? "Reanudar" : "Pausar"}</button>
+        </div>
+      </div>
+      <div className="birth-feedback-window" role="region" aria-label="Testimonios en movimiento" tabIndex={0}>
+        <div className="birth-feedback-track">
+          {[0, 1].map((group) => (
+            <div className="birth-feedback-group" key={group} aria-hidden={group === 1 ? true : undefined}>
+              {testimonials.map((item) => (
+                <figure className="birth-testimonial" key={item.name}>
+                  <span className="birth-quote-mark" aria-hidden="true">“</span>
+                  <blockquote>{item.quote}</blockquote>
+                  <figcaption><span className="birth-avatar" aria-hidden="true">{item.initials}</span><span><strong>{item.name}</strong><span>{item.country}</span></span></figcaption>
+                </figure>
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="birth-wrap"><p className="birth-testimonial-note">Fotos y relatos compartidos por la marca. La galería no identifica a las autoras de los relatos. Las experiencias individuales no garantizan resultados.</p></div>
+    </section>
   );
 }
