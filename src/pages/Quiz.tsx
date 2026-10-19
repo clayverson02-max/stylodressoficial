@@ -44,8 +44,7 @@ export default function SalesPage() {
           <p className="birth-lead">No llegues al parto sintiendo que no sabes qué hacer con tu cuerpo.</p>
           <p>El miedo al dolor pesa. Tener una preparación organizada te da herramientas para afrontar ese momento con más confianza.</p>
           <p className="new-hero-emphasis">Deja de acumular dudas.<br /><strong>Empieza a prepararte.</strong></p>
-          <OfferLink>Quiero preparar mi cuerpo para el parto</OfferLink>
-          <p className="birth-micro">Acceso inmediato · 100% online · 15–20 minutos para tu rutina</p>
+
         </div>
         <figure className="new-hero-image"><img src="/images/pain-belly.webp" width={584} height={388} fetchPriority="high" alt="Mujer embarazada sentada, con una mano en el vientre y expresión de preocupación" /><figcaption>Tu preparación también merece un lugar en la espera.</figcaption></figure>
       </section>
@@ -55,6 +54,10 @@ export default function SalesPage() {
         <h2>Conoce tu preparación <span>por dentro</span></h2>
         <p>Una plataforma. Tu contenido organizado. Un punto de partida claro.</p>
         <MiniVsl />
+        <div className="mt-6">
+          <OfferLink>Quiero preparar mi cuerpo para el parto</OfferLink>
+          <p className="birth-micro">Acceso inmediato · 100% online · 15–20 minutos para tu rutina</p>
+        </div>
       </section>
 
       <section className="birth-pain new-pain">
