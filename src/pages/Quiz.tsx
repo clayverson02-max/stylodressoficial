@@ -1,4 +1,4 @@
-import { useRef, useState, type MouseEvent } from "react";
+import { useEffect, useRef, useState, type MouseEvent } from "react";
 import { ArrowRight, Check, ShieldCheck, Play, BookOpen, Flower2, LoaderCircle, X } from "lucide-react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { trackInitiateCheckout } from "@/lib/metaPixel";
@@ -74,7 +74,7 @@ export default function SalesPage() {
         <h2 id="amplify-title">Cuando el cuerpo no está preparado para dilatar… <span>el dolor se multiplica</span></h2>
         <p>La mayoría de las mujeres llega al parto sin haber trabajado el cuello del útero ni la pelvis.</p>
         <p>Cuando el bebé empieza a bajar y no encuentra paso fácil, el cuerpo se resiste con fuerza. Es ahí donde el dolor se vuelve mucho más intenso de lo necesario.</p>
-        <div className="birth-highlight">Y la mayoría solo lo descubre cuando ya está en trabajo de parto… demasiado tarde para cambiar algo.</div>
+        <div className="birth-highlight">Y la mayoría solo lo descubre cuando ya está en trabajo de parto… demasiado tarde.</div>
       </section>
 
       <section className="new-truth birth-wrap" aria-labelledby="bridge-title">
@@ -110,6 +110,7 @@ export default function SalesPage() {
 
       <section id="oferta" className="birth-final" aria-labelledby="offer-title"><div className="birth-wrap birth-final-layout"><div className="birth-final-copy"><p className="birth-eyebrow">EL PRIMER PASO PUEDE SER HOY</p><h2 id="offer-title">Deja de posponer<br /><span>tu preparación.</span></h2><p>No necesitas esperar a tener más miedo. Empieza a conocer tu cuerpo, organiza tu rutina y llega con más herramientas a ese momento.</p><p><strong>Tu bebé tiene su lista. Tú también mereces la tuya.</strong></p></div><div className="birth-offer"><span className="birth-offer-label">PLATAFORMA COMPLETA · PAGO ÚNICO</span><h3>Preparación Completa para el Parto Natural</h3><ul>{includes.map(item=><li key={item}><Check size={18} aria-hidden="true" />{item}</li>)}</ul><div className="birth-price"><span>Todo tu acceso por</span><strong><small>US$</small> 4,00</strong></div><button type="button" className="birth-cta" onClick={()=>setCheckoutOpen(true)}><span>Quiero preparar mi cuerpo ahora</span><ArrowRight size={22} aria-hidden="true" /></button><p className="birth-micro">Revisa tu acceso antes de continuar al pago</p><div className="birth-payment"><ShieldCheck size={17} aria-hidden="true" />Pago seguro a través de Hotmart</div></div></div></section>
     </main>
+    <ProofBar />
     <footer className="birth-footer birth-wrap"><p>Preparación Completa para el Parto Natural</p><p>Contenido educativo. Consulta con tu profesional de salud antes de iniciar ejercicios o modificar tu alimentación. No sustituye la atención prenatal ni garantiza dilatación, un parto sin dolor o un tipo de parto.</p></footer>
 
     <Dialog.Root open={checkoutOpen} onOpenChange={setCheckoutOpen}>
@@ -179,6 +180,7 @@ function MiniVsl() {
     <div className="birth-vsl" aria-label="Presentación de la plataforma">
       <div className="birth-vsl-heading"><Play size={16} aria-hidden="true" /><span>MIRA CÓMO FUNCIONA LA PLATAFORMA</span></div>
       <div className="birth-vsl-player">
+        <span className="birth-vsl-live" aria-hidden="true"><i />Muchas mujeres están viendo esto ahora</span>
         <video
           ref={videoRef}
           src="/mini-vsl-parto-natural.mp4"
@@ -271,3 +273,13 @@ function FeedbackCarousel() {
   );
 }
 
+
+const proofMessages = ["🔥 Varias mujeres están preparando su cuerpo ahora", "⚡ Acceso inmediato disponible", "⏳ Oferta por tiempo limitado", "✨ Últimas plazas con acceso inmediato"];
+function ProofBar() {
+  const [index, setIndex] = useState(0);
+  useEffect(() => {
+    const id = window.setInterval(() => setIndex((i) => (i + 1) % proofMessages.length), 4500);
+    return () => window.clearInterval(id);
+  }, []);
+  return <a href="#oferta" className="birth-proof-bar" aria-live="polite"><span key={index}>{proofMessages[index]}</span></a>;
+}

@@ -345,3 +345,12 @@ html:has(.birth-page){scroll-behavior:smooth}
  .new-checkout-modal{padding:36px}
 }
 @media(max-width:359px){.new-pain-videos{grid-template-columns:1fr;max-width:250px}.new-checkout-modal{padding-inline:18px}.new-modal-title{font-size:28px}}
+
+.birth-vsl-live{position:absolute;top:12px;left:12px;z-index:3;display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:999px;background:hsl(350 25% 13% / .78);color:hsl(0 0% 100%);font-size:11px;font-weight:600;backdrop-filter:blur(6px);pointer-events:none}
+.birth-vsl-live i{width:8px;height:8px;border-radius:50%;background:hsl(0 80% 55%);animation:birthLive 1.4s ease-in-out infinite}
+@keyframes birthLive{50%{opacity:.3}}
+.birth-proof-bar{position:fixed;left:50%;bottom:12px;transform:translateX(-50%);z-index:30;max-width:calc(100% - 24px);padding:9px 16px;border-radius:999px;background:var(--gradient-dark);color:hsl(0 0% 100%);font-size:13px;font-weight:600;box-shadow:var(--shadow-elegant);white-space:nowrap;overflow:hidden;text-decoration:none}
+.birth-proof-bar span{display:block;animation:birthProofIn .45s ease}
+@keyframes birthProofIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.birth-footer{padding-bottom:72px}
+@media (prefers-reduced-motion:reduce){.birth-vsl-live i,.birth-proof-bar span{animation:none}}
