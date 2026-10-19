@@ -1,134 +1,182 @@
-import { useEffect, useRef, useState, type MouseEvent } from "react";
-import { ArrowRight, Check, ShieldCheck, Play, BookOpen, Flower2, LoaderCircle, X } from "lucide-react";
+import { useCallback, useEffect, useRef, useState, type MouseEvent, type ReactNode } from "react";
+import { ArrowRight, Check, ShieldCheck, Play, BookOpen, Flower2, LoaderCircle, X, CalendarDays, Smartphone, Heart, Search, ListChecks, Wind, Utensils, LockKeyhole, CreditCard, Clock3, ChevronDown } from "lucide-react";
 import * as Dialog from "@radix-ui/react-dialog";
-import { trackInitiateCheckout } from "@/lib/metaPixel";
+import { birthOffer, offerIncludes } from "@/data/birthOffer";
+import { beginBirthCheckout, checkoutDestination } from "@/lib/birthCheckout";
+import { trackStandard } from "@/lib/metaPixel";
 
-const checkoutUrl = import.meta.env.VITE_CHECKOUT_URL || "https://pay.hotmart.com/D108067220C?checkoutMode=10";
-const benefits = [
-  { number: "250+", title: "Ejercicios de preparación", text: "Contenido para trabajar movilidad y preparación física, organizado por semana de gestación. Elige con tu profesional lo adecuado para ti.", icon: Play },
-  { number: "100+", title: "Recetas caseras", text: "Ideas prácticas de alimentación reunidas en un solo lugar. Menos tiempo buscando, más opciones para organizar tus comidas.", icon: BookOpen },
-  { number: "01", title: "Relajación pélvica", text: "Masajes y prácticas de relajación para conocer tu cuerpo y aprender a soltar tensión. Respeta siempre las indicaciones de tu equipo de salud.", icon: Flower2 },
-];
-const testimonials = [
-  { initials: "CR", name: "Camila R.", country: "México", quote: "Estaba súper asustada con el dolor. Empecé a las 28 semanas con los ejercicios. Llegué al hospital con 4 cm ya y el parto fue mucho más corto de lo que me imaginaba." },
-  { initials: "VM", name: "Valentina M.", country: "Colombia", quote: "Yo casi no hacía nada de ejercicio. Después de seguir el protocolo noté una diferencia real. El parto natural fue posible y con mucho menos dolor del que esperaba." },
-  { initials: "FS", name: "Fernanda S.", country: "Argentina", quote: "Pensaba que la dilatación era solo suerte. Mi matrona se sorprendió de lo blando que estaba el cuello del útero. Todavía no parí, pero ya siento que mi cuerpo está listo." },
-];
-function OfferLink({ children }: { children: string }) {
-  return <a className="birth-cta" href="#oferta"><span>{children}</span><ArrowRight size={22} aria-hidden="true" /></a>;
+const MAIN_CTA = "QUIERO MI PREPARACIÓN COMPLETA POR US$ 4";
+const checkoutUrl = birthOffer.checkout;
+
+function CheckoutLink({ children = MAIN_CTA, location }: { children?: ReactNode; location: string }) {
+  const pending = useRef(false);
+  const timer = useRef<number>();
+  useEffect(() => () => window.clearTimeout(timer.current), []);
+  const checkout = (event: MouseEvent<HTMLAnchorElement>) => {
+    if (event.defaultPrevented) return;
+    if (pending.current) { event.preventDefault(); return; }
+    const destination = checkoutDestination(event.currentTarget.href, window.location.search);
+    // Preserve the browser's native new-tab behavior on modified clicks.
+    if (event.button === 1 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+      beginBirthCheckout(destination, () => {});
+      return;
+    }
+    event.preventDefault();
+    pending.current = true;
+    timer.current = beginBirthCheckout(destination, url => { pending.current = false; window.location.assign(url); });
+  };
+  return <a className="prep-cta" href={checkoutUrl} onClick={checkout} onAuxClick={event => { if (event.button === 1) checkout(event); }} data-checkout-cta={location}><span>{children}</span><ArrowRight size={21} aria-hidden="true" /></a>;
 }
-const includes = ["Más de 250 ejercicios de preparación", "Más de 100 recetas caseras", "Masajes y relajación pélvica", "Organizado por semana de gestación"];
+
+function PurchaseNote() {
+  return <p className="prep-micro">Pago único de US$ 4,00 · Acceso tras confirmar el pago · Garantía de {birthOffer.guaranteeDays} días</p>;
+}
+
+function SectionTitle({ kicker, children }: { kicker?: string; children: ReactNode }) {
+  return <header className="prep-section-heading">{kicker && <p className="prep-kicker">{kicker}</p>}<h2>{children}</h2></header>;
+}
+
+function PhoneMockup() {
+  return <figure className="prep-hero-visual">
+    <img className="prep-hero-woman" src="/images/calm-mother.webp" alt="Mujer embarazada consultando su celular con tranquilidad" width={576} height={720} decoding="async" />
+    <div className="prep-phone" aria-label="Vista ilustrativa de la organización de los contenidos">
+      <div className="prep-phone-notch" />
+      <div className="prep-phone-brand"><Flower2 size={20} aria-hidden="true" /><span>Mi preparación</span></div>
+      <p className="prep-phone-welcome">Un momento para ti.</p>
+      <strong>Tu contenido,<br />semana por semana.</strong>
+      <div className="prep-phone-week"><CalendarDays size={16} aria-hidden="true" />Organizado por etapa</div>
+      <div className="prep-phone-module"><span><Play size={18} aria-hidden="true" /></span><div><b>Ejercicios en video</b><small>Movimiento y preparación</small></div></div>
+      <div className="prep-phone-module"><span><Utensils size={18} aria-hidden="true" /></span><div><b>Recetas caseras</b><small>Alimentación sin complicarte</small></div></div>
+      <div className="prep-phone-module"><span><Wind size={18} aria-hidden="true" /></span><div><b>Relajación pélvica</b><small>Conecta con tu cuerpo</small></div></div>
+      <div className="prep-phone-footer">Todo en un solo lugar.</div>
+    </div>
+    <figcaption>Vista ilustrativa de la organización del contenido.</figcaption>
+  </figure>;
+}
+
+function useHalfPageView() {
+  useEffect(() => {
+    let sent = false;
+    let frame = 0;
+    const check = () => {
+      frame = 0;
+      const available = document.documentElement.scrollHeight - window.innerHeight;
+      if (!sent && available > 0 && window.scrollY / available >= 0.5) {
+        sent = true;
+        try { trackStandard("ViewContent", { content_name: birthOffer.name, content_type: "product", value: 4, currency: "USD" }); } catch { /* Reading must remain available when analytics are blocked. */ }
+      }
+    };
+    const schedule = () => { if (!frame) frame = window.requestAnimationFrame(check); };
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
+    check();
+    return () => { window.removeEventListener("scroll", schedule); window.removeEventListener("resize", schedule); window.cancelAnimationFrame(frame); };
+  }, []);
+}
+
+function StickyMobileCheckout({ hero }: { hero: React.RefObject<HTMLElement> }) {
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const element = hero.current;
+    if (!element || !("IntersectionObserver" in window)) return;
+    const observer = new IntersectionObserver(([entry]) => setVisible(!entry.isIntersecting && entry.boundingClientRect.bottom <= 0));
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [hero]);
+  if (!visible) return null;
+  return <aside className="prep-sticky-buy" aria-label="Acceso a la preparación completa"><div><strong>US$ 4,00</strong><span>Pago único</span></div><CheckoutLink location="mobile-sticky">EMPEZAR HOY</CheckoutLink></aside>;
+}
+
+function DesktopExitOffer() {
+  const [open, setOpen] = useState(false);
+  const shown = useRef(false);
+  useEffect(() => {
+    const media = window.matchMedia("(min-width: 1024px) and (hover: hover) and (pointer: fine)");
+    const exit = (event: globalThis.MouseEvent) => {
+      if (!media.matches || shown.current || event.relatedTarget !== null || event.clientY > 0) return;
+      try { if (sessionStorage.getItem("birth-exit-offer-v1")) return; } catch { /* Ref remains the fallback for this visit. */ }
+      shown.current = true;
+      try { sessionStorage.setItem("birth-exit-offer-v1", "shown"); } catch { /* Restricted storage must not affect navigation. */ }
+      setOpen(true);
+    };
+    document.addEventListener("mouseout", exit);
+    return () => document.removeEventListener("mouseout", exit);
+  }, []);
+  return <Dialog.Root open={open} onOpenChange={setOpen}><Dialog.Portal><Dialog.Overlay className="prep-dialog-overlay" /><Dialog.Content className="prep-exit-dialog"><Dialog.Close className="prep-dialog-close" aria-label="Cerrar aviso"><X size={23} /></Dialog.Close><p className="prep-kicker">CADA SEMANA CUENTA</p><Dialog.Title>¡Espera! Tu preparación cuesta solo US$ 4,00.</Dialog.Title><Dialog.Description>No necesitas seguir buscando contenido por separado. Tu preparación completa te espera en un solo lugar.</Dialog.Description><CheckoutLink location="desktop-exit" /><p className="prep-micro">Pago único · Garantía de 7 días</p><Dialog.Close className="prep-dialog-dismiss">Seguir leyendo</Dialog.Close></Dialog.Content></Dialog.Portal></Dialog.Root>;
+}
+
+const agitation = [
+  { icon: Search, title: "Contenido suelto", text: "Rutinas que no sabes si son para tu etapa." },
+  { icon: ListChecks, title: "Sin orden", text: "Empiezas, lo dejas y se te pasan las semanas." },
+  { icon: Wind, title: "Sin técnicas de relajación", text: "El miedo y la tensión pueden hacerte sentir sin herramientas." },
+  { icon: Utensils, title: "Sin plan de alimentación", text: "Más dudas para organizar tus comidas del día a día." },
+];
+const contents = [
+  { icon: Play, number: "250+", title: "Ejercicios en video", text: "Fortalece, gana movilidad y prepara tu cuerpo paso a paso, con las indicaciones de tu profesional." },
+  { icon: Wind, number: "RELÁJATE", title: "Masajes y relajación pélvica", text: "Aprende a soltar la tensión y conectar con tu cuerpo." },
+  { icon: BookOpen, number: "100+", title: "Recetas caseras", text: "Organiza tu alimentación sin complicarte." },
+  { icon: CalendarDays, number: "POR ETAPA", title: "Según tu semana de embarazo", text: "Encuentra el contenido de tu etapa sin perderte entre publicaciones." },
+  { icon: Smartphone, number: "A TU RITMO", title: "Desde tu celular", text: "Consulta en casa, cuando quieras. También en tablet o computadora." },
+  { icon: LockKeyhole, number: "TU ACCESO", title: "Empieza tras confirmar el pago", text: "Recibe las indicaciones de acceso después de la confirmación de tu compra." },
+];
+const comparison = [
+  ["Por semana de embarazo", "Tú lo organizas", "Ya organizado"],
+  ["Ejercicios + alimentación + relajación", "Buscas por separado", "Juntos"],
+  ["Todo en un solo lugar", "Distintas fuentes", "Una plataforma"],
+  ["Tiempo de búsqueda", "Filtras y comparas", "Contenido reunido"],
+  ["Empiezas hoy mismo", "Por tu cuenta", "Tras confirmar tu pago"],
+  ["Precio", "Gratis, pero disperso", "US$ 4,00 · Pago único"],
+];
+const faqs = [
+  ["¿Es muy básico por US$ 4?", "Es acceso completo a toda la plataforma. El precio es bajo para que más mamás puedan prepararse."],
+  ["¿Y si no tengo tiempo?", "Puedes consultar y practicar pocos minutos al día, a tu ritmo y desde casa. Adapta los ejercicios a las indicaciones de tu profesional."],
+  ["¿Sirve para mi semana de embarazo?", "El contenido está organizado por semanas. Consulta con tu médico u obstetra cuáles ejercicios son adecuados para ti."],
+  ["¿Cómo recibo el acceso?", "Después de la confirmación de tu compra, recibirás las instrucciones de acceso en el correo que usaste para pagar."],
+  ["¿Funciona desde el celular?", "Sí. Puedes acceder desde tu celular, tablet o computadora."],
+  ["¿Es pago único?", "Sí. Un solo pago de US$ 4,00, sin mensualidades."],
+  ["¿Y si no me gusta?", "Tienes una garantía de 7 días. Puedes solicitar el reembolso dentro de ese plazo a través de Hotmart."],
+];
 
 export default function SalesPage() {
-  const [checkoutOpen, setCheckoutOpen] = useState(false);
-  const openCheckout = (event: MouseEvent<HTMLAnchorElement>) => {
-    try { trackInitiateCheckout(4); } catch { /* Analytics must never block checkout. */ }
-    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-    const destination = new URL(event.currentTarget.href);
-    const params = new URLSearchParams(window.location.search);
-    ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term", "sck", "xcod"].forEach(key => {
-      const value = params.get(key);
-      if (value && !destination.searchParams.has(key)) destination.searchParams.set(key, value);
-    });
-    event.preventDefault();
-    window.location.assign(destination.toString());
-  };
-  return <div className="birth-page birth-rebuilt">
-    <a className="birth-skip" href="#contenido">Ir al contenido</a>
-    <div className="birth-urgency" role="note">Cada semana cuenta. Haz espacio para preparar tu cuerpo.</div>
+  const hero = useRef<HTMLElement>(null);
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
+  useHalfPageView();
+  const reveal = useCallback((element: HTMLElement | null) => { if (element) element.classList.add("prep-reveal"); }, []);
+
+  return <div className="birth-page prep-page">
+    <a className="prep-skip" href="#contenido">Ir al contenido</a>
+    <div className="prep-topbar" role="note">🤰 Cada semana de tu embarazo cuenta. Empieza hoy tu preparación.</div>
     <main id="contenido">
-      <section className="birth-wrap new-hero" aria-labelledby="hero-title">
-        <div className="new-hero-copy">
-          <p className="birth-eyebrow">PREPARACIÓN REAL PARA EL PARTO</p>
-          <h1 id="hero-title">¡NO SUFRAS PARA TENER <span>A TU BEBÉ!</span></h1>
-          <p className="birth-lead">No llegues al parto sintiendo que no sabes qué hacer con tu cuerpo.</p>
-          <p>El miedo al dolor pesa. Tener una preparación organizada te da herramientas para afrontar ese momento con más confianza.</p>
-          <p className="new-hero-emphasis">Deja de acumular dudas.<br /><strong>Empieza a prepararte.</strong></p>
-
-        </div>
-        <figure className="new-hero-image"><img src="/images/pain-belly.webp" width={584} height={388} fetchPriority="high" alt="Mujer embarazada sentada, con una mano en el vientre y expresión de preocupación" /><figcaption>Tu preparación también merece un lugar en la espera.</figcaption></figure>
+      <section ref={hero} className="prep-hero" aria-labelledby="hero-title">
+        <div className="prep-wrap prep-hero-grid"><div className="prep-hero-copy"><p className="prep-label">PARA EMBARAZADAS QUE QUIEREN UN PARTO NATURAL</p><h1 id="hero-title">Llegar al parto sin saber qué hacer da miedo.<br /><span>Llegar preparada te cambia todo.</span></h1><p className="prep-lead">Tu preparación, <strong>semana por semana.</strong></p><p>Más de <strong>250 ejercicios en video, 100 recetas y técnicas de relajación pélvica.</strong> Todo en un solo lugar, desde tu celular.</p><CheckoutLink location="hero" /><PurchaseNote />{birthOffer.mothersStarted !== null && <p className="prep-real-count">Más de {birthOffer.mothersStarted.toLocaleString("es-MX")} mamás ya empezaron.</p>}</div><PhoneMockup /></div>
+        <div className="prep-wrap prep-vsl-block"><p className="prep-kicker">CONOCE LO QUE VAS A RECIBIR</p><h2>Tu preparación, por dentro.</h2><p>Mira cómo se organiza el contenido antes de dar el siguiente paso.</p><MiniVsl /></div>
       </section>
 
-      <section className="new-vsl-section birth-wrap" aria-label="Conoce la plataforma">
-        <p className="birth-eyebrow">ANTES DE DECIDIR, MIRA LO QUE RECIBES</p>
-        <h2>Conoce tu preparación <span>por dentro</span></h2>
-        <p>Una plataforma. Tu contenido organizado. Un punto de partida claro.</p>
-        <MiniVsl />
-        <div className="mt-6">
-          <OfferLink>Quiero preparar mi cuerpo para el parto</OfferLink>
-          <p className="birth-micro">Acceso inmediato · 100% online · 15–20 minutos para tu rutina</p>
-        </div>
-      </section>
+      <section className="prep-pain" ref={reveal}><div className="prep-wrap prep-narrow"><SectionTitle kicker="NO TIENES QUE SEGUIR BUSCANDO SOLA">Nadie te explica esto.<br /><span>Y el tiempo no se detiene.</span></SectionTitle><div className="prep-pain-block"><span>01</span><p>Tu panza crece cada semana…<br /><strong>y tu preparación sigue esperando.</strong></p></div><div className="prep-pain-block"><span>02</span><p>Buscas en Google, en TikTok, en Instagram.</p><p>Un video dice una cosa, otro dice lo contrario. Terminas con <strong>más dudas que respuestas.</strong></p></div><div className="prep-pain-block"><span>03</span><p>Las semanas pasan. Y cuando te das cuenta, ya estás en el último mes sin haber encontrado una rutina para ti.</p></div><div className="prep-pain-block"><span>04</span><p>¿Y si llega el momento y te sientes bloqueada por el miedo, sin técnicas para relajarte y respirar?</p></div><div className="prep-pain-block"><span>05</span><p>No quieres mirar atrás y pensar:<br /><strong>«Ojalá hubiera empezado antes».</strong></p></div><p className="prep-pain-close">No es falta de ganas. Es falta de una guía clara, ordenada y hecha para ti.</p><CheckoutLink location="pain">SÍ, QUIERO PREPARARME AHORA</CheckoutLink></div></section>
 
-      <section className="birth-pain new-pain">
-        <div className="birth-wrap">
-          <div className="birth-section-heading"><p className="birth-eyebrow">EL MIEDO ES REAL. TU PREPARACIÓN TAMBIÉN PUEDE SERLO.</p><h2>Cuando llegan las contracciones,<br /><span>quieres tener herramientas.</span></h2><p>Imaginar ese momento sin saber cómo respirar, moverte o relajarte puede llenarte de dudas. No necesitas seguir buscando respuestas sueltas hasta el último día.</p></div>
-          <div className="new-pain-copy"><p>El trabajo de parto puede ser intenso. Cada mujer lo vive de forma distinta, incluso cuando se ha preparado.</p><p><strong>Conoce tu cuerpo. Practica. Resuelve tus dudas con tu equipo de salud.</strong> Esa preparación puede empezar antes de llegar al hospital.</p></div>
-          <div className="new-pain-videos">
-            <figure><video src="/videos/experiencia-parto-1.mp4" poster="/images/labor-1.webp" controls playsInline preload="none" aria-label="Escena de contracciones durante el trabajo de parto" /><figcaption>El trabajo de parto puede sentirse intenso.</figcaption></figure>
-            <figure><video src="/videos/experiencia-parto-2.mp4" poster="/images/labor-2.webp" controls playsInline preload="none" aria-label="Escena de una mujer durante el trabajo de parto" /><figcaption>Cada experiencia es diferente.</figcaption></figure>
-          </div>
-          <p className="new-context-note">Escenas de trabajo de parto. No muestran si estas mujeres se prepararon ni permiten atribuir la intensidad del dolor a su preparación.</p>
-        </div>
-      </section>
+      <section className="prep-section prep-cream" ref={reveal}><div className="prep-wrap"><SectionTitle kicker="EL COSTO DE SEGUIR BUSCANDO">Lo que pasa cuando improvisas tu preparación</SectionTitle><div className="prep-agitation-grid">{agitation.map(({icon:Icon,title,text})=><article className="prep-small-card" key={title}><Icon size={26} aria-hidden="true" /><h3>{title}</h3><p>{text}</p></article>)}</div><p className="prep-section-close">Cada semana sin preparación<br /><strong>es una semana que no vuelve.</strong></p></div></section>
 
-      <section className="new-truth birth-wrap" aria-labelledby="amplify-title">
-        <p className="birth-eyebrow">LO QUE CASI NADIE TE EXPLICA</p>
-        <h2 id="amplify-title">Cuando el cuerpo no está preparado para dilatar… <span>el dolor se multiplica</span></h2>
-        <p>La mayoría de las mujeres llega al parto sin haber trabajado el cuello del útero ni la pelvis.</p>
-        <p>Cuando el bebé empieza a bajar y no encuentra paso fácil, el cuerpo se resiste con fuerza. Es ahí donde el dolor se vuelve mucho más intenso de lo necesario.</p>
-        <div className="birth-highlight">Y la mayoría solo lo descubre cuando ya está en trabajo de parto… demasiado tarde.</div>
-      </section>
+      <section className="prep-section prep-mechanism" ref={reveal}><div className="prep-wrap prep-narrow"><SectionTitle kicker="DEJA DE JUNTAR CONSEJOS SUELTOS">Por eso creamos la <span>Preparación Completa para el Parto Natural.</span></SectionTitle><p>Una plataforma donde todo está ordenado según <strong>tu semana de embarazo.</strong></p><p>Abres, encuentras el contenido de tu etapa y organizas tu rutina. Sin perder horas buscando por dónde empezar.</p><div className="prep-week-mechanism"><CalendarDays size={32} aria-hidden="true" /><strong>SEMANA POR SEMANA</strong><span>Tu preparación te espera donde estés.</span></div><div className="prep-steps"><span><b>1</b>Abre tu plataforma</span><span><b>2</b>Encuentra tu etapa</span><span><b>3</b>Dedícate un momento</span></div><CheckoutLink location="mechanism">EMPEZAR HOY MI PREPARACIÓN</CheckoutLink></div></section>
 
-      <section className="new-truth birth-wrap" aria-labelledby="bridge-title">
-        <p className="birth-eyebrow">LA BUENA NOTICIA</p>
-        <h2 id="bridge-title">Todavía estás a tiempo <span>de cambiar eso</span></h2>
-        <p>Preparar tu cuerpo antes del parto puede marcar una diferencia real.</p>
-        <p>Con ejercicios específicos de dilatación, alimentación que ayuda a suavizar los tejidos y técnicas de relajación pélvica, muchas mujeres reportan menos resistencia, menos miedo y una experiencia de parto mucho más llevadera.</p>
-        <p><strong>No se trata de magia. Se trata de preparación.</strong></p>
-        <OfferLink>Quiero empezar mi preparación</OfferLink>
-      </section>
+      <section className="prep-section prep-desire" ref={reveal}><div className="prep-wrap prep-desire-grid"><div><SectionTitle kicker="PIENSA EN ESE MOMENTO">Imagina llegar a tu parto así…</SectionTitle><ul className="prep-check-list">{["Con un cuerpo más fuerte y móvil para afrontar ese momento.","Sabiendo respirar y relajarte cuando más lo necesites.","Con la confianza de haberte dedicado tiempo y preparación.","Con más calma y herramientas para vivir lo que venga.","Disfrutando tu embarazo con una guía, sin buscar respuestas a cada rato."].map(text=><li key={text}><Check size={21} aria-hidden="true" /><span>{text}</span></li>)}</ul><p className="prep-desire-close">Eso es lo que buscas cuando<br /><strong>dejas de improvisar.</strong></p><CheckoutLink location="desire">SÍ, QUIERO PREPARARME AHORA</CheckoutLink></div><img src="/images/calm-mother.webp" width={576} height={720} alt="Mujer embarazada tranquila, dedicando un momento a su preparación" loading="lazy" decoding="async" /></div></section>
 
-      <section className="new-truth birth-wrap">
-        <p className="birth-eyebrow">LA VERDAD QUE NADIE TE CUENTA</p><h2>No puedes controlar todo.<br /><span>Sí puedes prepararte.</span></h2>
-        <div className="birth-highlight">Tu preparación merece algo mejor que videos guardados al azar.</div>
-        <p>Reunir movimiento, alimentación y relajación en una rutina te ayuda a dejar de improvisar. La plataforma organiza esos contenidos para que sepas qué tienes disponible y lo revises con tu profesional.</p>
-        <p className="new-clinical-note">La dilatación es un proceso fisiológico. Ninguna rutina ni receta garantiza abrir el cuello del útero, reducir el dolor o evitar intervenciones.</p>
-      </section>
+      <section className="prep-section" ref={reveal}><div className="prep-wrap"><SectionTitle kicker="TU ACCESO ES COMPLETO">Lo que vas a recibir.<br /><span>Y lo que puede aportar a tu día.</span></SectionTitle><div className="prep-content-grid">{contents.map(({icon:Icon,number,title,text})=><article className="prep-content-card" key={title}><div><span>{number}</span><Icon size={25} aria-hidden="true" /></div><h3>{title}</h3><p>{text}</p></article>)}</div>{birthOffer.bonuses.length>0 && <div className="prep-bonuses"><h3>También incluye estos bonos</h3>{birthOffer.bonuses.map(bonus=><article key={bonus.title}><strong>{bonus.title}</strong><p>{bonus.description}</p></article>)}</div>}<div className="prep-center"><CheckoutLink location="contents" /></div></div></section>
 
-      <section className="birth-benefits new-benefits">
-        <div className="birth-wrap"><div className="birth-section-heading"><p className="birth-eyebrow">ESTO ES LO QUE TE LLEVAS</p><h2>Tu preparación completa.<br /><span>Todo en un solo lugar.</span></h2><p>Abre la plataforma y encuentra tus contenidos, sin perderte entre publicaciones.</p></div>
-          <div className="birth-benefit-grid">{benefits.map(({number,title,text,icon:Icon}) => <article className="birth-benefit" key={title}><div className="birth-benefit-top"><strong>{number}</strong><Icon size={26} aria-hidden="true" /></div><h3>{title}</h3><p>{text}</p></article>)}</div>
-          <div className="new-routine"><div><strong>Según tu semana</strong><p>Contenido organizado para consultar por etapa.</p></div><div><strong>Desde tu celular</strong><p>Dedica 15–20 minutos a revisar y organizar tu preparación.</p></div></div>
-          <div className="birth-center"><OfferLink>Quiero ver mi acceso completo</OfferLink></div>
-        </div>
-      </section>
+      <section className="prep-section prep-cream" ref={reveal}><div className="prep-wrap prep-narrow"><SectionTitle>Seguir buscando solita vs.<br /><span>tener todo en un solo lugar.</span></SectionTitle><div className="prep-table-wrap"><table className="prep-compare"><caption className="prep-sr-only">Comparación entre buscar contenido por separado y la plataforma</caption><thead><tr><th scope="col">Tu preparación</th><th scope="col">Contenido suelto<br />en internet</th><th scope="col">Preparación<br />Completa</th></tr></thead><tbody>{comparison.map(([label,free,complete])=><tr key={label}><th scope="row">{label}</th><td>{free}</td><td><Check size={16} aria-hidden="true" />{complete}</td></tr>)}</tbody></table></div><p className="prep-table-note">Comparación de formatos. Los contenidos gratuitos y su organización pueden variar.</p></div></section>
 
-      <section className="new-confidence birth-wrap">
-        <img src="/images/calm-mother.webp" width={576} height={720} loading="lazy" decoding="async" alt="Mujer embarazada tranquila mirando su celular" />
-        <div><p className="birth-eyebrow">MENOS BÚSQUEDAS. MÁS CLARIDAD.</p><h2>Ya estás preparando todo para tu bebé.<br /><span>Ahora piensa en ti.</span></h2><p>Imagina abrir tu plataforma y encontrar el contenido de tu etapa. Elegir un momento, dejar el celular de lado después y sentir que ya diste un paso en tu preparación.</p><p><strong>No tienes que saberlo todo hoy. Necesitas un lugar por donde empezar.</strong></p><span className="new-access-pill"><ShieldCheck size={18} aria-hidden="true" />Acceso online · Pago único · Hotmart</span></div>
-      </section>
+      <section className="prep-section" ref={reveal}><div className="prep-wrap prep-narrow"><SectionTitle kicker="ESTA PREPARACIÓN ES PARA TI SI…">Quieres llegar con más confianza.<br /><span>Y dejar de hacerlo todo sola.</span></SectionTitle><ul className="prep-check-list prep-for-list">{["Estás embarazada y quieres prepararte para un parto natural.","Quieres dejar de depender de contenido suelto.","Prefieres consultar y practicar en casa, a tu ritmo.","Quieres llegar con más confianza y menos miedo."].map(text=><li key={text}><Check size={21} aria-hidden="true" /><span>{text}</span></li>)}</ul><p className="prep-education"><ShieldCheck size={22} aria-hidden="true" /><span>Contenido educativo. No sustituye a tu médico u obstetra. Consulta con tu profesional antes de iniciar cualquier ejercicio o cambiar tu alimentación.</span></p></div></section>
 
-      <FeedbackCarousel />
+      {birthOffer.testimonials.length>=3 && <section className="prep-section prep-cream"><div className="prep-wrap"><SectionTitle>Experiencias reales de otras mamás</SectionTitle><div className="prep-testimonials">{birthOffer.testimonials.slice(0,6).map(item=><figure key={item.name+item.country}><img src={item.image} alt={`Testimonio compartido por ${item.name}`} loading="lazy" decoding="async" width={480} height={360}/><blockquote>«{item.quote}»</blockquote><figcaption><strong>{item.name}</strong> · {item.country}</figcaption></figure>)}</div></div></section>}
 
-      <section id="oferta" className="birth-final" aria-labelledby="offer-title"><div className="birth-wrap birth-final-layout"><div className="birth-final-copy"><p className="birth-eyebrow">EL PRIMER PASO PUEDE SER HOY</p><h2 id="offer-title">Deja de posponer<br /><span>tu preparación.</span></h2><p>No necesitas esperar a tener más miedo. Empieza a conocer tu cuerpo, organiza tu rutina y llega con más herramientas a ese momento.</p><p><strong>Tu bebé tiene su lista. Tú también mereces la tuya.</strong></p></div><div className="birth-offer"><span className="birth-offer-label">PLATAFORMA COMPLETA · PAGO ÚNICO</span><h3>Preparación Completa para el Parto Natural</h3><ul>{includes.map(item=><li key={item}><Check size={18} aria-hidden="true" />{item}</li>)}</ul><div className="birth-price"><span>Todo tu acceso por</span><strong><small>US$</small> 4,00</strong></div><button type="button" className="birth-cta" onClick={()=>setCheckoutOpen(true)}><span>Quiero preparar mi cuerpo ahora</span><ArrowRight size={22} aria-hidden="true" /></button><p className="birth-micro">Revisa tu acceso antes de continuar al pago</p><div className="birth-payment"><ShieldCheck size={17} aria-hidden="true" />Pago seguro a través de Hotmart</div></div></div></section>
+      <section id="oferta" className="prep-section prep-offer-section" ref={reveal}><div className="prep-wrap prep-offer-layout"><div><p className="prep-kicker">TODO LO QUE VISTE. UN SOLO ACCESO.</p><h2>Tu preparación no necesita más vueltas.<br /><span>Necesita un comienzo.</span></h2><p>Ejercicios, alimentación y relajación. Todo organizado para que dejes de buscar cada recurso por separado.</p><div className="prep-offer-note"><Heart size={25} aria-hidden="true" /><p>Ya estás pensando en todo para tu bebé.<br /><strong>Ahora guarda un momento para ti.</strong></p></div></div><article className="prep-offer-card"><span className="prep-offer-label">ACCESO COMPLETO · PAGO ÚNICO</span><h3>{birthOffer.name}</h3><ul>{offerIncludes.map(item=><li key={item}><Check size={19} aria-hidden="true" />{item}</li>)}</ul>{birthOffer.referencePrice!==null&&birthOffer.referencePrice>4&&<p className="prep-reference">Valor de referencia: <s>US$ {birthOffer.referencePrice.toFixed(2).replace(".",",")}</s></p>}<p className="prep-price-label">Hoy, todo tu acceso por</p><div className="prep-price"><small>US$</small><strong>4,00</strong></div><p className="prep-price-copy">Por un pequeño pago, tu preparación completa en un solo lugar.</p><CheckoutLink location="offer" /><p className="prep-micro">Pago único · Sin mensualidades · Acceso tras confirmar el pago</p><div className="prep-guarantee"><ShieldCheck size={27} aria-hidden="true" /><div><strong>Garantía de 7 días</strong><span>Puedes solicitar el reembolso dentro de ese plazo.</span></div></div><div className="prep-safe-pay"><LockKeyhole size={17} aria-hidden="true" /><span>Pago seguro con Hotmart</span><CreditCard size={21} aria-hidden="true" /></div></article></div></section>
+
+      <section className="prep-section" ref={reveal}><div className="prep-wrap prep-narrow"><SectionTitle kicker="RESOLVAMOS TUS ÚLTIMAS DUDAS">Antes de empezar…</SectionTitle><div className="prep-faq">{faqs.map(([question,answer],index)=><article key={question}><h3><button type="button" aria-expanded={openFaq===index} aria-controls={`faq-answer-${index}`} id={`faq-question-${index}`} onClick={()=>setOpenFaq(openFaq===index?null:index)}>{question}<ChevronDown size={21} aria-hidden="true" /></button></h3><div id={`faq-answer-${index}`} role="region" aria-labelledby={`faq-question-${index}`} hidden={openFaq!==index}><p>{answer}</p></div></article>)}</div></div></section>
+
+      <section className="prep-section prep-final" ref={reveal}><div className="prep-wrap prep-narrow"><p className="prep-kicker">CADA SEMANA CUENTA</p><h2>Tu bebé está en camino.<br /><span>Tu preparación no puede esperar.</span></h2><p>No dejes para después ese momento para ti. Empieza hoy, con una guía organizada y desde tu celular.</p><CheckoutLink location="final" /><PurchaseNote /></div></section>
     </main>
-    <ProofBar />
-    <footer className="birth-footer birth-wrap"><p>Preparación Completa para el Parto Natural</p><p>Contenido educativo. Consulta con tu profesional de salud antes de iniciar ejercicios o modificar tu alimentación. No sustituye la atención prenatal ni garantiza dilatación, un parto sin dolor o un tipo de parto.</p></footer>
-
-    <Dialog.Root open={checkoutOpen} onOpenChange={setCheckoutOpen}>
-      <Dialog.Portal><Dialog.Overlay className="new-modal-overlay" /><Dialog.Content className="new-checkout-modal" aria-describedby="checkout-description">
-        <Dialog.Close className="new-modal-close" aria-label="Cerrar resumen de la oferta"><X size={24} /></Dialog.Close>
-        <span className="birth-eyebrow">TU PREPARACIÓN EMPIEZA CON UNA DECISIÓN</span>
-        <Dialog.Title className="new-modal-title">Último paso para preparar tu cuerpo</Dialog.Title>
-        <Dialog.Description id="checkout-description">Deja de buscar cada contenido por separado. Ten ejercicios, recetas y relajación organizados para empezar a planear tu rutina hoy.</Dialog.Description>
-        <div className="new-modal-summary"><strong>Tu plataforma completa incluye:</strong><ul>{includes.map(item=><li key={item}><Check size={18} aria-hidden="true" />{item}</li>)}</ul></div>
-        <p className="new-modal-start">No tienes que resolver todas tus dudas ahora. Puedes dar el primer paso y revisar el contenido con tu profesional de salud.</p>
-        <div className="new-modal-price"><span>Un solo pago · Acceso online</span><strong>US$ 4,00</strong></div>
-        <a className="birth-cta birth-checkout" href={checkoutUrl} onClick={openCheckout}><span>Continuar al pago seguro</span><ArrowRight size={22} aria-hidden="true" /></a>
-        <p className="new-modal-security"><ShieldCheck size={17} aria-hidden="true" />Serás dirigida al checkout de Hotmart.</p>
-      </Dialog.Content></Dialog.Portal>
-    </Dialog.Root>
+    <footer className="prep-footer prep-wrap"><strong>{birthOffer.name}</strong><p>Contenido educativo. La preparación no garantiza dilatación, ausencia de dolor ni un tipo de parto. Mantén tu seguimiento prenatal.</p></footer>
+    <StickyMobileCheckout hero={hero} />
+    <DesktopExitOffer />
   </div>;
 }
 
@@ -183,7 +231,6 @@ function MiniVsl() {
     <div className="birth-vsl" aria-label="Presentación de la plataforma">
       <div className="birth-vsl-heading"><Play size={16} aria-hidden="true" /><span>MIRA CÓMO FUNCIONA LA PLATAFORMA</span></div>
       <div className="birth-vsl-player">
-        <span className="birth-vsl-live" aria-hidden="true"><i />Muchas mujeres están viendo esto ahora</span>
         <video
           ref={videoRef}
           src="/mini-vsl-parto-natural.mp4"
@@ -232,7 +279,6 @@ function MiniVsl() {
           <div className="birth-vsl-error" role="alert">
             <p>No se pudo reproducir el video. Comprueba tu conexión y vuelve a intentarlo.</p>
             <button type="button" onClick={retryVideo}>Volver a cargar</button>
-            <a href="/mini-vsl-parto-natural.mp4" target="_blank" rel="noopener noreferrer">Abrir el video</a>
           </div>
         )}
       </div>
@@ -246,43 +292,3 @@ function MiniVsl() {
 
 
 
-function FeedbackCarousel() {
-  const [paused, setPaused] = useState(false);
-  return (
-    <section className={`birth-testimonials birth-feedback ${paused ? "birth-feedback-paused" : ""}`} aria-labelledby="feedback-title">
-      <div className="birth-wrap">
-        <div className="birth-section-heading">
-          <p className="birth-eyebrow">EXPERIENCIAS COMPARTIDAS</p>
-          <h2 id="feedback-title">Lo que dicen las mamás que ya <span>prepararon su cuerpo</span></h2>
-        </div>
-        <div className="birth-feedback-toolbar"><p>Lee sus relatos, a tu ritmo.</p><button type="button" onClick={() => setPaused((value) => !value)} aria-pressed={paused} aria-label={paused ? "Reanudar testimonios automáticos" : "Pausar testimonios automáticos"}>{paused ? "Reanudar" : "Pausar"}</button></div>
-      </div>
-      <div className="birth-feedback-window" role="region" aria-label="Testimonios en movimiento" tabIndex={0}>
-        <div className="birth-feedback-track">
-          {[0,1].map((group) => (
-            <div className="birth-feedback-group" key={group} aria-hidden={group === 1 ? true : undefined}>
-              {testimonials.map((item,index) => (
-                <figure className="birth-testimonial" key={item.name}>
-                  <div className="birth-testimonial-photo"><img src={`/images/mama-${index+1}.webp`} alt={`Fotografía de la galería de maternidad ${index+1}`} width={480} height={600} loading="lazy" decoding="async" /><span>GALERÍA DE MATERNIDAD</span></div>
-                  <div className="birth-testimonial-text"><span className="birth-quote-mark" aria-hidden="true">“</span><blockquote>{item.quote}</blockquote><figcaption><span className="birth-avatar" aria-hidden="true">{item.initials}</span><span><strong>{item.name}</strong><span>{item.country}</span></span></figcaption></div>
-                </figure>
-              ))}
-            </div>
-          ))}
-        </div>
-      </div>
-      <div className="birth-wrap"><p className="birth-testimonial-note">Relatos e imágenes facilitados por la marca. Las fotos de galería no identifican a las autoras. Las experiencias individuales no garantizan resultados.</p></div>
-    </section>
-  );
-}
-
-
-const proofMessages = ["🔥 Varias mujeres están preparando su cuerpo ahora", "⚡ Acceso inmediato disponible", "⏳ Oferta por tiempo limitado", "✨ Últimas plazas con acceso inmediato"];
-function ProofBar() {
-  const [index, setIndex] = useState(0);
-  useEffect(() => {
-    const id = window.setInterval(() => setIndex((i) => (i + 1) % proofMessages.length), 4500);
-    return () => window.clearInterval(id);
-  }, []);
-  return <a href="#oferta" className="birth-proof-bar" aria-live="polite"><span key={index}>{proofMessages[index]}</span></a>;
-}
