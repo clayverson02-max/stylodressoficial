@@ -268,3 +268,80 @@ html:has(.birth-page){scroll-behavior:smooth}
  .birth-vsl-buffering svg{animation:none}
  .birth-vsl-progress>div{transition:none}
 }
+
+
+/* Complete mobile-first narrative and accessible checkout summary. */
+.birth-rebuilt{overflow-x:clip}
+.birth-rebuilt h1{font-size:clamp(42px,7vw,76px);line-height:1.03;letter-spacing:-.045em}
+.birth-rebuilt h2{font-size:clamp(32px,4.5vw,50px);line-height:1.12;letter-spacing:-.035em}
+.birth-rebuilt p{line-height:1.7}
+.new-hero{display:grid;gap:28px;padding-block:36px}
+.new-hero-copy h1{margin:14px 0 22px}
+.new-hero-copy .birth-lead{font-size:23px;line-height:1.4;font-weight:800;color:#9d174d}
+.new-hero-copy>p{margin-bottom:20px}
+.new-hero-copy .new-hero-emphasis{padding-left:18px;border-left:4px solid #be185d;font-size:22px;line-height:1.5}
+.new-hero-emphasis strong{color:#9d174d}
+.new-hero-image{margin:0;border-radius:24px;overflow:hidden;background:#fdf2f8;border:1px solid #fbcfe8}
+.new-hero-image img{width:100%;height:auto;display:block;aspect-ratio:1.5;object-fit:cover}
+.new-hero-image figcaption{padding:16px 20px;color:#431323;font-size:16px;font-weight:700;line-height:1.5}
+.new-vsl-section{text-align:center;padding-block:20px 48px}
+.new-vsl-section>p:not(.birth-eyebrow){max-width:550px;margin:18px auto 25px}
+.new-vsl-section .birth-vsl{width:100%;max-width:360px}
+.new-pain{padding-block:46px}
+.new-pain .birth-section-heading{max-width:780px}
+.new-pain-copy{max-width:760px;margin:0 auto 28px;text-align:left}
+.new-pain-copy p+p{margin-top:16px}
+.new-pain-videos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;max-width:650px;margin:auto}
+.new-pain-videos figure{margin:0;overflow:hidden;border-radius:18px;background:#fff;border:1px solid #fbcfe8;box-shadow:0 6px 20px #8318430a}
+.new-pain-videos video{display:block;width:100%;aspect-ratio:9/16;object-fit:contain;background:#21151b}
+.new-pain-videos figcaption{font-size:15px;line-height:1.5;padding:14px;font-weight:700;color:#21151b}
+.birth-page .new-context-note{max-width:650px;margin:16px auto 0;font-size:14px;color:#51404a;line-height:1.6;text-align:center}
+.new-truth{max-width:800px;padding-block:48px;text-align:center}
+.new-truth .birth-highlight{margin:25px 0;font-size:clamp(24px,3vw,32px);line-height:1.35}
+.new-truth p+p{margin-top:20px}
+.birth-page .new-clinical-note{font-size:15px;line-height:1.6;color:#4e3943}
+.new-benefits{background:#fdf2f8;padding-block:46px}
+.new-benefits .birth-benefit{background:#fff}
+.new-benefits .birth-benefit p{margin-bottom:0}
+.new-routine{display:grid;gap:16px;margin:22px 0 30px;padding:24px;border:1px solid #fbcfe8;border-radius:18px;background:#fff}
+.new-routine strong{display:block;font-size:21px;color:#9d174d}
+.new-routine p{margin:6px 0 0;font-size:17px}
+.new-confidence{display:grid;gap:26px;padding-block:46px}
+.new-confidence>img{width:100%;height:290px;object-fit:cover;object-position:center 25%;border-radius:22px;order:2}
+.new-confidence>div{order:1}
+.new-confidence h2{margin-bottom:22px}
+.new-confidence p+p{margin-top:20px}
+.new-access-pill{display:inline-flex;align-items:center;gap:8px;padding:12px 15px;background:#fce7f3;border-radius:12px;color:#681031;font-size:14px;font-weight:700;margin-top:22px}
+.birth-rebuilt .birth-final{padding-block:46px}
+.birth-rebuilt .birth-final-copy p+p{margin-top:20px}
+.birth-rebuilt .birth-cta{cursor:pointer;min-height:64px;white-space:normal;text-align:center}
+.birth-rebuilt .birth-cta:focus-visible,.new-checkout-modal a:focus-visible,.new-modal-close:focus-visible{outline:3px solid #db2777;outline-offset:5px}
+.new-modal-overlay{position:fixed;inset:0;z-index:1000;background:#24101dcc;backdrop-filter:blur(3px)}
+.new-checkout-modal{position:fixed;z-index:1001;top:50%;left:50%;transform:translate(-50%,-50%);width:calc(100% - 24px);max-width:510px;max-height:calc(100dvh - 24px);overflow-y:auto;overscroll-behavior:contain;padding:32px 22px 24px;border:1px solid #fbcfe8;border-radius:24px;background:#fff;color:#171217;box-shadow:0 24px 100px #0005;font-family:Inter,system-ui,sans-serif;-webkit-overflow-scrolling:touch}
+.new-modal-close{position:absolute;top:12px;right:12px;display:grid;place-items:center;width:44px;height:44px;border-radius:50%;background:#fce7f3;color:#831843;cursor:pointer}
+.new-checkout-modal>.birth-eyebrow{display:block;padding-right:38px;font-size:11px;font-weight:800;letter-spacing:.08em;color:#9d174d;line-height:1.6;margin:0 0 18px}
+.new-modal-title{font-size:32px;line-height:1.1;font-weight:800;letter-spacing:-.035em;margin:0 0 18px}
+.new-checkout-modal>p{font-size:18px;line-height:1.6;color:#30212a;margin:0 0 20px}
+.new-modal-summary{padding:20px;background:#fdf2f8;border:1px solid #fbcfe8;border-radius:16px;margin:20px 0;font-size:18px}
+.new-modal-summary ul{padding:0;margin:16px 0 0;list-style:none;display:grid;gap:12px}
+.new-modal-summary li{display:flex;align-items:flex-start;gap:10px;font-size:17px;line-height:1.5}
+.new-modal-summary svg{flex:none;color:#be185d;margin-top:3px}
+.new-checkout-modal .new-modal-start{font-size:16px}
+.new-modal-price{display:flex;flex-direction:column;gap:4px;margin:20px 0}
+.new-modal-price span{font-size:15px;color:#4e3943;font-weight:600}
+.new-modal-price strong{font-size:48px;line-height:1.15;font-weight:800;letter-spacing:-.04em}
+.new-checkout-modal .birth-cta{display:flex;align-items:center;justify-content:center;gap:12px;padding:20px 16px;border-radius:14px;background:#be185d;color:#fff;font-size:18px;line-height:1.4;font-weight:800;text-decoration:none;text-align:center;min-height:64px}
+.new-checkout-modal .new-modal-security{display:flex;align-items:center;justify-content:center;gap:7px;text-align:center;font-size:13px;margin:16px 0 0;color:#51404a}
+@media(min-width:768px){
+ .new-hero{grid-template-columns:1.15fr 1fr;align-items:center;gap:45px;padding-block:56px}
+ .new-hero-image img{aspect-ratio:4/5;object-position:40% center}
+ .new-hero-copy .birth-cta{max-width:500px}
+ .new-vsl-section{padding-block:32px 58px}
+ .new-pain,.new-benefits,.new-truth,.new-confidence{padding-block:64px}
+ .new-routine{grid-template-columns:1fr 1fr;gap:30px}
+ .new-confidence{grid-template-columns:0.8fr 1.2fr;align-items:center;gap:50px}
+ .new-confidence>img{order:1;height:440px}
+ .new-confidence>div{order:2}
+ .new-checkout-modal{padding:36px}
+}
+@media(max-width:359px){.new-pain-videos{grid-template-columns:1fr;max-width:250px}.new-checkout-modal{padding-inline:18px}.new-modal-title{font-size:28px}}
