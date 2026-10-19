@@ -69,6 +69,23 @@ export default function SalesPage() {
         </div>
       </section>
 
+      <section className="new-truth birth-wrap" aria-labelledby="amplify-title">
+        <p className="birth-eyebrow">LO QUE CASI NADIE TE EXPLICA</p>
+        <h2 id="amplify-title">Cuando el cuerpo no está preparado para dilatar… <span>el dolor se multiplica</span></h2>
+        <p>La mayoría de las mujeres llega al parto sin haber trabajado el cuello del útero ni la pelvis.</p>
+        <p>Cuando el bebé empieza a bajar y no encuentra paso fácil, el cuerpo se resiste con fuerza. Es ahí donde el dolor se vuelve mucho más intenso de lo necesario.</p>
+        <div className="birth-highlight">Y la mayoría solo lo descubre cuando ya está en trabajo de parto… demasiado tarde para cambiar algo.</div>
+      </section>
+
+      <section className="new-truth birth-wrap" aria-labelledby="bridge-title">
+        <p className="birth-eyebrow">LA BUENA NOTICIA</p>
+        <h2 id="bridge-title">Todavía estás a tiempo <span>de cambiar eso</span></h2>
+        <p>Preparar tu cuerpo antes del parto puede marcar una diferencia real.</p>
+        <p>Con ejercicios específicos de dilatación, alimentación que ayuda a suavizar los tejidos y técnicas de relajación pélvica, muchas mujeres reportan menos resistencia, menos miedo y una experiencia de parto mucho más llevadera.</p>
+        <p><strong>No se trata de magia. Se trata de preparación.</strong></p>
+        <OfferLink>Quiero empezar mi preparación</OfferLink>
+      </section>
+
       <section className="new-truth birth-wrap">
         <p className="birth-eyebrow">LA VERDAD QUE NADIE TE CUENTA</p><h2>No puedes controlar todo.<br /><span>Sí puedes prepararte.</span></h2>
         <div className="birth-highlight">Tu preparación merece algo mejor que videos guardados al azar.</div>
