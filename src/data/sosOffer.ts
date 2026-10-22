@@ -2,7 +2,7 @@
 export const sosOffer = {
   name: "SOS Bebê – Guia Completo da Dra. Valentina",
   checkout: "https://pay.cakto.com.br/gwvroes_1229714",
-  price: 17.90,
+  price: 9.90,
   guaranteeDays: 7,
   doctorPhoto: "/images/dra-valentina.webp" as string | null, // Supplied portrait; keep source watermark intact.
   doctorCredentials: null as string | null, // [PLACEHOLDER] validated specialty, CRM and experience

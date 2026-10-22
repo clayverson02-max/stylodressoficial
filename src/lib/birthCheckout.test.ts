@@ -11,7 +11,7 @@ describe("birth checkout attribution and event delivery", () => {
   it("emits checkout before navigating and gives the pixel 150ms", () => {
     const navigate = vi.fn();
     beginBirthCheckout("https://pay.cakto.com.br/gwvroes_1229714", navigate);
-    expect(trackInitiateCheckout).toHaveBeenCalledWith(17.90);
+    expect(trackInitiateCheckout).toHaveBeenCalledWith(9.90);
     vi.advanceTimersByTime(149);
     expect(navigate).not.toHaveBeenCalled();
     vi.advanceTimersByTime(1);

@@ -50,7 +50,7 @@ export const trackStandard = (
   void sendToServer(eventName, id, customData);
 };
 
-export const trackInitiateCheckout = (value = 17.90) => {
+export const trackInitiateCheckout = (value = 9.90) => {
   trackStandard("InitiateCheckout", {
     value,
     currency: "BRL",

@@ -28,7 +28,7 @@ describe("reading and exit-intent behavior", () => {
     expect(trackStandard).not.toHaveBeenCalled();
     vi.stubGlobal("scrollY", 700);
     act(() => { fireEvent.scroll(window); queued?.(1); });
-    expect(trackStandard).toHaveBeenCalledWith("ViewContent", expect.objectContaining({value:17.90,currency:"BRL"}));
+    expect(trackStandard).toHaveBeenCalledWith("ViewContent", expect.objectContaining({value:9.90,currency:"BRL"}));
     act(() => { fireEvent.scroll(window); queued?.(2); });
     expect(trackStandard).toHaveBeenCalledOnce();
   });
