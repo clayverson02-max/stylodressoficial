@@ -59,7 +59,7 @@ describe("SOS Bebê interactions", () => {
     expect(links[0].closest(".offer-card")).not.toBeNull();
     expect(document.querySelectorAll("[data-offer-scroll]")).toHaveLength(4);
     links.forEach(link => expect(link.href).toBe("https://pay.cakto.com.br/gwvroes_1229714"));
-    expect(document.body.textContent).not.toMatch(/Hotmart|US\$|dilatación|gestación/);
+    expect(document.body.textContent).not.toMatch(/Cakto|Hotmart|US\$|dilatación|gestación/);
   });
   it("updates the checklist without collecting personal data", () => {
     render(<SalesPage />);
