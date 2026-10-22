@@ -3,7 +3,6 @@ import { Play, X } from "lucide-react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { sosMedia } from "@/data/sosMedia";
 import { trackCustom } from "@/lib/metaPixel";
-import { OfferLink } from "./OfferLink";
 import { scrollToSection } from "@/lib/scrollToOffer";
 
 const COMPLETED_KEY = "sos-vsl-complete-v1";
@@ -13,7 +12,6 @@ export function MiniVsl() {
   const [open, setOpen] = useState(false);
   const [complete, setComplete] = useState(false);
   const [safetyExit, setSafetyExit] = useState(false);
-  const [previouslyCompleted, setPreviouslyCompleted] = useState(false);
   const [needsPlay, setNeedsPlay] = useState(false);
   const video = useRef<HTMLVideoElement>(null);
   const progress = useRef<HTMLDivElement>(null);
@@ -21,11 +19,7 @@ export function MiniVsl() {
   const lastAllowed = useRef(0);
   const lastProgress = useRef(0);
   const restoring = useRef(false);
-  const canClose = complete || safetyExit || previouslyCompleted;
 
-  useEffect(() => {
-    try { setPreviouslyCompleted(sessionStorage.getItem(COMPLETED_KEY) === "1"); } catch { /* Session storage can be disabled. */ }
-  }, []);
   useEffect(() => {
     if (!open) return;
     // Radix locks document scrolling; fixed content also accounts for the dynamic mobile viewport.
@@ -70,7 +64,7 @@ export function MiniVsl() {
   const closeVideo = () => { video.current?.pause(); setOpen(false); };
   const mark = (event: string) => { if (!sent.current.has(event)) { sent.current.add(event); safeTrack(event); } };
   const finish = () => {
-    mark("VSL_Complete"); setComplete(true); setPreviouslyCompleted(true);
+    mark("VSL_Complete"); setComplete(true);
     try { sessionStorage.setItem(COMPLETED_KEY, "1"); } catch { /* Playback still completes without storage. */ }
     if (progress.current) progress.current.style.transform = "scaleX(1)";
   };
@@ -83,7 +77,7 @@ export function MiniVsl() {
       </button>
       <p>Assista até o final. O vídeo abre em tela cheia. <strong>🔊 Ative o som.</strong></p>
     </div>
-    <Dialog.Root open={open} onOpenChange={next => { if (!next && canClose) closeVideo(); }}>
+    <Dialog.Root open={open} onOpenChange={next => { if (!next) closeVideo(); }}>
       <Dialog.Portal>
         <Dialog.Overlay className="vsl-backdrop"/>
         <Dialog.Content className="vsl-fullscreen" aria-modal="true" onOpenAutoFocus={event=>{event.preventDefault();video.current?.focus();startPlayback();}} onEscapeKeyDown={event=>{
@@ -91,9 +85,9 @@ export function MiniVsl() {
           event.preventDefault(); closeVideo();
         }} onPointerDownOutside={event=>event.preventDefault()} onInteractOutside={event=>event.preventDefault()} onContextMenu={event=>event.preventDefault()}>
           <Dialog.Title className="sr-only">Apresentação SOS Bebê</Dialog.Title>
-          <Dialog.Description className="sr-only">Vídeo com som. A saída aparece ao concluir ou se houver falha. A tecla Escape permite sair a qualquer momento.</Dialog.Description>
-          {canClose&&<button type="button" className="vsl-close" onClick={closeVideo} aria-label="Fechar vídeo"><X/><span>Fechar</span></button>}
-          {complete ? <div className="vsl-end"><h2>Você chegou até o final. Veja agora a oferta especial.</h2><OfferLink location="vsl-complete" beforeScroll={closeVideo}>VER A OFERTA</OfferLink><button type="button" className="vsl-continue" onClick={()=>{closeVideo();window.setTimeout(()=>scrollToSection("apos-hero"),30);}}>Continuar vendo a página</button></div> : <>
+          <Dialog.Description className="sr-only">Vídeo com som. Use o botão no alto da tela ou a tecla Escape para sair a qualquer momento.</Dialog.Description>
+          <button type="button" className="vsl-close vsl-close--subtle" onClick={closeVideo} aria-label="Fechar vídeo" title="Fechar vídeo"><X size={18}/></button>
+          {complete ? <div className="vsl-end"><h2>Você chegou até o final. Continue conhecendo o SOS Bebê.</h2><button type="button" className="sos-cta vsl-reading-cta" onClick={()=>{closeVideo();window.setTimeout(()=>scrollToSection("continuar-leitura"),30);}}>Continuar vendo a página →</button></div> : <>
             <video ref={video} className="vsl-playing" src={sosMedia.vsl.src} poster={sosMedia.vsl.poster} preload="metadata" playsInline autoPlay disablePictureInPicture disableRemotePlayback controlsList="nodownload noplaybackrate noremoteplayback" tabIndex={0} aria-label="Vídeo de apresentação SOS Bebê" onContextMenu={event=>event.preventDefault()} onKeyDown={event=>{if ([" ","ArrowLeft","ArrowRight","ArrowUp","ArrowDown","Home","End","k","j","l"].includes(event.key)) event.preventDefault();}} onPlay={()=>{setNeedsPlay(false);mark("VSL_Play");}} onPlaying={()=>{setNeedsPlay(false);lastProgress.current=performance.now();}} onPause={()=>{
               const element=video.current;
               if (element&&!element.ended&&!document.hidden) void element.play().catch(()=>{setNeedsPlay(true);});

@@ -19,14 +19,14 @@ afterEach(()=>{cleanup();vi.restoreAllMocks();vi.unstubAllGlobals();vi.useRealTi
 const open = () => { render(<MiniVsl/>);fireEvent.click(screen.getByRole("button",{name:/Assistir agora/}));return screen.getByLabelText("Vídeo de apresentação SOS Bebê") as HTMLVideoElement; };
 
 describe("VSL safety and measurement",()=>{
-  it("opens an unmuted inline video without native controls and exposes safety exit after 8s",()=>{
+  it("opens an unmuted inline video with an immediate close option and reports a stall after 8s",()=>{
     vi.useFakeTimers();
     const video=open();
     expect(screen.getByRole("dialog")).toHaveAttribute("aria-modal","true");
     expect(video).not.toHaveAttribute("controls");
     expect(video).toHaveAttribute("playsinline");
     expect(video.muted).toBe(false);
-    expect(screen.queryByRole("button",{name:"Fechar vídeo"})).not.toBeInTheDocument();
+    expect(screen.getByRole("button",{name:"Fechar vídeo"})).toBeInTheDocument();
     act(()=>vi.advanceTimersByTime(8000));
     expect(screen.getByRole("button",{name:"Fechar vídeo"})).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button",{name:"Fechar vídeo"}));
@@ -42,7 +42,8 @@ describe("VSL safety and measurement",()=>{
       expect(vi.mocked(trackCustom).mock.calls.filter(args=>args[0]===event)).toHaveLength(1);
     }
     expect(sessionStorage.getItem("sos-vsl-complete-v1")).toBe("1");
-    expect(screen.getByRole("link",{name:"VER A OFERTA"})).toHaveAttribute("href","#oferta");
+    expect(screen.queryByRole("link",{name:"VER A OFERTA"})).not.toBeInTheDocument();
+    expect(screen.getByRole("button",{name:"Continuar vendo a página →"})).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button",{name:"Fechar vídeo"}));
     fireEvent.click(screen.getByRole("button",{name:/Assistir agora/}));
     expect(screen.getByRole("button",{name:"Fechar vídeo"})).toBeInTheDocument();
@@ -102,4 +103,18 @@ it("keeps playing when the user clicks the already selected preview chip",()=>{
   fireEvent.click(screen.getByRole("tab",{name:"Choro intenso"}));
   expect(play.mock.calls.length).toBeGreaterThan(count);
   expect(document.querySelector(".clip-phone video")).toHaveProperty("loop",true);
+});
+
+
+it("continues into the reading section after the VSL without skipping to the offer",()=>{
+  vi.useFakeTimers();
+  const section=document.createElement("section");section.id="continuar-leitura";
+  section.getBoundingClientRect=()=>({top:1234,left:0,right:0,bottom:1600,width:100,height:366,x:0,y:1234,toJSON:()=>({})});document.body.appendChild(section);
+  const video=open();fireEvent.ended(video);
+  fireEvent.click(screen.getByRole("button",{name:"Continuar vendo a página →"}));
+  act(()=>vi.advanceTimersByTime(100));
+  expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  expect(window.scrollTo).toHaveBeenCalledWith(expect.objectContaining({top:1151}));
+  expect(trackInitiateCheckout).not.toHaveBeenCalled();
+  section.remove();
 });

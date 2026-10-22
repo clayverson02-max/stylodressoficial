@@ -92,3 +92,8 @@ a[href*="lovable.dev"],iframe[src*="lovable.dev"],div[style*="Edit with Lovable"
 .sos-page .chips button,.sos-page .stack-visual span,.sos-page .guarantee-seal span{font-size:16px;line-height:1.6}
 
 .sos-page .offer-grid .offer-card .order-total{font-size:17px;font-weight:700;color:var(--navy);line-height:1.6;text-align:center;margin-top:12px}
+
+/* Discreet visual exit with a comfortably-sized touch target. */
+.vsl-close.vsl-close--subtle{width:44px;height:44px;min-height:44px;padding:12px;display:grid;place-items:center;border-radius:50%;border:1px solid #ffffff55;background:#0009;color:#fff;box-shadow:none}
+.vsl-close.vsl-close--subtle:hover{background:#000c}
+.vsl-end .vsl-reading-cta{font-size:18px;margin-bottom:auto}
