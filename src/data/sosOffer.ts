@@ -8,7 +8,7 @@ export const sosOffer = {
   doctorCredentials: null as string | null, // [PLACEHOLDER] validated specialty, CRM and experience
   accessDuration: null as string | null, // [PLACEHOLDER]
   priceChangeNotice: null as string | null, // [PLACEHOLDER] only add if an actual price change is scheduled
-  paymentMethods: [] as string[], // [PLACEHOLDER] only checkout-verified methods
+  paymentMethods: ["Pix", "Cartão", "PicPay"] as string[], // Verified in the linked Cakto checkout.
   contactEmail: null as string | null, // [PLACEHOLDER]
   privacyText: null as string | null, // [PLACEHOLDER] business-approved legal text
   termsText: null as string | null, // [PLACEHOLDER]

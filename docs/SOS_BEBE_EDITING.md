@@ -9,7 +9,7 @@ Edite `src/data/sosOffer.ts`. Os campos não confirmados não são publicados co
 - `doctorPhoto`: usa o retrato enviado no commit e21e92b, otimizado em /images/dra-valentina.webp. O arquivo original contém marca d’água, preservada. Substitua por uma foto autorizada de melhor qualidade quando disponível.
 - `doctorCredentials`: especialidade, CRM e experiência confirmados.
 - `accessDuration`: prazo real do acesso (a pergunta só aparece após preencher).
-- `paymentMethods`: apenas meios ativos e confirmados no checkout.
+- `paymentMethods`: Pix, cartão e PicPay, confirmados no checkout. A oferta informa a taxa de serviço de R$ 0,99 observada na Cakto, total R$ 18,89; atualize o aviso caso a plataforma altere essa taxa.
 - `contactEmail`, `privacyText`, `termsText`: contato e textos jurídicos aprovados pelo responsável. Os modais atuais avisam que os documentos estão em preparação.
 - `testimonials`: depoimentos autorizados com nome, cidade, imagem e texto. A seção só aparece com pelo menos três.
 - `bonuses`: somente bônus realmente entregues.
