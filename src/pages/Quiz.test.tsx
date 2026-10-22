@@ -3,7 +3,13 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import SalesPage from "./Quiz";
 import { trackStandard } from "@/lib/metaPixel";
 
-vi.mock("@/lib/metaPixel", () => ({ trackStandard: vi.fn(), trackInitiateCheckout: vi.fn() }));
+vi.mock("@/lib/metaPixel", () => ({ trackStandard: vi.fn(), trackInitiateCheckout: vi.fn(), trackCustom: vi.fn() }));
+
+beforeEach(() => {
+  vi.spyOn(HTMLMediaElement.prototype, "play").mockResolvedValue();
+  vi.spyOn(HTMLMediaElement.prototype, "pause").mockImplementation(() => {});
+  vi.stubGlobal("scrollTo", vi.fn());
+});
 
 describe("reading and exit-intent behavior", () => {
   beforeEach(() => { sessionStorage.clear(); vi.mocked(trackStandard).mockClear(); });
@@ -49,7 +55,9 @@ describe("SOS Bebê interactions", () => {
   it("keeps every purchase link on Cakto and removes the previous offer", () => {
     render(<SalesPage />);
     const links = document.querySelectorAll<HTMLAnchorElement>("[data-checkout-cta]");
-    expect(links.length).toBeGreaterThan(8);
+    expect(links.length).toBe(1);
+    expect(links[0].closest(".offer-card")).not.toBeNull();
+    expect(document.querySelectorAll("[data-offer-scroll]")).toHaveLength(4);
     links.forEach(link => expect(link.href).toBe("https://pay.cakto.com.br/gwvroes_1229714"));
     expect(document.body.textContent).not.toMatch(/Hotmart|US\$|dilatación|gestación/);
   });
@@ -57,16 +65,16 @@ describe("SOS Bebê interactions", () => {
     render(<SalesPage />);
     fireEvent.click(screen.getAllByRole("checkbox")[0]);
     expect(screen.getByText("Você marcou 1 de 6")).toBeInTheDocument();
-    expect(document.querySelector('[data-checkout-cta="checklist"]')).toBeInTheDocument();
+    expect(document.querySelector('[data-checkout-cta="checklist"]')).not.toBeInTheDocument();
     fireEvent.click(screen.getAllByRole("checkbox")[0]);
     expect(screen.getByText("Você marcou 0 de 6")).toBeInTheDocument();
     expect(document.querySelector('[data-checkout-cta="checklist"]')).not.toBeInTheDocument();
   });
   it("selects a situation and supports keyboard navigation", () => {
     render(<SalesPage />);
-    fireEvent.click(screen.getByRole("tab",{name:"Cólicas"}));
-    expect(screen.getByRole("tabpanel")).toHaveAccessibleName("Cólicas");
-    fireEvent.keyDown(screen.getByRole("tab",{name:"Cólicas"}),{key:"ArrowRight"});
-    expect(screen.getByRole("tabpanel")).toHaveAccessibleName("Gases e arroto");
+    fireEvent.click(screen.getByRole("tab",{name:"Cólica"}));
+    expect(screen.getByRole("tabpanel")).toHaveAccessibleName("Cólica");
+    fireEvent.keyDown(screen.getByRole("tab",{name:"Cólica"}),{key:"ArrowRight"});
+    expect(screen.getByRole("tabpanel")).toHaveAccessibleName("Cocô, arroto e gases");
   });
 });
