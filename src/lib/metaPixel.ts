@@ -50,11 +50,11 @@ export const trackStandard = (
   void sendToServer(eventName, id, customData);
 };
 
-export const trackInitiateCheckout = (value = 4) => {
+export const trackInitiateCheckout = (value = 17.90) => {
   trackStandard("InitiateCheckout", {
     value,
-    currency: "USD",
-    content_name: "Preparación Completa para el Parto Natural",
+    currency: "BRL",
+    content_name: "SOS Bebê – Guia Completo da Dra. Valentina",
     content_type: "product",
   });
 };

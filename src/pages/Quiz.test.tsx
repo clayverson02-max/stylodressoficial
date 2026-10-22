@@ -22,7 +22,7 @@ describe("reading and exit-intent behavior", () => {
     expect(trackStandard).not.toHaveBeenCalled();
     vi.stubGlobal("scrollY", 700);
     act(() => { fireEvent.scroll(window); queued?.(1); });
-    expect(trackStandard).toHaveBeenCalledWith("ViewContent", expect.objectContaining({value:4,currency:"USD"}));
+    expect(trackStandard).toHaveBeenCalledWith("ViewContent", expect.objectContaining({value:17.90,currency:"BRL"}));
     act(() => { fireEvent.scroll(window); queued?.(2); });
     expect(trackStandard).toHaveBeenCalledOnce();
   });
@@ -38,8 +38,35 @@ describe("reading and exit-intent behavior", () => {
     render(<SalesPage />);
     fireEvent.mouseOut(document, {relatedTarget:null,clientY:0});
     expect(screen.getByRole("dialog")).toBeInTheDocument();
-    fireEvent.click(screen.getByRole("button", {name:"Cerrar aviso"}));
+    fireEvent.click(screen.getByRole("button", {name:"Fechar aviso"}));
     fireEvent.mouseOut(document, {relatedTarget:null,clientY:0});
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
+});
+
+describe("SOS Bebê interactions", () => {
+  afterEach(() => cleanup());
+  it("keeps every purchase link on Cakto and removes the previous offer", () => {
+    render(<SalesPage />);
+    const links = document.querySelectorAll<HTMLAnchorElement>("[data-checkout-cta]");
+    expect(links.length).toBeGreaterThan(8);
+    links.forEach(link => expect(link.href).toBe("https://pay.cakto.com.br/gwvroes_1229714"));
+    expect(document.body.textContent).not.toMatch(/Hotmart|US\$|dilatación|gestación/);
+  });
+  it("updates the checklist without collecting personal data", () => {
+    render(<SalesPage />);
+    fireEvent.click(screen.getAllByRole("checkbox")[0]);
+    expect(screen.getByText("Você marcou 1 de 6")).toBeInTheDocument();
+    expect(document.querySelector('[data-checkout-cta="checklist"]')).toBeInTheDocument();
+    fireEvent.click(screen.getAllByRole("checkbox")[0]);
+    expect(screen.getByText("Você marcou 0 de 6")).toBeInTheDocument();
+    expect(document.querySelector('[data-checkout-cta="checklist"]')).not.toBeInTheDocument();
+  });
+  it("selects a situation and supports keyboard navigation", () => {
+    render(<SalesPage />);
+    fireEvent.click(screen.getByRole("tab",{name:"Cólicas"}));
+    expect(screen.getByRole("tabpanel")).toHaveAccessibleName("Cólicas");
+    fireEvent.keyDown(screen.getByRole("tab",{name:"Cólicas"}),{key:"ArrowRight"});
+    expect(screen.getByRole("tabpanel")).toHaveAccessibleName("Gases e arroto");
   });
 });

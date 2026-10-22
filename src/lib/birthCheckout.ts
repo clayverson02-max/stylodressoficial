@@ -1,17 +1,17 @@
 import { trackInitiateCheckout } from "@/lib/metaPixel";
 
+/** Carry the complete current query without overriding checkout-side parameters. */
 export function checkoutDestination(href: string, search: string) {
   const destination = new URL(href);
   const source = new URLSearchParams(search);
-  ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term", "sck", "xcod", "fbclid", "ttclid"].forEach(key => {
-    const value = source.get(key);
-    if (value && !destination.searchParams.has(key)) destination.searchParams.set(key, value);
+  const existing = new Set(destination.searchParams.keys());
+  source.forEach((value, key) => {
+    if (!existing.has(key)) destination.searchParams.append(key, value);
   });
   return destination.toString();
 }
 
-/** The pixel call is synchronous; navigation always proceeds after 150ms, even if tracking fails. */
 export function beginBirthCheckout(destination: string, navigate: (url: string) => void) {
-  try { trackInitiateCheckout(4); } catch { /* Ad blockers must not prevent a purchase. */ }
+  try { trackInitiateCheckout(17.90); } catch { /* Blocked analytics must never block checkout. */ }
   return window.setTimeout(() => navigate(destination), 150);
 }
