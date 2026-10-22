@@ -34,7 +34,7 @@ function Count({ value }: { value: number }) {
       if (!entry.isIntersecting) return;
       observer.disconnect();
       const start = performance.now();
-      const step = (time: number) => { const ratio = Math.min((time - start) / 650, 1); node.textContent = `+${Math.round(value * (1 - (1 - ratio) ** 3))}`; if (ratio < 1) frame = requestAnimationFrame(step); };
+      const step = (time: number) => { const ratio = Math.min(1, Math.max(0, (time - start) / 650)); node.textContent = `+${Math.round(value * (1 - (1 - ratio) ** 3))}`; if (ratio < 1) frame = requestAnimationFrame(step); };
       frame = requestAnimationFrame(step);
     });
     observer.observe(node);
