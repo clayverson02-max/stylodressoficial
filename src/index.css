@@ -89,3 +89,4 @@ a[href*="lovable.dev"],iframe[src*="lovable.dev"],div[style*="Edit with Lovable"
 
 .sos-page .offer-grid .offer-card .per-video,.sos-page .offer-grid .offer-card .per-video b{color:#0A3D1F}
 #lovable-badge,#lovable-badge-close{display:none!important}
+.sos-page .chips button,.sos-page .stack-visual span,.sos-page .guarantee-seal span{font-size:16px;line-height:1.6}

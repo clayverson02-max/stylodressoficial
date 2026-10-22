@@ -73,6 +73,7 @@ describe("preview and scroll funnel",()=>{
     expect(video).toHaveAttribute("src","/videos/sos/imprevistos.mp4");
   });
   it("scroll links fire their own custom event, never InitiateCheckout",()=>{
+    vi.useFakeTimers();
     render(<OfferLink location="after-hero"/>);
     fireEvent.click(screen.getByRole("link"));
     expect(trackCustom).toHaveBeenCalledWith("ClickParaOferta",{local:"after-hero"});
@@ -91,4 +92,14 @@ it("keeps the offer scroll scheduled after the overlay link unmounts",()=>{
   act(()=>vi.advanceTimersByTime(100));
   expect(window.scrollTo).toHaveBeenCalledWith(expect.objectContaining({top:0}));
   section.remove();
+});
+
+
+it("keeps playing when the user clicks the already selected preview chip",()=>{
+  render(<SituationVideos/>);
+  const play=vi.mocked(HTMLMediaElement.prototype.play);
+  const count=play.mock.calls.length;
+  fireEvent.click(screen.getByRole("tab",{name:"Choro intenso"}));
+  expect(play.mock.calls.length).toBeGreaterThan(count);
+  expect(document.querySelector(".clip-phone video")).toHaveProperty("loop",true);
 });

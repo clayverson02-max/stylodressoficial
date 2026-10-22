@@ -41,9 +41,15 @@ export function SituationVideos() {
     return () => { cancelled = true; element.pause(); document.removeEventListener("visibilitychange", sync); document.removeEventListener("sos-vsl-state", sync); };
   }, [active, visible, sound]);
   const choose = (index: number) => {
-    video.current?.pause();
     interacted.current = true;
-    setActive(index); setFailed(false); setBlocked(false);
+    setFailed(false); setBlocked(false);
+    if (index === active) {
+      const element = video.current;
+      if (element) { element.loop = true; void element.play().catch(() => setBlocked(true)); }
+      return;
+    }
+    video.current?.pause();
+    setActive(index);
   };
   const toggleSound = () => {
     interacted.current = true;
