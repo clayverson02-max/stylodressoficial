@@ -1,4 +1,4 @@
-import { act, cleanup, fireEvent, render, screen, within } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import SalesPage from "./Quiz";
 import { trackStandard } from "@/lib/metaPixel";
@@ -11,7 +11,7 @@ beforeEach(() => {
   vi.stubGlobal("scrollTo", vi.fn());
 });
 
-describe("reading and exit-intent behavior", () => {
+describe("reading without interruption", () => {
   beforeEach(() => { sessionStorage.clear(); vi.mocked(trackStandard).mockClear(); });
   afterEach(() => { cleanup(); vi.unstubAllGlobals(); vi.restoreAllMocks(); });
 
@@ -39,18 +39,13 @@ describe("reading and exit-intent behavior", () => {
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 
-  it("shows the desktop exit popup only once per session", () => {
+  it("opens directly without a popup and stays unobstructed on desktop exit", () => {
     vi.stubGlobal("matchMedia", () => ({matches:true,addEventListener:vi.fn(),removeEventListener:vi.fn()}));
     render(<SalesPage />);
-    fireEvent.mouseOut(document, {relatedTarget:null,clientY:0});
-    const reminder = screen.getByRole("dialog");
-    expect(reminder).toBeInTheDocument();
-    expect(reminder.textContent).not.toMatch(/R\$|oferta|lançamento/i);
-    expect(within(reminder).queryByRole("link")).not.toBeInTheDocument();
-    fireEvent.click(within(reminder).getByRole("button", {name:"Continuar vendo a página →"}));
-    expect(window.scrollTo).not.toHaveBeenCalled();
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     fireEvent.mouseOut(document, {relatedTarget:null,clientY:0});
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(screen.getByRole("heading", {level:1})).toBeInTheDocument();
   });
 });
 

@@ -94,19 +94,6 @@ function StickyCheckout() {
   if (!visible) return null;
   return <aside className="sticky-buy" aria-label="Ver oferta SOS Bebê"><div><b>SOS Bebê</b><span>R$ 9,90</span></div><OfferLink location="sticky">VER OFERTA</OfferLink></aside>;
 }
-function ExitOffer() {
-  const [open, setOpen] = useState(false);
-  useEffect(() => {
-    const onExit = (e: globalThis.MouseEvent) => {
-      if (document.querySelector("[role=dialog]")) return;
-      if (e.relatedTarget || e.clientY > 0 || !window.matchMedia("(min-width: 1024px) and (hover: hover) and (pointer: fine)").matches) return;
-      try { if (sessionStorage.getItem("sos-exit-v1")) return; sessionStorage.setItem("sos-exit-v1", "1"); } catch { return; }
-      setOpen(true);
-    };
-    document.addEventListener("mouseout", onExit); return () => document.removeEventListener("mouseout", onExit);
-  }, []);
-  return <Dialog.Root open={open} onOpenChange={setOpen}><Dialog.Portal><Dialog.Overlay className="modal-overlay"/><Dialog.Content className="sos-modal"><Dialog.Close className="modal-close" aria-label="Fechar aviso"><X/></Dialog.Close><Baby className="modal-icon" size={42}/><Dialog.Title>Seu bebê chora. Os palpites chegam. E a insegurança só aumenta.</Dialog.Title><Dialog.Description>Você não precisa carregar essa dúvida sozinha. Continue na página e conheça o guia em vídeo que organiza o apoio para os momentos difíceis.</Dialog.Description><button type="button" className="sos-cta" onClick={()=>setOpen(false)}>Continuar vendo a página →</button></Dialog.Content></Dialog.Portal></Dialog.Root>;
-}
 const checklist = ["Já entrei em pânico sem saber o que fazer quando ele chorou", "Já fiquei horas procurando no celular e saí mais confusa", "Já senti culpa por não conseguir acalmá-lo", "Já corri pra farmácia só para tentar ‘fazer alguma coisa’", "Já recebi mil palpites e não sabia em quem confiar", "Já me senti sozinha nas noites difíceis"];
 function Identification() {
   const [selected, setSelected] = useState<string[]>([]);
@@ -146,5 +133,5 @@ export default function SalesPage() {
     <Section className="cream"><div className="guarantee"><div className="guarantee-seal"><ShieldCheck size={48}/><b>7</b><span>DIAS</span></div><div><Title>Entre e veja com calma.<br/>Você tem 7 dias de garantia.</Title><p>Se não for o que você esperava, solicite o reembolso dentro de 7 dias pelos canais da compra.</p></div></div></Section>
     <Section className="cream faq"><Title label="Dúvidas frequentes">Para começar sem dúvidas</Title><div className="faq-list">{faq.map(([q,a])=><details key={q}><summary>{q}<ChevronDown size={21}/></summary><p>{a}</p></details>)}</div></Section>
     <Section className="dark final"><Baby size={38}/><Title>A próxima noite difícil pode ser hoje. <mark>Tenha um apoio ao seu lado.</mark></Title><p>Na tela do seu celular, um guia organizado para os momentos em que você mais precisa de clareza.</p><OfferLink location="final">VER A OFERTA ↑</OfferLink><PurchaseNote/><p className="micro">Conteúdo educativo. O pediatra continua sendo sua referência.</p></Section>
-  </main><footer className="footer"><div className="wrap"><div className="brand"><Baby/><span>SOS <b>Bebê</b></span></div><p>© SOS Bebê · Conteúdo educativo, não substitui orientação médica.</p><LegalLinks/>{sosOffer.contactEmail&&<p>{sosOffer.contactEmail}</p>}</div></footer><StickyCheckout/><ExitOffer/></div>;
+  </main><footer className="footer"><div className="wrap"><div className="brand"><Baby/><span>SOS <b>Bebê</b></span></div><p>© SOS Bebê · Conteúdo educativo, não substitui orientação médica.</p><LegalLinks/>{sosOffer.contactEmail&&<p>{sosOffer.contactEmail}</p>}</div></footer><StickyCheckout/></div>;
 }
