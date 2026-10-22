@@ -11,7 +11,7 @@ a[href*="lovable.dev"],iframe[src*="lovable.dev"],div[style*="Edit with Lovable"
 /* Readability correction: section color rules must not leak into light cards. */
 .sos-page{font-weight:700}
 .sos-page p,.sos-page li,.sos-page td,.sos-page th{line-height:1.6}
-.sos-page :is(.eyebrow,.pill,.micro,.hero-care,.hero-ending,.trust-strip>div,.selection-count,.chips button,.phone-hint,.portrait-seal,.doctor-placeholder span,.icon-list,.stack-visual span,.guarantee-seal span,.legal-links button,.footer,.sticky-buy b,.sticky-buy .sos-cta,.sticky-buy .sos-cta span){font-size:16px;line-height:1.6}
+.sos-page :where(.top-bar,.eyebrow,.pill,.micro,.hero-care,.hero-ending,.trust-strip>div,.selection-count,.chips button,.phone-hint,.portrait-seal,.doctor-placeholder span,.icon-list,.stack-visual span,.guarantee-seal span,.legal-links button,.footer,.sticky-buy b,.sticky-buy .sos-cta,.sticky-buy .sos-cta span){font-size:16px;line-height:1.6}
 .sos-page :is(.card p,.timeline p,.checklist label,.safety p,.faq details p,.faq summary,table,thead th,.sos-modal p){font-size:18px}
 .sos-page .micro{color:var(--navy);font-weight:700;max-width:none}
 .sos-page .dark .micro,.sos-page .dark .hero-care,.sos-page .dark .hero-ending{color:#fff}
@@ -86,3 +86,6 @@ a[href*="lovable.dev"],iframe[src*="lovable.dev"],div[style*="Edit with Lovable"
 .sos-cta{line-height:1.6}
 .sos-page .guarantee-seal{color:var(--navy)}
 .vsl-end{justify-content:flex-start}.vsl-end h2{margin-top:auto}.vsl-end .vsl-continue{margin-bottom:auto}
+
+.sos-page .offer-grid .offer-card .per-video,.sos-page .offer-grid .offer-card .per-video b{color:#0A3D1F}
+#lovable-badge,#lovable-badge-close{display:none!important}
