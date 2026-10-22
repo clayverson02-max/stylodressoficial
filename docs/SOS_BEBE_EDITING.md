@@ -20,7 +20,7 @@ A foto real deve ser WebP, idealmente até 80 KB, com corte adequado ao círculo
 ## Rastreamento
 O Meta Pixel original 2149847235657959 continua no index.html com PageView.
 ViewContent dispara uma vez ao atingir 50% do trecho rolável.
-Somente o botão no card da oferta dispara InitiateCheckout com value 17.9 e currency BRL e redireciona à Cakto após 150 ms, na mesma aba. Os quatro links de rolagem, a barra mobile e o pop-up desktop disparam ClickParaOferta com o parâmetro local e rolam à oferta.
+Somente o botão no card da oferta dispara InitiateCheckout com value 17.9 e currency BRL e redireciona à Cakto após 150 ms, na mesma aba. Os quatro links de rolagem e a barra mobile disparam ClickParaOferta com o parâmetro local e rolam à oferta. O lembrete desktop fala sobre insegurança e o botão somente fecha o modal para continuar a leitura, sem preço, sem oferta e sem redirecionamento.
 A VSL dispara VSL_Play, VSL_25, VSL_50, VSL_75 e VSL_Complete uma vez por marco enquanto o componente permanece montado. A conclusão é registrada na sessão; a opção de fechar fica disponível em todas as reproduções desde o início.
 A query string inteira é anexada, sem substituir parâmetros já presentes no checkout. Não há disparo de Purchase na landing page.
 A integração existente com meta-capi foi preservada; não foram adicionados tokens no frontend.

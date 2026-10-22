@@ -1,4 +1,4 @@
-import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import SalesPage from "./Quiz";
 import { trackStandard } from "@/lib/metaPixel";
@@ -43,8 +43,12 @@ describe("reading and exit-intent behavior", () => {
     vi.stubGlobal("matchMedia", () => ({matches:true,addEventListener:vi.fn(),removeEventListener:vi.fn()}));
     render(<SalesPage />);
     fireEvent.mouseOut(document, {relatedTarget:null,clientY:0});
-    expect(screen.getByRole("dialog")).toBeInTheDocument();
-    fireEvent.click(screen.getByRole("button", {name:"Fechar aviso"}));
+    const reminder = screen.getByRole("dialog");
+    expect(reminder).toBeInTheDocument();
+    expect(reminder.textContent).not.toMatch(/R\$|oferta|lançamento/i);
+    expect(within(reminder).queryByRole("link")).not.toBeInTheDocument();
+    fireEvent.click(within(reminder).getByRole("button", {name:"Continuar vendo a página →"}));
+    expect(window.scrollTo).not.toHaveBeenCalled();
     fireEvent.mouseOut(document, {relatedTarget:null,clientY:0});
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
