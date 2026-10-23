@@ -87,8 +87,10 @@ export default function SosDynamicQuiz() {
   },[initial.step]);
   useEffect(()=>{
     try{sessionStorage.setItem(quizKey,JSON.stringify(answersForStorage(step,answers)));}catch{/* Continue without browser storage. */}
-    window.scrollTo({top:0,behavior:'instant' as ScrollBehavior});heading.current?.focus({preventScroll:true});
   },[step,answers]);
+  useEffect(()=>{
+    window.scrollTo({top:0,behavior:'instant' as ScrollBehavior});heading.current?.focus({preventScroll:true});
+  },[step]);
   useEffect(()=>{
     if(step!=='analysis')return;
     setAnalysis(0);const a=window.setTimeout(()=>setAnalysis(1),800);const b=window.setTimeout(()=>setAnalysis(2),1800);const c=window.setTimeout(()=>setAnalysis(3),2700);const d=window.setTimeout(()=>go('result'),3500);
@@ -107,7 +109,7 @@ export default function SosDynamicQuiz() {
   const q=step.startsWith('q')?Number(step.slice(1)):0;
   const videoQ=step.startsWith('video')?Number(step.slice(5)):0;
   const clip=situations.find(s=>s.question===videoQ)?.clip;
-  const options=q<=2?questionOptions[q-1]:q===8?feelings:knowledgeOptions;
+  const options=q>=1&&q<=2?questionOptions[q-1].map((option,i)=>q===2&&i===0&&answers[1]!==0?'O bebê ainda não nasceu':option):q===8?feelings:knowledgeOptions;
   const currentQuestion=q||videoQ||8;
   // Metadata only: prewarm the nearest upcoming clip without downloading every preview.
   const nextVideo=q>0?situations.find(s=>[3,4,5,7].includes(s.question)&&s.question>=q)?.clip:undefined;
