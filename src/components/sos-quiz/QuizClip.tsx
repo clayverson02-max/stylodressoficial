@@ -16,7 +16,7 @@ export function QuizClip({clip, label=clip.label}: {clip: Clip; label?:string}) 
     const node=frame.current;
     if(!node)return;
     if(!('IntersectionObserver' in window)){setVisible(true);return;}
-    const observer=new IntersectionObserver(([entry])=>setVisible(entry.isIntersecting),{threshold:.6});
+    const observer=new IntersectionObserver(([entry])=>setVisible(entry.isIntersecting),{threshold:.15});
     observer.observe(node);return()=>observer.disconnect();
   },[]);
   useEffect(()=>{

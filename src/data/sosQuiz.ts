@@ -12,7 +12,7 @@ export const quizMedia = {
   imprevistos: sosMedia.situations[3],
   feedbacks: [] as {src: string; alt: string}[], // Real authorized message screenshots only.
 };
-export const quizKey = 'sos-dynamic-quiz-v1';
+export const quizKey = 'sos-dynamic-quiz-v2';
 export const questionOptions = [
   ['Sou mãe de primeira viagem', 'Sou pai de primeiro filho', 'Já tenho filhos, mas cada bebê é diferente', 'Sou avó, tia ou ajudo a cuidar'],
   ['Ainda estou grávida', '0 a 1 mês', '1 a 3 meses', '3 a 6 meses', 'Mais de 6 meses'],
@@ -33,13 +33,13 @@ export const quizTestimonials = [
 ];
 export const feelings = ['Pânico', 'Culpa', 'Impotência', 'Medo de estar errando', 'Cansaço extremo'];
 export const questions = [
-  'Quem vai cuidar do bebê nas horas difíceis?', 'Qual a idade do bebê?',
-  'São 3 da manhã. O bebê chora sem parar e nada acalma. Você sabe exatamente o que fazer?',
-  'O bebê se contorce, chora forte e você suspeita de cólica. Você sabe o que fazer para ajudar a aliviar?',
-  'Você sabe qual posição ajuda o bebê a arrotar e a soltar os gases?',
-  'O bebê está desconfortável e não consegue fazer cocô. Você sabe como ajudar com segurança?',
-  'Acontece algo inesperado de madrugada. Você tem um guia para agir com calma e saber quando procurar atendimento?',
-  'O que você sente quando o bebê chora e nada funciona?',
+  'Quando a madrugada aperta, quem está ali com o bebê?', 'Em que fase você mais precisa de apoio agora?',
+  'São 3 da manhã. O choro não para. Você tem um próximo passo claro ou tenta de tudo sem direção?',
+  'Quando você suspeita de cólica, sabe acolher seu bebê e reconhecer quando é hora de pedir ajuda?',
+  'Na hora do arroto e dos gases, você conhece os cuidados ou fica mudando de posição sem ter certeza?',
+  'Seu bebê parece desconfortável para fazer cocô. Você sabe o que é seguro e o que não deve tentar por conta própria?',
+  'Num imprevisto, você reconhece os sinais de alerta ou fica procurando respostas no desespero?',
+  'Quando nada parece funcionar, o que mais pesa em você?',
 ];
 export const situations = [
   {question:3, label:'Choro intenso', clip:quizMedia.choro},
@@ -84,3 +84,21 @@ export function readQuiz() {
     return {step:missing?`q${missing}` as Step:requested as Step,answers};
   } catch { return {step:'cover' as Step,answers:{}}; }
 }
+
+/** A concrete delivery benefit follows each concern; no diagnosis or treatment instructions. */
+export const questionBenefits: Record<number,string> = {
+  1:'Seu plano vai considerar quem cuida do bebê. Sem julgamento e sem cadastro.',
+  2:'Os cuidados mudam com a fase do bebê. O guia reúne faixa etária e cuidados para consultar com o pediatra.',
+  3:'No SOS Bebê, você encontra vídeos por situação para consultar sem se perder em palpites.',
+  4:'O passo a passo vem acompanhado de cuidados e sinais de alerta. Apoio também é saber quando buscar atendimento.',
+  5:'Ver o movimento em vídeo ajuda a entender a posição e seus limites, sem depender de uma dica solta.',
+  6:'Mais tentativas nem sempre são o caminho. Conhecer os limites e conversar com o pediatra faz parte do cuidado.',
+  7:'Um guia de apoio precisa mostrar seus limites: quando parar de tentar e procurar atendimento.',
+  8:'Você não precisa carregar todas essas dúvidas sozinha. Escolha o que mais acontece na sua rotina.',
+};
+export const situationBenefits: Record<number,{title:string;body:string}> = {
+  3:{title:'Na madrugada, mais palpites só aumentam a confusão.',body:'Abra a situação de choro e veja o conteúdo organizado em vídeo. Um ponto de partida para consultar com calma, sem juntar dicas espalhadas.'},
+  4:{title:'Você merece mais clareza do que “tenta isso”.',body:'Veja como o assunto cólica aparece no guia: vídeo passo a passo, cuidados e sinais de alerta. Sem prometer que toda situação se resolve em casa.'},
+  5:{title:'Não é só ler uma dica. É enxergar o movimento.',body:'Vídeos de arroto, posições e gases para entender a demonstração e os cuidados. Sempre respeitando a idade do bebê e a orientação do pediatra.'},
+  7:{title:'Ter apoio também é reconhecer a hora de pedir ajuda.',body:'Nos imprevistos, o guia reúne cuidados e sinais de alerta em um só lugar. Para consultar sem perder de vista quando procurar atendimento.'},
+};

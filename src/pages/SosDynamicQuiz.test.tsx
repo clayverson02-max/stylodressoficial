@@ -24,12 +24,14 @@ describe('SOS Bebê quiz funnel',()=>{
   it('follows all eight questions, handles multiple feelings, and completes only once without firing checkout',()=>{
     render(<SosDynamicQuiz/>);
     expect(screen.queryByRole('link')).not.toBeInTheDocument();
-    fireEvent.click(screen.getByRole('button',{name:'COMEÇAR O TESTE →'}));
+    fireEvent.click(screen.getByRole('button',{name:/Assistir agora à apresentação/}));
+    fireEvent.ended(screen.getByLabelText('Vídeo de apresentação SOS Bebê'));
+    fireEvent.click(screen.getByRole('button',{name:'MONTAR MEU PLANO DE APOIO →'}));
     choose('Sou pai de primeiro filho →');choose('1 a 3 meses →');
     choose('😰 Não sei. Entro em pânico →');
-    expect(screen.getByText('É exatamente aqui que muita gente trava.')).toBeInTheDocument();next();
+    expect(screen.getByText('Na madrugada, mais palpites só aumentam a confusão.')).toBeInTheDocument();next();
     choose('✅ Sei acolher e reconhecer quando buscar ajuda →');
-    expect(screen.getByText(/exausto/)).toBeInTheDocument();next();
+    expect(screen.getByRole('heading',{name:'Você merece mais clareza do que “tenta isso”.'})).toBeInTheDocument();next();
     choose('😬 Conheço uma posição, mas não tenho certeza →');next();
     choose('😰 Fico sem saber como ajudar →');
     choose('😰 Não tenho um guia e fico sem saber por onde começar →');next();
@@ -53,23 +55,32 @@ describe('SOS Bebê quiz funnel',()=>{
     expect(screen.getByRole('heading',{level:1})).toHaveTextContent('São 3 da manhã');
     fireEvent.click(screen.getByRole('button',{name:'😬 Mais ou menos, vou tentando →'}));
     act(()=>window.dispatchEvent(new PopStateEvent('popstate',{state:{sosQuiz:{step:'q2'}}})));
-    advance();expect(screen.getByRole('heading',{level:1})).toHaveTextContent('Qual a idade');
+    advance();expect(screen.getByRole('heading',{level:1})).toHaveTextContent('Em que fase');
     expect(screen.getByRole('button',{name:'0 a 1 mês ✓'})).toHaveAttribute('aria-pressed','true');
     expect(trackInitiateCheckout).not.toHaveBeenCalled();
   });
-  it('fires ViewContent at the offer, retains attribution, and keeps the quiz VSL safety exit',()=>{
+  it('fires ViewContent at the offer and does not repeat the opening VSL',()=>{
     sessionStorage.setItem(quizKey,JSON.stringify({step:'result',answers:completeAnswers}));
     render(<SosDynamicQuiz/>);
     const offerObserver=observers.find(o=>o.observe.mock.calls.some(c=>c[0].id==='oferta'))!;
     act(()=>offerObserver.callback([{isIntersecting:true} as IntersectionObserverEntry],{} as IntersectionObserver));
     expect(trackStandard).toHaveBeenCalledWith('ViewContent',expect.objectContaining({value:9.9,currency:'BRL'}));
-    fireEvent.click(screen.getByRole('button',{name:/Assistir agora à apresentação/}));
-    expect(screen.queryByRole('button',{name:'Fechar vídeo'})).not.toBeInTheDocument();
-    const video=screen.getByLabelText('Vídeo de apresentação SOS Bebê');
-    expect(video).not.toHaveAttribute('controls');fireEvent.error(video);
-    expect(screen.getByRole('button',{name:'Fechar vídeo'})).toBeInTheDocument();
-    fireEvent.click(screen.getByRole('button',{name:'Fechar vídeo'}));
+    expect(screen.queryByRole('button',{name:/Assistir agora à apresentação/})).not.toBeInTheDocument();
     expect(document.querySelector('[data-checkout-cta]')).toHaveAttribute('href','https://pay.cakto.com.br/gwvroes_1229714');
+  });
+  it('starts with only the VSL, downloads no video before play, and offers a fallback after failure',()=>{
+    render(<SosDynamicQuiz/>);
+    expect(screen.getByRole('heading',{level:1})).toHaveTextContent('Seu bebê chora');
+    expect(screen.queryByRole('button',{name:/COMEÇAR|CONTINUAR/})).not.toBeInTheDocument();
+    expect(document.querySelectorAll('video[src]')).toHaveLength(0);
+    fireEvent.click(screen.getByRole('button',{name:/Assistir agora à apresentação/}));
+    const video=screen.getByLabelText('Vídeo de apresentação SOS Bebê') as HTMLVideoElement;
+    expect(video).not.toHaveAttribute('controls');
+    expect(video.muted).toBe(false);
+    fireEvent.error(video);
+    fireEvent.click(screen.getByRole('button',{name:'CONTINUAR PARA AS PERGUNTAS →'}));
+    expect(screen.getByRole('heading',{level:1})).toHaveTextContent('quem está ali com o bebê');
+    expect(trackInitiateCheckout).not.toHaveBeenCalled();
   });
   it('validates saved state and computes only the five preparation answers',()=>{
     expect(resultFor(completeAnswers)).toMatchObject({total:3,vulnerable:4});

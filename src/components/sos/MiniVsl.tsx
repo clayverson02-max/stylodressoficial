@@ -8,7 +8,7 @@ import { scrollToSection } from "@/lib/scrollToOffer";
 const COMPLETED_KEY = "sos-vsl-complete-v1";
 const safeTrack = (event: string) => { try { trackCustom(event, { video: "sos-bebe-vsl" }); } catch { /* Analytics must not affect playback. */ } };
 
-export function MiniVsl({ quizMode = false }: { quizMode?: boolean } = {}) {
+export function MiniVsl({ quizMode = false, onContinue, onComplete, onExit }: { quizMode?: boolean; onContinue?: () => void; onComplete?: () => void; onExit?: () => void } = {}) {
   const [open, setOpen] = useState(false);
   const [complete, setComplete] = useState(false);
   const [safetyExit, setSafetyExit] = useState(false);
@@ -61,17 +61,17 @@ export function MiniVsl({ quizMode = false }: { quizMode?: boolean } = {}) {
     lastAllowed.current = 0;
     setOpen(true);
   };
-  const closeVideo = () => { video.current?.pause(); setOpen(false); };
+  const closeVideo = () => { video.current?.pause(); setOpen(false); onExit?.(); };
   const mark = (event: string) => { if (!sent.current.has(event)) { sent.current.add(event); safeTrack(event); } };
   const finish = () => {
-    mark("VSL_Complete"); setComplete(true);
+    mark("VSL_Complete"); setComplete(true); onComplete?.();
     try { sessionStorage.setItem(COMPLETED_KEY, "1"); } catch { /* Playback still completes without storage. */ }
     if (progress.current) progress.current.style.transform = "scaleX(1)";
   };
   return <>
     <div className="vsl-intro">
       <button className="vsl-card" type="button" onClick={openVideo} aria-label={`Assistir agora à apresentação de ${sosMedia.vsl.durationLabel}`} style={{ aspectRatio: sosMedia.vsl.aspectRatio }}>
-        <video poster={sosMedia.vsl.poster} src={sosMedia.vsl.src} preload="metadata" playsInline muted width={480} height={854} tabIndex={-1} aria-hidden="true"/>
+        {quizMode ? <img src={sosMedia.vsl.poster} width={480} height={854} alt="" fetchPriority="high" decoding="async"/> : <video poster={sosMedia.vsl.poster} src={sosMedia.vsl.src} preload="metadata" playsInline muted width={480} height={854} tabIndex={-1} aria-hidden="true"/>}
         <span className="vsl-shade"/>
         <span className="vsl-card-copy"><span className="vsl-play-circle"><Play fill="currentColor" size={42}/></span><strong>▶ ASSISTIR AGORA · {sosMedia.vsl.durationLabel}</strong></span>
       </button>
@@ -87,7 +87,7 @@ export function MiniVsl({ quizMode = false }: { quizMode?: boolean } = {}) {
           <Dialog.Title className="sr-only">Apresentação SOS Bebê</Dialog.Title>
           <Dialog.Description className="sr-only">Vídeo com som. Use o botão no alto da tela ou a tecla Escape para sair a qualquer momento.</Dialog.Description>
           {(!quizMode || complete || safetyExit)&&<button type="button" className="vsl-close vsl-close--subtle" onClick={closeVideo} aria-label="Fechar vídeo" title="Fechar vídeo"><X size={18}/></button>}
-          {complete ? <div className="vsl-end"><h2>{quizMode?"Veja agora o seu plano":"Você chegou até o final. Continue conhecendo o SOS Bebê."}</h2><button type="button" className="sos-cta vsl-reading-cta" onClick={()=>{if(quizMode){try{trackCustom("ClickParaPlano",{local:"quiz-vsl-end"});}catch{/* Reading must remain available. */}}closeVideo();window.setTimeout(()=>scrollToSection(quizMode?"plano":"continuar-leitura"),30);}}>{quizMode?"VER MEU PLANO ↓":"Continuar vendo a página →"}</button></div> : <>
+          {complete ? <div className="vsl-end"><h2>{onContinue?"Agora, descubra onde você precisa de mais apoio.":quizMode?"Veja agora o seu plano":"Você chegou até o final. Continue conhecendo o SOS Bebê."}</h2><button type="button" className="sos-cta vsl-reading-cta" onClick={()=>{if(onContinue){closeVideo();onContinue();return;}if(quizMode){try{trackCustom("ClickParaPlano",{local:"quiz-vsl-end"});}catch{/* Reading must remain available. */}}closeVideo();window.setTimeout(()=>scrollToSection(quizMode?"plano":"continuar-leitura"),30);}}>{onContinue?"MONTAR MEU PLANO DE APOIO →":quizMode?"VER MEU PLANO ↓":"Continuar vendo a página →"}</button></div> : <>
             <video ref={video} className="vsl-playing" src={sosMedia.vsl.src} poster={sosMedia.vsl.poster} preload="metadata" playsInline autoPlay disablePictureInPicture disableRemotePlayback controlsList="nodownload noplaybackrate noremoteplayback" tabIndex={0} aria-label="Vídeo de apresentação SOS Bebê" onContextMenu={event=>event.preventDefault()} onKeyDown={event=>{if ([" ","ArrowLeft","ArrowRight","ArrowUp","ArrowDown","Home","End","k","j","l"].includes(event.key)) event.preventDefault();}} onPlay={()=>{setNeedsPlay(false);mark("VSL_Play");}} onPlaying={()=>{setNeedsPlay(false);lastProgress.current=performance.now();}} onPause={()=>{
               const element=video.current;
               if (element&&!element.ended&&!document.hidden) void element.play().catch(()=>{setNeedsPlay(true);});
@@ -105,7 +105,7 @@ export function MiniVsl({ quizMode = false }: { quizMode?: boolean } = {}) {
               if(Math.abs(element.currentTime-lastAllowed.current)>1){restoring.current=true;element.currentTime=lastAllowed.current;}
             }} onSeeked={()=>{restoring.current=false;}} onRateChange={()=>{if(video.current&&video.current.playbackRate!==1)video.current.playbackRate=1;}} onEnded={finish} onError={()=>setSafetyExit(true)}/>
             {needsPlay&&<button type="button" className="vsl-retry" onClick={startPlayback}><Play size={38}/>TOCAR PARA INICIAR COM SOM</button>}
-            {safetyExit&&<p className="vsl-safety" role="status">O vídeo está com dificuldade para carregar. Você pode fechar e continuar na página.</p>}
+            {safetyExit&&<div className="vsl-safety" role="status"><p>O vídeo está com dificuldade para carregar. Você pode fechar e continuar na página.</p>{onContinue&&<button type="button" className="sos-cta" onClick={()=>{closeVideo();onContinue();}}>CONTINUAR PARA AS PERGUNTAS →</button>}</div>}
           </>}
           <div className="vsl-progress" aria-hidden="true"><div ref={progress}/></div>
         </Dialog.Content>

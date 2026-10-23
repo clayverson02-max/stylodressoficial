@@ -13,15 +13,15 @@ A página de controle `/` e seus estilos permanecem intactos. `/quiz` é carrega
 - `/public/feedback-mama-1.png`, `2.png`, `3.png` são fotos sem mensagens. Não são usados como depoimentos.
 - Arquivos antigos de gestação e moda não são usados na variante.
 
-Os caminhos são importados pelo manifesto único `src/data/sosQuiz.ts` a partir dos manifestos existentes; nenhuma cópia pesada foi criada. Cocô e gases reutilizam o clipe combinado confirmado. Conforme orientação do proprietário, uma galeria de prévias reais substitui a prova social. Os três depoimentos em texto (Juliana Moreira, Rafael Silva e Larissa Sousa) foram fornecidos pelo proprietário e estão em `quizTestimonials`, sem associação a fotos não identificadas. Carrossel com avanço a cada 6,5 s quando visível, pausa durante interação e sem avanço automático com movimento reduzido. Para prints reais autorizados, preencher `quizMedia.feedbacks`; carrossel e ampliação já estão preparados.
+Os caminhos são importados pelo manifesto único `src/data/sosQuiz.ts` a partir dos manifestos existentes; nenhuma cópia pesada foi criada. Cocô e gases reutilizam o clipe combinado confirmado. As prévias estão nas etapas intermediárias e no plano; a galeria duplicada foi retirada. Os três depoimentos em texto (Juliana Moreira, Rafael Silva e Larissa Sousa) foram fornecidos pelo proprietário e estão em `quizTestimonials`, sem associação a fotos não identificadas. Carrossel com avanço a cada 6,5 s quando visível, pausa durante interação e sem avanço automático com movimento reduzido. Para prints reais autorizados, preencher `quizMedia.feedbacks`; carrossel e ampliação já estão preparados.
 
 ## Fluxo e estado
 
-8 perguntas com prévias após Q3, Q4, Q5 e Q7, acolhimento, análise de 3,5 segundos e resultado. Somente Q3–Q7 pontuam (0–10). Vermelho/amarelo vêm primeiro no plano. O resultado é sobre preparo declarado, não diagnóstico. Perguntas simples avançam em 350 ms e são protegidas contra toques duplicados; Q8 aceita múltiplas opções e exige continuar.
+Abertura com headline + VSL, sem CTA de oferta nem botão inicial para o quiz. O término do vídeo oferece o botão para começar as perguntas. Em falha/fechamento há alternativa para continuar sem travar o funil. 8 perguntas com prévias após Q3, Q4, Q5 e Q7, acolhimento, análise de 1,2 segundo e resultado. Somente Q3–Q7 pontuam (0–10). Vermelho/amarelo vêm primeiro no plano. O resultado é sobre preparo declarado, não diagnóstico. Perguntas simples avançam em 350 ms e são protegidas contra toques duplicados; Q8 aceita múltiplas opções e exige continuar.
 
-Respostas e etapa em sessionStorage, chave sos-dynamic-quiz-v1, com validação na restauração. Cada avanço cria uma entrada no histórico; popstate retorna à etapa correspondente. Sem dados identificadores ou cadastro. Especialidade, CRM, termos e depoimentos permanecem campos editáveis, sem fatos inventados.
+Respostas e etapa em sessionStorage, chave sos-dynamic-quiz-v2, com validação na restauração. Cada avanço cria uma entrada no histórico; popstate retorna à etapa correspondente. Sem dados identificadores ou cadastro. Especialidade, CRM, termos e depoimentos permanecem campos editáveis, sem fatos inventados.
 
-VSL reutiliza MiniVsl com quizMode: não altera os padrões de `/`. Fechamento visual no término ou falha/8 segundos sem progresso; Escape preservado como saída acessível. Conclusão leva ao plano, sem compra. Prévias usam metadata/none, observadores e coordenação para não tocar simultaneamente. Preload só do próximo vídeo, sem autoplay oculto.
+VSL reutiliza MiniVsl com quizMode: não altera os padrões de `/`. Fechamento visual no término ou falha/8 segundos sem progresso; Escape preservado como saída acessível. Conclusão da VSL de entrada começa as perguntas, sem compra. Não há segunda VSL no resultado. Prévias usam metadata/none, observadores e coordenação para não tocar simultaneamente. A capa usa apenas o poster: nenhum vídeo recebe src antes do gesto de play. Removido o preload oculto entre perguntas. Prévias começam ao cruzar 15% de visibilidade, em vez de 60%, sem aguardar a reprodução para liberar o avanço.
 
 ## Oferta e eventos
 
@@ -35,3 +35,6 @@ Testes automatizados cobrem fluxo completo, seleção múltipla, gênero, pontua
 
 ## Ajuste de UTMs e respostas
 O código ofuscado enviado foi decodificado: latest.js oficial com prevent-subids e prevent-xcod-sck. O loader já existente é único; a configuração prevent-xcod-sck é aplicada somente na entrada direta em /quiz. O pixel UTMify e o Meta existentes foram preservados. Q3 a Q7 têm respostas próprias, mantendo índices 0/1/2 e pontuação 2/1/0.
+
+## Abertura VSL e desempenho
+O bootstrap `main.tsx` seleciona /quiz antes de importar App: a variante não baixa a página de controle, seus providers de dashboard nem o router. Não foram reencodados os arquivos de vídeo; nenhuma redução de tamanho de mídia é alegada. Fonte, Pixel, UTMify e Clarity mantidos. Os testes de regressão foram atualizados para VSL primeiro, sem vídeo antes do clique e alternativa após falha; execução depende do ambiente de testes. Conferir build e fluxo publicado após cada alteração.
