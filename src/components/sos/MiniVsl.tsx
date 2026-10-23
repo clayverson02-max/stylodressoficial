@@ -8,7 +8,7 @@ import { scrollToSection } from "@/lib/scrollToOffer";
 const COMPLETED_KEY = "sos-vsl-complete-v1";
 const safeTrack = (event: string) => { try { trackCustom(event, { video: "sos-bebe-vsl" }); } catch { /* Analytics must not affect playback. */ } };
 
-export function MiniVsl() {
+export function MiniVsl({ quizMode = false }: { quizMode?: boolean } = {}) {
   const [open, setOpen] = useState(false);
   const [complete, setComplete] = useState(false);
   const [safetyExit, setSafetyExit] = useState(false);
@@ -86,8 +86,8 @@ export function MiniVsl() {
         }} onPointerDownOutside={event=>event.preventDefault()} onInteractOutside={event=>event.preventDefault()} onContextMenu={event=>event.preventDefault()}>
           <Dialog.Title className="sr-only">Apresentação SOS Bebê</Dialog.Title>
           <Dialog.Description className="sr-only">Vídeo com som. Use o botão no alto da tela ou a tecla Escape para sair a qualquer momento.</Dialog.Description>
-          <button type="button" className="vsl-close vsl-close--subtle" onClick={closeVideo} aria-label="Fechar vídeo" title="Fechar vídeo"><X size={18}/></button>
-          {complete ? <div className="vsl-end"><h2>Você chegou até o final. Continue conhecendo o SOS Bebê.</h2><button type="button" className="sos-cta vsl-reading-cta" onClick={()=>{closeVideo();window.setTimeout(()=>scrollToSection("continuar-leitura"),30);}}>Continuar vendo a página →</button></div> : <>
+          {(!quizMode || complete || safetyExit)&&<button type="button" className="vsl-close vsl-close--subtle" onClick={closeVideo} aria-label="Fechar vídeo" title="Fechar vídeo"><X size={18}/></button>}
+          {complete ? <div className="vsl-end"><h2>{quizMode?"Veja agora o seu plano":"Você chegou até o final. Continue conhecendo o SOS Bebê."}</h2><button type="button" className="sos-cta vsl-reading-cta" onClick={()=>{closeVideo();window.setTimeout(()=>scrollToSection(quizMode?"plano":"continuar-leitura"),30);}}>{quizMode?"VER MEU PLANO ↓":"Continuar vendo a página →"}</button></div> : <>
             <video ref={video} className="vsl-playing" src={sosMedia.vsl.src} poster={sosMedia.vsl.poster} preload="metadata" playsInline autoPlay disablePictureInPicture disableRemotePlayback controlsList="nodownload noplaybackrate noremoteplayback" tabIndex={0} aria-label="Vídeo de apresentação SOS Bebê" onContextMenu={event=>event.preventDefault()} onKeyDown={event=>{if ([" ","ArrowLeft","ArrowRight","ArrowUp","ArrowDown","Home","End","k","j","l"].includes(event.key)) event.preventDefault();}} onPlay={()=>{setNeedsPlay(false);mark("VSL_Play");}} onPlaying={()=>{setNeedsPlay(false);lastProgress.current=performance.now();}} onPause={()=>{
               const element=video.current;
               if (element&&!element.ended&&!document.hidden) void element.play().catch(()=>{setNeedsPlay(true);});

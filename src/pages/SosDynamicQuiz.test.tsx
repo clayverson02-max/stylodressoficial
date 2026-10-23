@@ -1,0 +1,78 @@
+import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import SosDynamicQuiz from './SosDynamicQuiz';
+import { quizKey, readQuiz, resultFor } from '@/data/sosQuiz';
+import { trackCustom, trackStandard, trackInitiateCheckout } from '@/lib/metaPixel';
+
+vi.mock('@/lib/metaPixel',()=>({trackCustom:vi.fn(),trackStandard:vi.fn(),trackInitiateCheckout:vi.fn()}));
+const observers:{callback:IntersectionObserverCallback;observe:ReturnType<typeof vi.fn>}[]=[];
+beforeEach(()=>{
+  vi.useFakeTimers();sessionStorage.clear();vi.clearAllMocks();observers.length=0;
+  vi.stubGlobal('scrollTo',vi.fn());
+  vi.stubGlobal('IntersectionObserver',class {callback:IntersectionObserverCallback;observe=vi.fn();disconnect=vi.fn();unobserve=vi.fn();constructor(callback:IntersectionObserverCallback){this.callback=callback;observers.push(this);}});
+  vi.spyOn(HTMLMediaElement.prototype,'play').mockResolvedValue();
+  vi.spyOn(HTMLMediaElement.prototype,'pause').mockImplementation(()=>{});
+  window.history.replaceState({},'', '/quiz?utm_source=test&fbclid=abc');
+});
+afterEach(()=>{cleanup();vi.unstubAllGlobals();vi.restoreAllMocks();vi.useRealTimers();});
+const advance=()=>act(()=>vi.advanceTimersByTime(350));
+const choose=(name:string)=>{fireEvent.click(screen.getByRole('button',{name}));advance();};
+const next=()=>fireEvent.click(screen.getByRole('button',{name:'CONTINUAR →'}));
+const completeAnswers={1:1,2:2,3:2,4:2,5:1,6:0,7:2,8:[0,3]};
+
+describe('SOS Bebê quiz funnel',()=>{
+  it('follows all eight questions, handles multiple feelings, and completes only once without firing checkout',()=>{
+    render(<SosDynamicQuiz/>);
+    expect(screen.queryByRole('link')).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button',{name:'COMEÇAR O TESTE →'}));
+    choose('Sou pai de primeiro filho →');choose('1 a 3 meses →');
+    choose('😰 Não sei. Entro em pânico →');
+    expect(screen.getByText('É exatamente aqui que muita gente trava.')).toBeInTheDocument();next();
+    choose('✅ Sei exatamente o que fazer →');
+    expect(screen.getByText(/exausto/)).toBeInTheDocument();next();
+    choose('😬 Mais ou menos, vou tentando →');next();
+    choose('😰 Não sei. Entro em pânico →');
+    choose('😰 Não sei. Entro em pânico →');next();
+    expect(screen.getByRole('button',{name:'CONTINUAR →'})).toBeDisabled();
+    fireEvent.click(screen.getByRole('button',{name:'Pânico →'}));fireEvent.click(screen.getByRole('button',{name:'Culpa →'}));next();
+    expect(screen.getByText('Pai, a culpa não é sua.')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button',{name:'VER MEU RESULTADO →'}));
+    act(()=>vi.advanceTimersByTime(3500));
+    expect(screen.getByRole('heading',{level:1})).toHaveTextContent('vulnerável em 4 de 5');
+    expect(vi.mocked(trackCustom).mock.calls.filter(c=>c[0]==='Quiz_Answer')).toHaveLength(8);
+    expect(vi.mocked(trackStandard).mock.calls.filter(c=>c[0]==='Lead')).toHaveLength(1);
+    expect(trackInitiateCheckout).not.toHaveBeenCalled();
+    expect(document.querySelectorAll('[data-checkout-cta]')).toHaveLength(1);
+    expect(document.querySelector('[data-checkout-cta]')?.closest('#oferta')).not.toBeNull();
+    expect(sessionStorage.getItem(quizKey)).toContain('result');
+  });
+  it('restores answers, supports native history back, and cancels pending automatic advances',()=>{
+    sessionStorage.setItem(quizKey,JSON.stringify({step:'q3',answers:{1:0,2:1}}));
+    render(<SosDynamicQuiz/>);
+    expect(screen.getByRole('heading',{level:1})).toHaveTextContent('São 3 da manhã');
+    fireEvent.click(screen.getByRole('button',{name:'😬 Mais ou menos, vou tentando →'}));
+    act(()=>window.dispatchEvent(new PopStateEvent('popstate',{state:{sosQuiz:{step:'q2'}}})));
+    advance();expect(screen.getByRole('heading',{level:1})).toHaveTextContent('Qual a idade');
+    expect(screen.getByRole('button',{name:'0 a 1 mês ✓'})).toHaveAttribute('aria-pressed','true');
+    expect(trackInitiateCheckout).not.toHaveBeenCalled();
+  });
+  it('fires ViewContent at the offer, retains attribution, and keeps the quiz VSL safety exit',()=>{
+    sessionStorage.setItem(quizKey,JSON.stringify({step:'result',answers:completeAnswers}));
+    render(<SosDynamicQuiz/>);
+    const offerObserver=observers.find(o=>o.observe.mock.calls.some(c=>c[0].id==='oferta'))!;
+    act(()=>offerObserver.callback([{isIntersecting:true} as IntersectionObserverEntry],{} as IntersectionObserver));
+    expect(trackStandard).toHaveBeenCalledWith('ViewContent',expect.objectContaining({value:9.9,currency:'BRL'}));
+    fireEvent.click(screen.getByRole('button',{name:/Assistir agora à apresentação/}));
+    expect(screen.queryByRole('button',{name:'Fechar vídeo'})).not.toBeInTheDocument();
+    const video=screen.getByLabelText('Vídeo de apresentação SOS Bebê');
+    expect(video).not.toHaveAttribute('controls');fireEvent.error(video);
+    expect(screen.getByRole('button',{name:'Fechar vídeo'})).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button',{name:'Fechar vídeo'}));
+    expect(document.querySelector('[data-checkout-cta]')).toHaveAttribute('href','https://pay.cakto.com.br/gwvroes_1229714');
+  });
+  it('validates saved state and computes only the five preparation answers',()=>{
+    expect(resultFor(completeAnswers)).toMatchObject({total:3,vulnerable:4});
+    sessionStorage.setItem(quizKey,JSON.stringify({step:'result',answers:{1:99,3:12,8:['invalid']}}));
+    expect(readQuiz()).toMatchObject({step:'q1',answers:{8:[]}});
+  });
+});
