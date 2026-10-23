@@ -13,7 +13,7 @@ A página de controle `/` e seus estilos permanecem intactos. `/quiz` é carrega
 - `/public/feedback-mama-1.png`, `2.png`, `3.png` são fotos sem mensagens. Não são usados como depoimentos.
 - Arquivos antigos de gestação e moda não são usados na variante.
 
-Os caminhos são importados pelo manifesto único `src/data/sosQuiz.ts` a partir dos manifestos existentes; nenhuma cópia pesada foi criada. Cocô e gases reutilizam o clipe combinado confirmado. Conforme orientação do proprietário, uma galeria de prévias reais substitui a prova social. Para prints reais autorizados, preencher `quizMedia.feedbacks`; carrossel e ampliação já estão preparados.
+Os caminhos são importados pelo manifesto único `src/data/sosQuiz.ts` a partir dos manifestos existentes; nenhuma cópia pesada foi criada. Cocô e gases reutilizam o clipe combinado confirmado. Conforme orientação do proprietário, uma galeria de prévias reais substitui a prova social. Os três depoimentos em texto (Juliana Moreira, Rafael Silva e Larissa Sousa) foram fornecidos pelo proprietário e estão em `quizTestimonials`, sem associação a fotos não identificadas. Carrossel com avanço a cada 6,5 s quando visível, pausa durante interação e sem avanço automático com movimento reduzido. Para prints reais autorizados, preencher `quizMedia.feedbacks`; carrossel e ampliação já estão preparados.
 
 ## Fluxo e estado
 
@@ -32,3 +32,6 @@ Mesmo pixel e PageView existentes. Quiz_Start, Quiz_Answer, Quiz_Complete, Lead 
 ## Verificação
 
 Testes automatizados cobrem fluxo completo, seleção múltipla, gênero, pontuação, cancelamento de avanço ao voltar, restauração validada, Lead único, oferta e VSL com saída de segurança. Suite anterior da página de controle permanece passando. Teste em aparelhos físicos iPhone Safari e Android Chrome é necessário; inspeção em navegador desktop não equivale a validação nesses aparelhos.
+
+## Ajuste de UTMs e respostas
+O código ofuscado enviado foi decodificado: latest.js oficial com prevent-subids e prevent-xcod-sck. O loader já existente é único; a configuração prevent-xcod-sck é aplicada somente na entrada direta em /quiz. O pixel UTMify e o Meta existentes foram preservados. Q3 a Q7 têm respostas próprias, mantendo índices 0/1/2 e pontuação 2/1/0.

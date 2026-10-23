@@ -48,7 +48,20 @@
       window.pixelId = "6ad2f48578142d01acee4af8";
     </script>
     <script src="https://cdn.utmify.com.br/scripts/pixel/pixel.js" async defer></script>
-    <script src="https://cdn.utmify.com.br/scripts/utms/latest.js" data-utmify-prevent-subids async defer></script>
+    <script>
+      (function () {
+        var utms = document.createElement('script');
+        utms.src = 'https://cdn.utmify.com.br/scripts/utms/latest.js';
+        utms.async = true;
+        utms.defer = true;
+        utms.setAttribute('data-utmify-prevent-subids', '');
+        // Quiz configuration supplied by the owner; preserve the control's behavior.
+        if (/^\/quiz\/?$/.test(window.location.pathname)) {
+          utms.setAttribute('data-utmify-prevent-xcod-sck', '');
+        }
+        document.head.appendChild(utms);
+      })();
+    </script>
 
     <!-- TikTok Pixel Code Start -->
     <script>

@@ -4,7 +4,7 @@ import * as Dialog from '@radix-ui/react-dialog';
 import { MiniVsl } from '@/components/sos/MiniVsl';
 import { QuizClip } from '@/components/sos-quiz/QuizClip';
 import { answersForStorage, onceQuiz, safeQuizTrack } from '@/lib/sosQuizTracking';
-import { quizMedia, quizKey, steps, questions, questionOptions, knowledgeOptions, feelings, situations, resultFor, personaFor, readQuiz, type Step, type Answers } from '@/data/sosQuiz';
+import { quizMedia, quizKey, steps, questions, questionOptions, situationOptions, quizTestimonials, feelings, situations, resultFor, personaFor, readQuiz, type Step, type Answers } from '@/data/sosQuiz';
 import { sosOffer, includes } from '@/data/sosOffer';
 import { beginBirthCheckout, checkoutDestination } from '@/lib/birthCheckout';
 import { scrollToSection } from '@/lib/scrollToOffer';
@@ -21,9 +21,35 @@ function PreviewGallery() {
 }
 function RealFeedbacks() {
   const [image,setImage]=useState<string|null>(null);
-  if(!quizMedia.feedbacks.length)return null;
-  return <section className="sq-section"><h2>O que estão dizendo</h2><div className="sq-feedbacks">{quizMedia.feedbacks.map(item=><button type="button" key={item.src} onClick={()=>setImage(item.src)} aria-label={`Ampliar ${item.alt}`}><img src={item.src} alt={item.alt} loading="lazy"/></button>)}</div><Dialog.Root open={!!image} onOpenChange={open=>{if(!open)setImage(null);}}><Dialog.Portal><Dialog.Overlay className="modal-overlay"/><Dialog.Content className="sq-lightbox"><Dialog.Title className="sr-only">Depoimento ampliado</Dialog.Title><Dialog.Description className="sr-only">Imagem original, sem alterações.</Dialog.Description><Dialog.Close aria-label="Fechar imagem"><X/></Dialog.Close>{image&&<img src={image} alt="Depoimento original ampliado"/>}</Dialog.Content></Dialog.Portal></Dialog.Root></section>;
+  const [active,setActive]=useState(0);
+  const rail=useRef<HTMLDivElement>(null);
+  const paused=useRef(false);
+  const count=quizTestimonials.length+quizMedia.feedbacks.length;
+  const select=useCallback((index:number)=>{
+    const node=rail.current;if(!node)return;
+    const child=node.children[index] as HTMLElement|undefined;
+    if(!child)return;
+    const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    node.scrollTo({left:child.offsetLeft,behavior:reduced?'auto':'smooth'});
+  },[]);
+  useEffect(()=>{
+    if(!count||window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+    const timer=window.setInterval(()=>{
+      if(document.hidden||paused.current||image)return;
+      const node=rail.current;if(!node)return;
+      const bounds=node.getBoundingClientRect();
+      if(bounds.bottom<0||bounds.top>window.innerHeight)return;
+      select((active+1)%count);
+    },6500);
+    return()=>window.clearInterval(timer);
+  },[active,count,image,select]);
+  if(!count)return null;
+  return <section className="sq-section" aria-labelledby="sq-feedback-title"><span className="sq-kicker">EXPERIÊNCIAS COMPARTILHADAS</span><h2 id="sq-feedback-title">O que estão dizendo</h2><div className="sq-feedbacks" ref={rail} tabIndex={0} aria-label="Depoimentos — deslize para ver mais" onMouseEnter={()=>{paused.current=true;}} onMouseLeave={()=>{paused.current=false;}} onFocusCapture={()=>{paused.current=true;}} onBlurCapture={()=>{paused.current=false;}} onTouchStart={()=>{paused.current=true;}} onTouchEnd={()=>{paused.current=false;}} onScroll={()=>{const node=rail.current;if(!node)return;let closest=0;let distance=Infinity;Array.from(node.children).forEach((child,i)=>{const d=Math.abs((child as HTMLElement).offsetLeft-node.scrollLeft);if(d<distance){distance=d;closest=i;}});setActive(closest);}}>
+    {quizTestimonials.map(item=><figure className="sq-testimonial" key={item.name}><figcaption><span className="sq-avatar" aria-hidden="true">{item.name.split(' ').map(n=>n[0]).join('')}</span><strong>{item.name}</strong></figcaption><blockquote>“{item.quote}”</blockquote></figure>)}
+    {quizMedia.feedbacks.map(item=><button type="button" key={item.src} onClick={()=>setImage(item.src)} aria-label={`Ampliar ${item.alt}`}><img src={item.src} alt={item.alt} loading="lazy"/></button>)}
+  </div><div className="sq-carousel-controls"><button type="button" onClick={()=>select((active+count-1)%count)} aria-label="Depoimento anterior">←</button><span>{active+1} de {count}</span><button type="button" onClick={()=>select((active+1)%count)} aria-label="Próximo depoimento">→</button></div><p className="sq-note">Relatos individuais. Cada bebê e cada experiência são diferentes. O guia não substitui o pediatra.</p><Dialog.Root open={!!image} onOpenChange={open=>{if(!open)setImage(null);}}><Dialog.Portal><Dialog.Overlay className="modal-overlay"/><Dialog.Content className="sq-lightbox"><Dialog.Title className="sr-only">Depoimento ampliado</Dialog.Title><Dialog.Description className="sr-only">Imagem original, sem alterações.</Dialog.Description><Dialog.Close aria-label="Fechar imagem"><X/></Dialog.Close>{image&&<img src={image} alt="Depoimento original ampliado"/>}</Dialog.Content></Dialog.Portal></Dialog.Root></section>;
 }
+
 function Legal() {
   return <footer className="sq-footer"><p>SOS Bebê · Conteúdo educativo</p>{[['Privacidade',sosOffer.privacyText],['Termos',sosOffer.termsText]].map(([title,text])=><Dialog.Root key={title}><Dialog.Trigger asChild><button type="button">{title}</button></Dialog.Trigger><Dialog.Portal><Dialog.Overlay className="modal-overlay"/><Dialog.Content className="sos-modal"><Dialog.Close className="modal-close" aria-label="Fechar documento"><X/></Dialog.Close><Dialog.Title>{title}</Dialog.Title><Dialog.Description>{text||'Documento em preparação. Consulte os termos apresentados na página de pagamento antes de comprar.'}</Dialog.Description></Dialog.Content></Dialog.Portal></Dialog.Root>)}</footer>;
 }
@@ -109,7 +135,7 @@ export default function SosDynamicQuiz() {
   const q=step.startsWith('q')?Number(step.slice(1)):0;
   const videoQ=step.startsWith('video')?Number(step.slice(5)):0;
   const clip=situations.find(s=>s.question===videoQ)?.clip;
-  const options=q>=1&&q<=2?questionOptions[q-1].map((option,i)=>q===2&&i===0&&answers[1]!==0?'O bebê ainda não nasceu':option):q===8?feelings:knowledgeOptions;
+  const options=q>=1&&q<=2?questionOptions[q-1].map((option,i)=>q===2&&i===0&&answers[1]!==0?'O bebê ainda não nasceu':option):q===8?feelings:situationOptions[q]||[];
   const currentQuestion=q||videoQ||8;
   // Metadata only: prewarm the nearest upcoming clip without downloading every preview.
   const nextVideo=q>0?situations.find(s=>[3,4,5,7].includes(s.question)&&s.question>=q)?.clip:undefined;

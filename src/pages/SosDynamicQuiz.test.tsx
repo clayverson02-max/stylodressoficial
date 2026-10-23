@@ -28,11 +28,11 @@ describe('SOS Bebê quiz funnel',()=>{
     choose('Sou pai de primeiro filho →');choose('1 a 3 meses →');
     choose('😰 Não sei. Entro em pânico →');
     expect(screen.getByText('É exatamente aqui que muita gente trava.')).toBeInTheDocument();next();
-    choose('✅ Sei exatamente o que fazer →');
+    choose('✅ Sei acolher e reconhecer quando buscar ajuda →');
     expect(screen.getByText(/exausto/)).toBeInTheDocument();next();
-    choose('😬 Mais ou menos, vou tentando →');next();
-    choose('😰 Não sei. Entro em pânico →');
-    choose('😰 Não sei. Entro em pânico →');next();
+    choose('😬 Conheço uma posição, mas não tenho certeza →');next();
+    choose('😰 Fico sem saber como ajudar →');
+    choose('😰 Não tenho um guia e fico sem saber por onde começar →');next();
     expect(screen.getByRole('button',{name:'CONTINUAR →'})).toBeDisabled();
     fireEvent.click(screen.getByRole('button',{name:'Pânico →'}));fireEvent.click(screen.getByRole('button',{name:'Culpa →'}));next();
     expect(screen.getByText('Pai, a culpa não é sua.')).toBeInTheDocument();
@@ -45,6 +45,7 @@ describe('SOS Bebê quiz funnel',()=>{
     expect(document.querySelectorAll('[data-checkout-cta]')).toHaveLength(1);
     expect(document.querySelector('[data-checkout-cta]')?.closest('#oferta')).not.toBeNull();
     expect(sessionStorage.getItem(quizKey)).toContain('result');
+    for(const name of ['Juliana Moreira','Rafael Silva','Larissa Sousa']) expect(screen.getByText(name)).toBeInTheDocument();
   });
   it('restores answers, supports native history back, and cancels pending automatic advances',()=>{
     sessionStorage.setItem(quizKey,JSON.stringify({step:'q3',answers:{1:0,2:1}}));

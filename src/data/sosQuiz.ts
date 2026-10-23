@@ -18,6 +18,19 @@ export const questionOptions = [
   ['Ainda estou grávida', '0 a 1 mês', '1 a 3 meses', '3 a 6 meses', 'Mais de 6 meses'],
 ];
 export const knowledgeOptions = ['✅ Sei exatamente o que fazer', '😬 Mais ou menos, vou tentando', '😰 Não sei. Entro em pânico'];
+/** Index 0/1/2 always means confident/partial/unsure; wording changes by situation. */
+export const situationOptions: Record<number,string[]> = {
+  3: knowledgeOptions,
+  4: ['✅ Sei acolher e reconhecer quando buscar ajuda', '😬 Tento algumas coisas, mas fico em dúvida', '😰 Não sei como agir com segurança'],
+  5: ['✅ Conheço as posições e os cuidados', '😬 Conheço uma posição, mas não tenho certeza', '😰 Não sei qual posição usar'],
+  6: ['✅ Sei os cuidados e quando falar com o pediatra', '😬 Tenho dúvidas sobre o que é seguro fazer', '😰 Fico sem saber como ajudar'],
+  7: ['✅ Tenho um guia e sei quando procurar atendimento', '😬 Busco na internet, mas fico sem uma direção', '😰 Não tenho um guia e fico sem saber por onde começar'],
+};
+export const quizTestimonials = [
+  {name:'Juliana Moreira',quote:'Eu travava completamente quando meu filho começava a chorar sem parar. Depois que fiz o teste e segui o guia da Dra. Valentina, finalmente entendi o que fazer em cada situação. Hoje consigo acalmar ele bem mais rápido e sem entrar em desespero.'},
+  {name:'Rafael Silva',quote:'Eu achava que era só ‘deixar chorar’ ou pegar no colo. Depois do teste vi que eu estava vulnerável em várias situações. Com o SOS Bebê consegui ter mais segurança e meu bebê passou a acalmar muito mais fácil.'},
+  {name:'Larissa Sousa',quote:'Toda vez que meu bebê chorava eu entrava em pânico e não sabia por onde começar. Depois que fiz o teste e usei o guia da Dra. Valentina, finalmente consegui entender os sinais dele. Hoje resolvo a maioria das crises em poucos minutos e sem stress.'},
+];
 export const feelings = ['Pânico', 'Culpa', 'Impotência', 'Medo de estar errando', 'Cansaço extremo'];
 export const questions = [
   'Quem vai cuidar do bebê nas horas difíceis?', 'Qual a idade do bebê?',
