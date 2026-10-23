@@ -6,6 +6,7 @@ import { QuizClip } from '@/components/sos-quiz/QuizClip';
 import { answersForStorage, onceQuiz, safeQuizTrack } from '@/lib/sosQuizTracking';
 import { quizMedia, quizKey, steps, questions, questionBenefits, situationBenefits, questionOptions, situationOptions, quizTestimonials, feelings, situations, resultFor, personaFor, readQuiz, type Step, type Answers } from '@/data/sosQuiz';
 import { sosOffer, includes } from '@/data/sosOffer';
+import { quizOffer } from '@/data/sosQuizOffer';
 import { beginBirthCheckout, checkoutDestination } from '@/lib/birthCheckout';
 import { scrollToSection } from '@/lib/scrollToOffer';
 import './sos-quiz.css';
@@ -55,12 +56,12 @@ function PersonalizedResult({answers}: {answers:Answers}) {
   useEffect(()=>{
     onceQuiz('complete',()=>{safeQuizTrack('Quiz_Complete');safeQuizTrack('Lead',undefined,true);});
     const node=offer.current;if(!node)return;
-    const observer=new IntersectionObserver(([entry])=>{if(entry.isIntersecting){onceQuiz('offer',()=>safeQuizTrack('ViewContent',{content_name:sosOffer.name,value:sosOffer.price,currency:'BRL'},true));observer.disconnect();}},{threshold:.15});
+    const observer=new IntersectionObserver(([entry])=>{if(entry.isIntersecting){onceQuiz('offer',()=>safeQuizTrack('ViewContent',{content_name:sosOffer.name,value:quizOffer.price,currency:'BRL'},true));observer.disconnect();}},{threshold:.15});
     observer.observe(node);return()=>{observer.disconnect();if(timer.current)clearTimeout(timer.current);};
   },[]);
   const checkout=(event:MouseEvent<HTMLAnchorElement>)=>{
     event.preventDefault();if(pending.current)return;pending.current=true;
-    timer.current=beginBirthCheckout(checkoutDestination(event.currentTarget.href,window.location.search),url=>window.location.assign(url));
+    timer.current=beginBirthCheckout(checkoutDestination(event.currentTarget.href,window.location.search),url=>window.location.assign(url),quizOffer.price);
   };
   const headline=total<=3?`⚠️ ALERTA: você está vulnerável em ${vulnerable} de 5 situações`:total<=7?`ATENÇÃO: você sabe parte do caminho, mas ainda trava em ${vulnerable} de 5 situações`:'Você tem uma boa base. Mas bebê muda, e na hora do aperto a calma some.';
   const sorted=[...situations].sort((a,b)=>resultFor(answers).scores[a.question-3]-resultFor(answers).scores[b.question-3]);
@@ -71,11 +72,11 @@ function PersonalizedResult({answers}: {answers:Answers}) {
     <RealFeedbacks/>
     <section className="sq-section sq-authority">{quizMedia.doctor&&<img src={quizMedia.doctor} alt="Dra. Valentina, apresentada como criadora do SOS Bebê" width={640} height={1007} loading="lazy"/>}<div><span className="sq-kicker">POR TRÁS DO GUIA</span><h2>Quem está por trás do SOS Bebê</h2><p>Criado pela Dra. Valentina.</p><p>Uma proposta simples: reunir a preparação em um guia visual para que mães e pais não se sintam perdidos entre tantos palpites.</p>{sosOffer.doctorCredentials&&<p>{sosOffer.doctorCredentials}</p>}<p><strong>Mais clareza para consultar. Mais confiança para pedir ajuda.</strong> E o pediatra sempre como referência no cuidado com seu bebê.</p></div></section>
     <section className="sq-section"><h2>Tudo em um só lugar. Para consultar quando precisar.</h2><div className="sq-includes">{includes.map(([title,description])=><article key={title}><Check/><div><h3>{title}</h3><p>{description}</p></div></article>)}</div></section>
-    <section className="sq-section sq-navy" id="oferta" ref={offer}><h2>Seu acesso completo ao SOS Bebê</h2><div className="sq-receipt offer-card"><Baby size={40}/><h3>SOS Bebê · Pacote completo</h3><ul>{['+250 receitas caseiras em vídeo','+100 movimentos em vídeo','Vídeos de arrotar, posições, cocô e cólica','Tudo organizado por situação','Acesso pelo celular'].map(t=><li key={t}><Check size={22}/>{t}</li>)}</ul><dl><div><dt>Preço de hoje</dt><dd>R$ 9,90</dd></div><div><dt>+ Taxa do checkout (Cakto)</dt><dd>R$ 0,99</dd></div><div className="sq-total"><dt>TOTAL</dt><dd>R$ 10,89</dd></div></dl><p>Sem pegadinha: você vê o total antes de pagar. <strong>Pagamento único, sem mensalidade.</strong> Cerca de 3 centavos por conteúdo.</p><a className="sq-cta" data-checkout-cta="quiz-offer" href={sosOffer.checkout} onClick={checkout}>QUERO O SOS BEBÊ AGORA →</a><p className="sq-note"><LockKeyhole size={18}/> Pix e cartão · Acesso após confirmar o pagamento · Garantia de 7 dias</p><p className="sq-guarantee"><ShieldCheck/>Você tem 7 dias de garantia para conhecer o conteúdo e solicitar reembolso se não for o que esperava.</p></div></section>
+    <section className="sq-section sq-navy" id="oferta" ref={offer}><h2>Seu acesso completo ao SOS Bebê</h2><div className="sq-receipt offer-card"><Baby size={40}/><h3>SOS Bebê · Pacote completo</h3><ul>{['+250 receitas caseiras em vídeo','+100 movimentos em vídeo','Vídeos de arrotar, posições, cocô e cólica','Tudo organizado por situação','Acesso pelo celular'].map(t=><li key={t}><Check size={22}/>{t}</li>)}</ul><span className="sq-status sq-status-0">OFERTA PROMOCIONAL</span><dl><div className="sq-total"><dt>Hoje, por apenas</dt><dd>{quizOffer.priceLabel}</dd></div></dl><p>Seu acesso completo com preço promocional. <strong>Pagamento único, sem mensalidade.</strong> Menos de 2 centavos por conteúdo.</p><a className="sq-cta" data-checkout-cta="quiz-offer" href={quizOffer.checkout} onClick={checkout}>QUERO O SOS BEBÊ AGORA →</a><p className="sq-note"><LockKeyhole size={18}/> Pix e cartão · Acesso após confirmar o pagamento · Garantia de 7 dias</p><p className="sq-guarantee"><ShieldCheck/>Você tem 7 dias de garantia para conhecer o conteúdo e solicitar reembolso se não for o que esperava.</p></div></section>
     <section className="sq-section"><h2>Antes de começar, tire suas dúvidas</h2>{[
       ['Como recebo o acesso?','Após a confirmação do pagamento, você recebe as instruções de acesso por e-mail.'],
       ['Funciona no celular?','Sim. Você pode acessar pelo celular, tablet ou computador.'],
-      ['É pagamento único?','Sim. R$ 9,90 pelo produto, mais R$ 0,99 de taxa de serviço: total de R$ 10,89. Sem mensalidade.'],
+      ['É pagamento único?','Sim. O acesso completo está em promoção por R$ 4,99. Você paga uma única vez, sem mensalidade.'],
       ['Serve para a idade do meu bebê?','A adequação depende do conteúdo e da faixa etária. Converse com o pediatra antes de aplicar qualquer receita ou movimento.'],
       ['Substitui o pediatra?','Não. É conteúdo educativo e complementar. Não substitui consulta, diagnóstico, remédio ou tratamento prescrito.'],
     ].map(([q,a])=><details className="sq-faq" key={q}><summary>{q}<ChevronDown size={22}/></summary><p>{a}</p></details>)}</section>

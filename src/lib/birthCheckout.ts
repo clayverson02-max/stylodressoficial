@@ -11,7 +11,7 @@ export function checkoutDestination(href: string, search: string) {
   return destination.toString();
 }
 
-export function beginBirthCheckout(destination: string, navigate: (url: string) => void) {
-  try { trackInitiateCheckout(9.90); } catch { /* Blocked analytics must never block checkout. */ }
+export function beginBirthCheckout(destination: string, navigate: (url: string) => void, value = 9.90) {
+  try { trackInitiateCheckout(value); } catch { /* Blocked analytics must never block checkout. */ }
   return window.setTimeout(() => navigate(destination), 150);
 }

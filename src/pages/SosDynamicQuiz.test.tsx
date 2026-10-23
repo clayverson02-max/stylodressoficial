@@ -64,9 +64,18 @@ describe('SOS Bebê quiz funnel',()=>{
     render(<SosDynamicQuiz/>);
     const offerObserver=observers.find(o=>o.observe.mock.calls.some(c=>c[0].id==='oferta'))!;
     act(()=>offerObserver.callback([{isIntersecting:true} as IntersectionObserverEntry],{} as IntersectionObserver));
-    expect(trackStandard).toHaveBeenCalledWith('ViewContent',expect.objectContaining({value:9.9,currency:'BRL'}));
+    expect(trackStandard).toHaveBeenCalledWith('ViewContent',expect.objectContaining({value:4.99,currency:'BRL'}));
     expect(screen.queryByRole('button',{name:/Assistir agora à apresentação/})).not.toBeInTheDocument();
-    expect(document.querySelector('[data-checkout-cta]')).toHaveAttribute('href','https://pay.cakto.com.br/gwvroes_1229714');
+    expect(document.querySelector('[data-checkout-cta]')).toHaveAttribute('href','https://pay.wiapy.com/PtucXof_7bZD');
+  });
+  it('uses the promotional checkout value only when the offer is clicked',()=>{
+    sessionStorage.setItem(quizKey,JSON.stringify({step:'result',answers:completeAnswers}));
+    render(<SosDynamicQuiz/>);
+    expect(trackInitiateCheckout).not.toHaveBeenCalled();
+    expect(document.querySelector('#oferta')?.textContent).toContain('R$ 4,99');
+    expect(document.querySelector('#oferta')?.textContent).not.toMatch(/Cakto|0,99|10,89|9,90/);
+    fireEvent.click(screen.getByRole('link',{name:'QUERO O SOS BEBÊ AGORA →'}));
+    expect(trackInitiateCheckout).toHaveBeenCalledWith(4.99);
   });
   it('starts with only the VSL, downloads no video before play, and offers a fallback after failure',()=>{
     render(<SosDynamicQuiz/>);
