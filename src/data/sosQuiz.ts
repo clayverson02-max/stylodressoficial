@@ -17,30 +17,22 @@ export const questionOptions = [
   ['Sou mãe de primeira viagem', 'Sou pai de primeiro filho', 'Já tenho filhos, mas cada bebê é diferente', 'Sou avó, tia ou ajudo a cuidar'],
   ['Ainda estou grávida', '0 a 1 mês', '1 a 3 meses', '3 a 6 meses', 'Mais de 6 meses'],
 ];
-export const knowledgeOptions = ['✅ Sei exatamente o que fazer', '😬 Mais ou menos, vou tentando', '😰 Não sei. Entro em pânico'];
+export const knowledgeOptions = ["Eu paro, observo e sigo os cuidados que já conheço","Vou do colo à fralda e à internet, sem ter uma sequência","Eu travo e fico com medo de fazer alguma coisa errada"];
 /** Index 0/1/2 always means confident/partial/unsure; wording changes by situation. */
 export const situationOptions: Record<number,string[]> = {
   3: knowledgeOptions,
-  4: ['✅ Sei acolher e reconhecer quando buscar ajuda', '😬 Tento algumas coisas, mas fico em dúvida', '😰 Não sei como agir com segurança'],
-  5: ['✅ Conheço as posições e os cuidados', '😬 Conheço uma posição, mas não tenho certeza', '😰 Não sei qual posição usar'],
-  6: ['✅ Sei os cuidados e quando falar com o pediatra', '😬 Tenho dúvidas sobre o que é seguro fazer', '😰 Fico sem saber como ajudar'],
-  7: ['✅ Tenho um guia e sei quando procurar atendimento', '😬 Busco na internet, mas fico sem uma direção', '😰 Não tenho um guia e fico sem saber por onde começar'],
+  4: ["Sigo a orientação do pediatra e sei quando pedir ajuda","Tento acalmar, mas não sei se estou ajudando","Cada pessoa fala uma coisa e isso aumenta minha confusão"],
+  5: ["Sei como apoiar e respeitar os limites do bebê","Tento uma posição, mas fico conferindo se está certo","Mudo de posição sem saber qual cuidado preciso ter"],
+  6: ["Evito receitas e manobras por conta própria e falo com o pediatra","Peço opinião, mas não sei separar uma dica de um cuidado seguro","Quase sigo qualquer dica porque só quero ajudar"],
+  7: ["Reconheço quando procurar atendimento, sem esperar pelo guia","Peço ajuda, mas tenho dificuldade para reconhecer sinais de alerta","Não consigo distinguir as situações e tenho medo de escolher errado"],
 };
 export const quizTestimonials = [
   {name:'Juliana Moreira',quote:'Eu travava completamente quando meu filho começava a chorar sem parar. Depois que fiz o teste e segui o guia da Dra. Valentina, finalmente entendi o que fazer em cada situação. Hoje consigo acalmar ele bem mais rápido e sem entrar em desespero.'},
   {name:'Rafael Silva',quote:'Eu achava que era só ‘deixar chorar’ ou pegar no colo. Depois do teste vi que eu estava vulnerável em várias situações. Com o SOS Bebê consegui ter mais segurança e meu bebê passou a acalmar muito mais fácil.'},
   {name:'Larissa Sousa',quote:'Toda vez que meu bebê chorava eu entrava em pânico e não sabia por onde começar. Depois que fiz o teste e usei o guia da Dra. Valentina, finalmente consegui entender os sinais dele. Hoje resolvo a maioria das crises em poucos minutos e sem stress.'},
 ];
-export const feelings = ['Pânico', 'Culpa', 'Impotência', 'Medo de estar errando', 'Cansaço extremo'];
-export const questions = [
-  'Quando a madrugada aperta, quem está ali com o bebê?', 'Em que fase você mais precisa de apoio agora?',
-  'São 3 da manhã. O choro não para. Você tem um próximo passo claro ou tenta de tudo sem direção?',
-  'Quando você suspeita de cólica, sabe acolher seu bebê e reconhecer quando é hora de pedir ajuda?',
-  'Na hora do arroto e dos gases, você conhece os cuidados ou fica mudando de posição sem ter certeza?',
-  'Seu bebê parece desconfortável para fazer cocô. Você sabe o que é seguro e o que não deve tentar por conta própria?',
-  'Num imprevisto, você reconhece os sinais de alerta ou fica procurando respostas no desespero?',
-  'Quando nada parece funcionar, o que mais pesa em você?',
-];
+export const feelings = ["E se eu estiver fazendo alguma coisa errada?","Eu só queria entender do que ele precisa","Tenho medo de não perceber que preciso pedir ajuda","O cansaço não me deixa pensar direito","Parece que nada do que eu tento ajuda"];
+export const questions = ["Depois de mais uma noite mal dormida, quem está ali com o bebê quando o choro começa?","Em que fase você está vivendo essas noites e essas dúvidas?","São 3 da manhã. Você trocou a fralda, deu colo, tentou acalmar. O choro continua. O que acontece com você nessa hora?","Ele encolhe as perninhas e chora no seu colo. Vem o pensamento: “Será que é cólica?”. O que você faz?","A mamada terminou. Você tenta colocar para arrotar e não sabe se está segurando direito. Como lida com essa dúvida?","Seu bebê faz força e parece incomodado. No grupo, sugerem receitas e manobras. Você sabe o que NÃO tentar por conta própria?","O choro está diferente do habitual e você sente que algo não está bem. Como decide se é hora de procurar atendimento?","Quando o bebê chora e você já está no limite do cansaço, o que passa pela sua cabeça?"];
 export const situations = [
   {question:3, label:'Choro intenso', clip:quizMedia.choro},
   {question:4, label:'Cólica', clip:quizMedia.colica},
@@ -86,19 +78,5 @@ export function readQuiz() {
 }
 
 /** A concrete delivery benefit follows each concern; no diagnosis or treatment instructions. */
-export const questionBenefits: Record<number,string> = {
-  1:'Seu plano vai considerar quem cuida do bebê. Sem julgamento e sem cadastro.',
-  2:'Os cuidados mudam com a fase do bebê. O guia reúne faixa etária e cuidados para consultar com o pediatra.',
-  3:'No SOS Bebê, você encontra vídeos por situação para consultar sem se perder em palpites.',
-  4:'O passo a passo vem acompanhado de cuidados e sinais de alerta. Apoio também é saber quando buscar atendimento.',
-  5:'Ver o movimento em vídeo ajuda a entender a posição e seus limites, sem depender de uma dica solta.',
-  6:'Mais tentativas nem sempre são o caminho. Conhecer os limites e conversar com o pediatra faz parte do cuidado.',
-  7:'Um guia de apoio precisa mostrar seus limites: quando parar de tentar e procurar atendimento.',
-  8:'Você não precisa carregar todas essas dúvidas sozinha. Escolha o que mais acontece na sua rotina.',
-};
-export const situationBenefits: Record<number,{title:string;body:string}> = {
-  3:{title:'Na madrugada, mais palpites só aumentam a confusão.',body:'Abra a situação de choro e veja o conteúdo organizado em vídeo. Um ponto de partida para consultar com calma, sem juntar dicas espalhadas.'},
-  4:{title:'Você merece mais clareza do que “tenta isso”.',body:'Veja como o assunto cólica aparece no guia: vídeo passo a passo, cuidados e sinais de alerta. Sem prometer que toda situação se resolve em casa.'},
-  5:{title:'Não é só ler uma dica. É enxergar o movimento.',body:'Vídeos de arroto, posições e gases para entender a demonstração e os cuidados. Sempre respeitando a idade do bebê e a orientação do pediatra.'},
-  7:{title:'Ter apoio também é reconhecer a hora de pedir ajuda.',body:'Nos imprevistos, o guia reúne cuidados e sinais de alerta em um só lugar. Para consultar sem perder de vista quando procurar atendimento.'},
-};
+export const questionBenefits: Record<number,string> = {"1":"Você não precisa acertar tudo sozinha. Vamos olhar para as situações que mais pesam na sua rotina.","2":"Cada fase tem seus cuidados. Responda pensando no que você vive hoje ou no que mais teme enfrentar quando o bebê chegar.","3":"Na hora do aperto, procurar dica atrás de dica só cansa mais. O SOS Bebê reúne os assuntos em vídeo para você saber onde consultar.","4":"Você quer acolher seu bebê, não testar palpites. No guia, os vídeos vêm com cuidados e sinais de alerta para consultar com o pediatra.","5":"O guia tem +100 movimentos em vídeo. Você enxerga a demonstração e os cuidados, em vez de tentar imaginar uma posição lendo uma mensagem.","6":"Nem toda dica de família ou da internet é adequada ao seu bebê. Receitas e movimentos precisam respeitar a idade e a orientação do pediatra.","7":"Se algo te preocupa, procure atendimento. Nenhum vídeo deve atrasar a ajuda que o bebê precisa. Reconhecer esse limite faz parte do cuidado.","8":"Pode marcar mais de uma. Aqui não tem julgamento. A ideia é entender onde você mais precisa de apoio."};
+export const situationBenefits: Record<number,{title:string;body:string}> = {"3":{"title":"Seu braço cansa. E você continua sem direção.","body":"Você pega o celular com o bebê no colo e encontra mais um palpite. No SOS Bebê, você abre a situação de choro e vê o conteúdo organizado em vídeo, com cuidados e sinais de alerta. Um lugar para consultar, sem juntar dicas espalhadas."},"4":{"title":"Colo, balanço, opinião de todo lado. E a dúvida continua.","body":"Quando você suspeita de cólica, o que mais quer é entender por onde começar. Veja esta prévia do guia. Na plataforma, o assunto está organizado com demonstrações, cuidados e limites para conversar melhor com o pediatra."},"5":{"title":"Falar “coloca para arrotar” é fácil. Ver os cuidados ajuda mais.","body":"Com o bebê nos braços, uma mensagem solta nem sempre esclarece sua dúvida. O guia mostra posições e movimentos em vídeo para você enxergar a demonstração, respeitar os limites e consultar o pediatra sobre o que é adequado à idade."},"7":{"title":"Nem todo momento pede mais uma tentativa em casa.","body":"No desespero, é fácil continuar procurando uma dica que resolva. O SOS Bebê reúne cuidados e sinais de alerta, sem substituir atendimento. Se algo te preocupa, procure ajuda imediatamente. O guia é um apoio, não um motivo para esperar."}};
