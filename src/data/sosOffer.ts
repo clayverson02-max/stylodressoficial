@@ -1,14 +1,14 @@
 /** Editable product facts. Null fields stay hidden until real information is supplied. */
 export const sosOffer = {
   name: "SOS Bebê – Guia Completo da Dra. Valentina",
-  checkout: "https://pay.cakto.com.br/gwvroes_1229714",
-  price: 9.90,
+  checkout: "https://pay.wiapy.com/PtucXof_7bZD",
+  price: 4.99,
   guaranteeDays: 7,
   doctorPhoto: "/images/dra-valentina.webp" as string | null, // Supplied portrait; keep source watermark intact.
   doctorCredentials: null as string | null, // [PLACEHOLDER] validated specialty, CRM and experience
   accessDuration: null as string | null, // [PLACEHOLDER]
   priceChangeNotice: null as string | null, // [PLACEHOLDER] only add if an actual price change is scheduled
-  paymentMethods: ["Pix", "Cartão", "PicPay"] as string[], // Verified in the linked Cakto checkout.
+  paymentMethods: ["Pix", "Cartão"] as string[], // Available payment methods.
   contactEmail: null as string | null, // [PLACEHOLDER]
   privacyText: null as string | null, // [PLACEHOLDER] business-approved legal text
   termsText: null as string | null, // [PLACEHOLDER]
